@@ -1,0 +1,33 @@
+.navbar {
+  /* change to grid on big screen, flex on small screen with xl spacing  */
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  z-index: var(--mantine-z-index-app);
+  top: 0;
+  padding-top: var(--mantine-spacing-sm);
+  padding-bottom: var(--mantine-spacing-sm);
+  background-color: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+.homeButton {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  text-decoration: none;
+  color: var(--mantine-color-text);
+}
+
+@media (max-width: 62em) {
+  /* md */
+  .navbar {
+    display: flex;
+    gap: var(--mantine-spacing-xl);
+  }
+
+  .search {
+    width: auto;
+    flex-grow: 1;
+  }
+}
