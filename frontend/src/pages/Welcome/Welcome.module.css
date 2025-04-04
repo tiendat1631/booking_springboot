@@ -1,0 +1,21 @@
+.title {
+  text-align: center;
+}
+
+.createAccount {
+  text-align: center;
+}
+
+.passwordHintLabel {
+  translate: 0 -2px;
+}
+
+.paper {
+  border-top: none;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.welcomeMessage {
+  text-align: center;
+}

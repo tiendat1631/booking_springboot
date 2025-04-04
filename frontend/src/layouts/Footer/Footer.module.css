@@ -1,0 +1,7 @@
+.footer {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.footerDark {
+  background-color: var(--mantine-color-dark-8);
+}
