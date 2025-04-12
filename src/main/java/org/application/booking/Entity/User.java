@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.management.relation.Role;
+import java.awt.print.Book;
 import java.util.List;
 
 @Entity
@@ -18,5 +19,14 @@ public class User extends BaseEntity {
     private String password;
     private Role role;
     private int age;
+    private List<Session> sessions;
 
+    public void addSession(Session session) {
+        sessions.add(session);
+    }
+    public void revokeSession(Session session) {
+        if (sessions.contains(session)) {
+            session.setRevoked(true);
+        }
+    }
 }
