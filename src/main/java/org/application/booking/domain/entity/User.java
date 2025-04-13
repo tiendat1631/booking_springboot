@@ -1,8 +1,7 @@
 package org.application.booking.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.management.relation.Role;
 import java.util.List;
@@ -11,8 +10,10 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity {
-
     private String name;
     private String userName;
     private String email;

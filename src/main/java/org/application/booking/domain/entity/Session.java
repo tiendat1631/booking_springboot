@@ -1,9 +1,7 @@
 package org.application.booking.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -12,6 +10,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Session extends BaseEntity {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,6 +31,4 @@ public class Session extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Session() {
-    }
 }
