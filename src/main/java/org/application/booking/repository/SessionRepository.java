@@ -1,6 +1,6 @@
-package org.application.booking.Repository;
+package org.application.booking.repository;
 
-import org.application.booking.Entity.Session;
+import org.application.booking.domain.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

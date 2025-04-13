@@ -1,7 +1,7 @@
-package org.application.booking.Controller;
+package org.application.booking.controller;
 
-import org.application.booking.Entity.User;
-import org.application.booking.Repository.UserRepository;
+import org.application.booking.domain.entity.User;
+import org.application.booking.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

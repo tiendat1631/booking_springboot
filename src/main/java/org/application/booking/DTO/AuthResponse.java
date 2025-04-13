@@ -8,5 +8,4 @@ public class AuthResponse {
     public AuthResponse(String token) {
         this.token = token;
     }
-
 }

@@ -1,4 +1,4 @@
-package org.application.booking.config;
+package org.application.booking.configure;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-public class JwtConfig {
+public class JwtConfiguration {
 
     @Value("${jwt.secret-value}")
     private String secretKey;
