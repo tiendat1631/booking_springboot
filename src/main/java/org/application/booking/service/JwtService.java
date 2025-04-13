@@ -6,12 +6,14 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.application.booking.Entity.User;
 import org.application.booking.config.JwtConfig;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+@Service
 @RequiredArgsConstructor
 public class JwtService {
     // Secret key phải là base64, nên bạn cần encode trước

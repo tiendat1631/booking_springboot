@@ -1,7 +1,9 @@
 package org.application.booking.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.management.relation.Role;
@@ -11,6 +13,8 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     private String name;
@@ -19,6 +23,7 @@ public class User extends BaseEntity {
     private String password;
     private Role role;
     private int age;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions;
 
     public void addSession(Session session) {
