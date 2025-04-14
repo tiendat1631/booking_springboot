@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Getter
 public class JwtConfig {
 
-    @Value("${jwt.secret-value}")
+    @Value("${jwt.secret-key}") // phai khop voi file properties
     private String secretKey;
 
-    @Value("${jwt.expiration-ms}")
-    private long Expiration;
+    @Value("${jwt.expiration-ms}") //phai khop voi file properties
+    private long expiration;
 
 
 }

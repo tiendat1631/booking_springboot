@@ -18,7 +18,7 @@ public class LoginUseCase {
     }
 
     public String login(String username, String password) {
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByusername(username);
 
         if (optionalUser.isEmpty()) {
             throw new RuntimeException("User not found");

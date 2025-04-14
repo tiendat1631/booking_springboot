@@ -17,6 +17,7 @@ public class UserController {
 
     private final LoginUseCase loginUseCase;
 
+
     public UserController(UserRepository userRepository, LoginUseCase loginUseCase) {
         this.userRepository = userRepository;
         this.loginUseCase = loginUseCase;
@@ -37,5 +38,13 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         String token = loginUseCase.login(request.getUsername(), request.getPassword());
         return ResponseEntity.ok(new LoginResponse(token));
+    }
+    @PostMapping("/adduser")
+    public void addUser(@RequestBody User user) {
+        userRepository.save(user);
+    }
+    @GetMapping("/finduser")
+    public User findUserByUsername(String username) {
+        return userRepository.findByusername(username).get();
     }
 }

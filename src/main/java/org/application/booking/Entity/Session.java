@@ -20,6 +20,7 @@ public class Session {
     @Column(nullable = false, unique = true)
     private String token;
 
+
     private Instant createdAt;
 
     private Instant expiresAt;
