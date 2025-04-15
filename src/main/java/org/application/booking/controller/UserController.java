@@ -1,9 +1,9 @@
-package org.application.booking.Controller;
+package org.application.booking.controller;
 
 import org.application.booking.DTO.LoginRequest;
 import org.application.booking.DTO.LoginResponse;
-import org.application.booking.Entity.User;
-import org.application.booking.Repository.UserRepository;
+import org.application.booking.domain.entity.User;
+import org.application.booking.repository.UserRepository;
 import org.application.booking.application.usecase.LoginUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,8 +36,8 @@ public class UserController {
     }
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        String token = loginUseCase.login(request.getUsername(), request.getPassword());
-        return ResponseEntity.ok(new LoginResponse(token));
+        LoginResponse result = loginUseCase.login(request.getUsername(), request.getPassword());
+        return ResponseEntity.ok(result);
     }
     @PostMapping("/adduser")
     public void addUser(@RequestBody User user) {
@@ -45,6 +45,6 @@ public class UserController {
     }
     @GetMapping("/finduser")
     public User findUserByUsername(String username) {
-        return userRepository.findByusername(username).get();
+        return userRepository.findByUsername(username).get();
     }
 }

@@ -1,10 +1,11 @@
-package org.application.booking.Entity;
+package org.application.booking.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.application.booking.domain.entity.BaseEntity;
 
 
 import java.util.List;
