@@ -1,11 +1,10 @@
-package org.application.booking.Entity;
+package domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 import java.util.List;
 
@@ -18,9 +17,12 @@ import java.util.List;
 public class User extends BaseEntity {
 
     private String name;
+    @Column(unique = true, nullable = false)
     private String username;
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,6 +30,7 @@ public class User extends BaseEntity {
 
     public void addSession(Session session) {
         sessions.add(session);
+        session.setUser(this);
     }
     public void revokeSession(Session session) {
         if (sessions.contains(session)) {

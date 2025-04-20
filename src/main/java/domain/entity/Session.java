@@ -1,8 +1,7 @@
-package org.application.booking.Entity;
+package domain.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -10,24 +9,23 @@ import java.time.Instant;
 @Table(name = "session")
 @Getter
 @Setter
-public class Session {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(updatable = false, nullable = false)
-    private String id;
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Session extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    @Column(updatable = false, nullable = false)
+//    private String id;
 
     @Column(nullable = false, unique = true)
     private String token;
-
-
     private Instant createdAt;
-
     private Instant expiresAt;
-
     private boolean revoked;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 }
