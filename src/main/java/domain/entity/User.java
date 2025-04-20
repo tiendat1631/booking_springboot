@@ -1,5 +1,8 @@
 package domain.entity;
 
+import domain.ValueObject.Email;
+import domain.ValueObject.Role;
+import domain.ValueObject.Username;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,10 +20,8 @@ import java.util.List;
 public class User extends BaseEntity {
 
     private String name;
-    @Column(unique = true, nullable = false)
-    private String username;
-    @Column(unique = true, nullable = false)
-    private String email;
+    private Username username;
+    private Email email;
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;

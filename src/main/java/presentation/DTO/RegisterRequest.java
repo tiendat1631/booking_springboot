@@ -1,5 +1,6 @@
 package presentation.DTO;
 
+import domain.ValueObject.Username;
 import lombok.Getter;
 import lombok.Setter;
 

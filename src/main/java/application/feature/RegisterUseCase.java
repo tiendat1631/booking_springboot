@@ -1,5 +1,6 @@
     package application.feature;
 
+    import domain.ValueObject.Username;
     import domain.entity.User;
     import lombok.RequiredArgsConstructor;
     import presentation.DTO.RegisterRequest;
@@ -16,11 +17,14 @@
             if (userRepository.existsByUsername(registerRequest.getUsername())) {
                 System.out.println("Username is already in use");
             }
-            User newUser = new User();
-            newUser.setUsername(registerRequest.getUsername());
-            newUser.setEmail(registerRequest.getEmail());
-            newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            else {
+                User newUser = new User();
+                Username username = Username.CreateUsername(registerRequest.getUsername());
+                newUser.setUsername(username);
+                newUser.setEmail(registerRequest.getEmail());
+                newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+                userRepository.save(newUser);
+            }
 
-            userRepository.save(newUser);
         }
     }

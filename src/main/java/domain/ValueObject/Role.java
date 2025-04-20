@@ -1,4 +1,4 @@
-package domain.entity;
+package domain.ValueObject;
 
 public enum Role {
     admin,user
