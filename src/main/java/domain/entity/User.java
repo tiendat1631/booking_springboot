@@ -24,7 +24,7 @@ public class User extends BaseEntity {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private int age;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions;
 
