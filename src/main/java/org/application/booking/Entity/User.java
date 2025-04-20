@@ -22,7 +22,7 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private Role role;
-    private int age;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions;
 
