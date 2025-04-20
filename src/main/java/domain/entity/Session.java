@@ -1,4 +1,4 @@
-package org.application.booking.domain.entity;
+package domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,11 +20,8 @@ public class Session extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String token;
-
     private Instant createdAt;
-
     private Instant expiresAt;
-
     private boolean revoked;
 
     @ManyToOne

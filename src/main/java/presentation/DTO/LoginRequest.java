@@ -1,12 +1,11 @@
-package org.application.booking.DTO;
+package presentation.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class RegisterRequest {
+public class LoginRequest {
     private String username;
-    private String email;
     private String password;
 }

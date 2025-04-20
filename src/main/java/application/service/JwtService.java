@@ -1,11 +1,11 @@
-package org.application.booking.service;
+package application.service;
 
+import configure.JwtConfiguration;
+import domain.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.application.booking.configure.JwtConfiguration;
-import org.application.booking.domain.entity.User;
 
 import org.springframework.stereotype.Service;
 

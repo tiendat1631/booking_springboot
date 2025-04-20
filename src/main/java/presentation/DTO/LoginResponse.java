@@ -1,4 +1,4 @@
-package org.application.booking.DTO;
+package presentation.DTO;
 
 import lombok.Getter;
 

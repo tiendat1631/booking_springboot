@@ -1,4 +1,4 @@
-package org.application.booking.configure;
+package configure;
 
 import lombok.Getter;
 import lombok.Setter;

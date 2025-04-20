@@ -1,9 +1,9 @@
-package org.application.booking.service;
+package application.service;
 
+import configure.RefreshTokenConfiguration;
+import domain.entity.Session;
+import domain.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.application.booking.configure.RefreshTokenConfiguration;
-import org.application.booking.domain.entity.Session;
-import org.application.booking.domain.entity.User;
 import org.springframework.stereotype.Service;
 import java.time.temporal.ChronoUnit;
 

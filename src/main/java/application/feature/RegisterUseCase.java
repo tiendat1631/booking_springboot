@@ -1,9 +1,9 @@
-    package org.application.booking.application.usecase;
+    package application.feature;
 
+    import domain.entity.User;
     import lombok.RequiredArgsConstructor;
-    import org.application.booking.DTO.RegisterRequest;
-    import org.application.booking.domain.entity.User;
-    import org.application.booking.repository.UserRepository;
+    import presentation.DTO.RegisterRequest;
+    import infrastructure.repository.UserRepository;
     import org.springframework.security.crypto.password.PasswordEncoder;
     import org.springframework.stereotype.Service;
 

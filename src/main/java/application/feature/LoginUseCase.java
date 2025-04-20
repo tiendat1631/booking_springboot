@@ -1,17 +1,18 @@
-package org.application.booking.application.usecase;
+package application.feature;
 
+import application.service.JwtService;
+import application.service.RefreshTokenService;
+import domain.entity.Session;
+import domain.entity.User;
+import infrastructure.repository.SessionRepository;
+import infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.application.booking.DTO.LoginResponse;
-import org.application.booking.domain.entity.Session;
-import org.application.booking.domain.entity.User;
-import org.application.booking.repository.SessionRepository;
-import org.application.booking.repository.UserRepository;
-import org.application.booking.service.JwtService;
-import org.application.booking.service.RefreshTokenService;
+import presentation.DTO.LoginResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class LoginUseCase {

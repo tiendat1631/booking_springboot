@@ -1,4 +1,4 @@
-package org.application.booking.domain.entity;
+package domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -30,6 +30,7 @@ public class User extends BaseEntity {
 
     public void addSession(Session session) {
         sessions.add(session);
+        session.setUser(this);
     }
     public void revokeSession(Session session) {
         if (sessions.contains(session)) {
