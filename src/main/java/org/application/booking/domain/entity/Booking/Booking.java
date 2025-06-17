@@ -44,6 +44,8 @@ public class Booking extends BaseEntity {
             booking.AddTicket(ticket);
         }
 
+        booking.total = trip.getPricePerSeat() * tickets.size();
+
         return booking;
     }
 
@@ -55,6 +57,11 @@ public class Booking extends BaseEntity {
             ticket.occupy();
         }
     }
+
+    private void setTotal(float total){
+        this.total = total;
+    }
+
 
 }
 
