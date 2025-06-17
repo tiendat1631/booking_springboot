@@ -34,6 +34,8 @@ public class Bus extends BaseEntity {
         }
     }
 
+
+
     protected Bus() {
 
     } //lombok

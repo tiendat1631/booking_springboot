@@ -1,7 +1,5 @@
-
 package org.application.booking.domain.entity;
 
-import org.application.booking.domain.ValueObject.TimeFrame;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

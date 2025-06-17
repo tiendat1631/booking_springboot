@@ -29,4 +29,12 @@ public class Ticket extends BaseEntity {
         this.trip = trip;
         this.isOccupied = false;
     }
+
+    public void occupy() {
+        this.isOccupied = true;
+    }
+
+    public void release() {
+        this.isOccupied = false;
+    }
 }

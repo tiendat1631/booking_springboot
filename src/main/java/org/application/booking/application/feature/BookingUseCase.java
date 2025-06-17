@@ -1,7 +1,7 @@
 /*
 package org.application.booking.application.feature;
 
-import org.application.booking.domain.entity.Booking;
+import org.application.booking.domain.entity.Booking.Booking;
 import org.application.booking.domain.entity.BusBoundary.Seat;
 import org.application.booking.domain.entity.Trip;
 import org.application.booking.domain.entity.User;

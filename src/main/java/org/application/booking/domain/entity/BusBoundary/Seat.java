@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import org.application.booking.domain.entity.BaseEntity;
-//import org.application.booking.domain.entity.Booking;
+//import org.application.booking.domain.entity.Booking.Booking;
 
 @Getter
 @Setter
