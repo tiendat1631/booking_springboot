@@ -23,4 +23,10 @@ public class Ticket extends BaseEntity {
     private Trip trip;
 
     private boolean isOccupied;
+    public Ticket() {}
+    public Ticket(Seat seat, Trip trip) {
+        this.seat = seat;
+        this.trip = trip;
+        this.isOccupied = false;
+    }
 }

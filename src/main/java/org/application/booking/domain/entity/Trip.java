@@ -9,13 +9,14 @@ import lombok.Setter;
 import org.application.booking.domain.entity.BusBoundary.Bus;
 import org.application.booking.domain.entity.BusBoundary.Seat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "Trip")
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+
 public class Trip extends BaseEntity{
     private float pricePerSeat;
     private String departure;
@@ -28,25 +29,39 @@ public class Trip extends BaseEntity{
     @JoinColumn(name="bus_id")
     private Bus bus;
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ticket> tickets = new ArrayList<>();
 
     public List<Seat> getSeats(){
-        return bus.getSeats();
+        return this.bus.getSeats();
     }
+    public Trip (float pricePerSeat, String departure, String destination, String timeFrame, Bus bus) {
+        this.pricePerSeat = pricePerSeat;
+        this.departure = departure;
+        this.destination = destination;
+        this.timeFrame = timeFrame;
+        this.bus = bus;
+    }
+    public Trip(){}
 
     public static Trip createTrip (String departure, String destination,
                                    float pricePerSeat , String timeFrameame, Bus bus){
-        Trip trip = new Trip();
-        trip.setDeparture(departure);
-        trip.setDestination(destination);
+
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
         }
-        trip.setPricePerSeat(pricePerSeat);
+
         if (pricePerSeat <=0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
+        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrameame,bus);
+        for (Seat seat: trip.getSeats()){
+            Ticket ticket = new Ticket(seat,trip);
+            trip.getTickets().add(ticket);
+        }
+        /*trip.setPricePerSeat(pricePerSeat);
         trip.setTimeFrame(timeFrameame);
-        trip.setBus(bus);
+        trip.setBus(bus);*/
         return trip;
     }
 }
