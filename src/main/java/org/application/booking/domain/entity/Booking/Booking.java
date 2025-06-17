@@ -28,7 +28,7 @@ public class Booking extends BaseEntity {
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookedTicket> bookedTickets;
 
-    private Booking() {}
+    protected Booking() {}
 
     private Booking(User user, Trip trip, LocalDateTime timeCreate){
         this.user = user;

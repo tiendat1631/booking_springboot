@@ -32,7 +32,6 @@ public class CreateBookingUseCase {
                 .filter(ticket -> request.seatIds.contains(ticket.getSeat().getId()))
                 .toList();
 
-
         Booking booking = Booking.Create(user, trip, LocalDateTime.now(), tickets);
         bookingRepository.save(booking);
     }
