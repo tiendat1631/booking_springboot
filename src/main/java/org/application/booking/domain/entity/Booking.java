@@ -20,31 +20,27 @@ public class Booking extends BaseEntity {
     private LocalDate timeCreate;
 
     @OneToMany(mappedBy = "booking",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Seat> seats; // 1 booking biet dc ds cac seats
+    private List<Ticket> tickets; // 1 booking biet dc ds cac ticket
 
     @ManyToOne
+    @JoinColumn(name = "trip_id")
     private Trip trip;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void addSeat(Seat seat) {
-        if (!seat.isOccupied()) {
-            seats.add(seat);
-            seat.setOccupied(true); // mark this seat is occupied;
-            //seat.setBooking(this);// quan he nguoc
-            calculateTotalCost(); // update total cost after adding seat
-        }else {
-            throw new RuntimeException("Seat is occupied");
-        }
+    public Booking (float totalPrice, LocalDate timeCreate, List<Ticket> tickets, Trip trip, User user) {
+        this.totalPrice = totalPrice;
+        this.timeCreate = timeCreate;
+        this.tickets = tickets;
+        this.trip = trip;
+        this.user = user;
     }
-    public void calculateTotalCost() {
-        if (seats!=null && trip!=null ) {
-            this.totalPrice= trip.getPricePerSeat()*seats.size();
-        }else{
-            this.totalPrice=0;
-        }
+    public Booking(){}
+    public void addticket(Ticket ticket) {
+        this.tickets.add(ticket);
     }
+
 }
 */

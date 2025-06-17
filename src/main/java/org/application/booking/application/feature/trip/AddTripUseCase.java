@@ -26,7 +26,6 @@ public class AddTripUseCase {
                 addTripRequest.getTimeFrame(),
                 bus
         );
-
         tripRepository.save(trip);
     }
 }

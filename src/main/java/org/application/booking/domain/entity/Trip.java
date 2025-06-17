@@ -59,10 +59,10 @@ public class Trip extends BaseEntity{
             Ticket ticket = new Ticket(seat,trip);
             trip.getTickets().add(ticket);
         }
-        /*trip.setPricePerSeat(pricePerSeat);
-        trip.setTimeFrame(timeFrameame);
-        trip.setBus(bus);*/
         return trip;
+    }
+    public Float totalPrice(int numberOfSeats){
+        return this.pricePerSeat * numberOfSeats;
     }
 }
 

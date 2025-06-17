@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,20 +32,21 @@ public class User extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String password;
 
-    @Embedded
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Column(nullable = false)
-    @Min(0)
+    @Min(10)
     private int age;
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Booking> bookings;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Session> sessions;
 
     public void addSession(Session session) {
+        if (sessions == null) {
+            sessions = new ArrayList<>();
+        }
         sessions.add(session);
         session.setUser(this);
     }
