@@ -1,6 +1,8 @@
 
 package org.application.booking.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.application.booking.domain.ValueObject.TimeFrame;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import org.application.booking.domain.entity.BusBoundary.Seat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Table(name = "Trip")
 @Entity
@@ -25,15 +28,19 @@ public class Trip extends BaseEntity{
     //@Embedded
     //private TimeFrame frame;
     private String timeFrame;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="bus_id")
     private Bus bus;
 
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ticket> tickets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Ticket> tickets = new ArrayList<>();
+    @JsonIgnore
     public List<Seat> getSeats(){
-        return this.bus.getSeats();
+        // if bus = null -> error
+        return (bus != null) ? bus.getSeats() : new ArrayList<>();
     }
     public Trip (float pricePerSeat, String departure, String destination, String timeFrame, Bus bus) {
         this.pricePerSeat = pricePerSeat;
@@ -45,7 +52,7 @@ public class Trip extends BaseEntity{
     public Trip(){}
 
     public static Trip createTrip (String departure, String destination,
-                                   float pricePerSeat , String timeFrameame, Bus bus){
+                                   float pricePerSeat , String timeFrame, Bus bus){
 
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
@@ -54,7 +61,7 @@ public class Trip extends BaseEntity{
         if (pricePerSeat <=0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrameame,bus);
+        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,bus);
         for (Seat seat: trip.getSeats()){
             Ticket ticket = new Ticket(seat,trip);
             trip.getTickets().add(ticket);

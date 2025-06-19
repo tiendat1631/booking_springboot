@@ -1,5 +1,7 @@
 package org.application.booking.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,8 +18,10 @@ public class Ticket extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "seat_id", nullable = false)
+    @JsonIgnore
     private Seat seat;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;

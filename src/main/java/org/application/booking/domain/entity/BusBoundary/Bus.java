@@ -1,5 +1,6 @@
 package org.application.booking.domain.entity.BusBoundary;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Bus extends BaseEntity {
     @OneToMany(mappedBy = "bus",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
     private List<Seat> seats; // seat available
 
     private int numberOfSeats;
