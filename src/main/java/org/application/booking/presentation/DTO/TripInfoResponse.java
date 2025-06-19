@@ -1,15 +1,19 @@
 package org.application.booking.presentation.DTO;
 
-import org.application.booking.domain.ValueObject.TimeFrame;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.application.booking.domain.entity.BusBoundary.BusType;
 
-import java.util.UUID;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class TripInfoResponse {
     private BusType busType;
-    private float totalPrice;
+    private float price;
     private String departure;
     private String destination;
-    private TimeFrame departureTime;
-    private TimeFrame arrivalTime;
+    private String time;
+    private int availableSeats;
 }

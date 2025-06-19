@@ -3,17 +3,14 @@ package org.application.booking.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.application.booking.domain.ValueObject.TimeFrame;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.application.booking.domain.entity.BusBoundary.Bus;
 import org.application.booking.domain.entity.BusBoundary.Seat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Table(name = "Trip")
 @Entity
@@ -29,8 +26,8 @@ public class Trip extends BaseEntity{
     //private TimeFrame frame;
     private String timeFrame;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="bus_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="bus_id", nullable = false)
     private Bus bus;
 
 
@@ -53,23 +50,24 @@ public class Trip extends BaseEntity{
 
     public static Trip createTrip (String departure, String destination,
                                    float pricePerSeat , String timeFrame, Bus bus){
-
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
         }
 
-        if (pricePerSeat <=0){
+        if (pricePerSeat <= 0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,bus);
-        for (Seat seat: trip.getSeats()){
-            Ticket ticket = new Ticket(seat,trip);
-            trip.getTickets().add(ticket);
+
+        return new Trip(pricePerSeat, departure, destination, timeFrame, bus);
+    }
+
+    public List<Ticket> generateTicketsFromSeats(List<Seat> seats) {
+        List<Ticket> tickets = new ArrayList<>();
+        for (Seat seat : seats) {
+            tickets.add(new Ticket(seat, this));
         }
-        return trip;
+        return tickets;
     }
-    public Float totalPrice(int numberOfSeats){
-        return this.pricePerSeat * numberOfSeats;
-    }
+
 }
 
