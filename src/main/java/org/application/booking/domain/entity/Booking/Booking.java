@@ -2,6 +2,7 @@ package org.application.booking.domain.entity.Booking;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.application.booking.domain.entity.BaseEntity;
 import org.application.booking.domain.entity.Ticket;
 import org.application.booking.domain.entity.Trip;
@@ -10,7 +11,7 @@ import org.application.booking.domain.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToDoubleBiFunction;
+@Getter
 
 @Entity
 public class Booking extends BaseEntity {
@@ -48,6 +49,7 @@ public class Booking extends BaseEntity {
 
         return booking;
     }
+
 
     public void AddTicket(Ticket ticket){
         if(ticket.isOccupied()) {
