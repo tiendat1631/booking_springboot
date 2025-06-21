@@ -1,5 +1,7 @@
 package org.application.booking.domain.entity.BusBoundary;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class Bus extends BaseEntity {
+    @JsonIgnore
     @OneToMany(mappedBy = "bus",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Seat> seats; // seat available
 

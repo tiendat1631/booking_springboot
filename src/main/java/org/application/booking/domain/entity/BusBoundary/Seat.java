@@ -1,5 +1,6 @@
 package org.application.booking.domain.entity.BusBoundary;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,6 +16,7 @@ import org.application.booking.domain.entity.BaseEntity;
 public class Seat extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="bus_id")
+    @JsonBackReference
     private Bus bus;
     public Seat(Bus bus) {
         this.bus = bus;

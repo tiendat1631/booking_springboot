@@ -1,5 +1,7 @@
 package org.application.booking.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +25,16 @@ public class Trip extends BaseEntity{
     //@Embedded
     //private TimeFrame frame;
     private String timeFrame;
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name="bus_id")
     private Bus bus;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ticket> tickets = new ArrayList<>();
 
-    public List<Seat> getSeats(){
+    protected List<Seat> getSeats(){
         return this.bus.getSeats();
     }
     public Trip (float pricePerSeat, String departure, String destination, String timeFrame, Bus bus) {
@@ -57,9 +61,7 @@ public class Trip extends BaseEntity{
             Ticket ticket = new Ticket(seat,trip);
             trip.getTickets().add(ticket);
         }
-        /*trip.setPricePerSeat(pricePerSeat);
-        trip.setTimeFrame(timeFrameame);
-        trip.setBus(bus);*/
+
         return trip;
     }
 }
