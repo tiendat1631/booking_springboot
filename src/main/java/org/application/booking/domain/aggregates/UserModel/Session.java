@@ -1,7 +1,8 @@
-package org.application.booking.domain.entity;
+package org.application.booking.domain.aggregates.UserModel;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.application.booking.domain.common.BaseEntity;
 
 import java.time.Instant;
 

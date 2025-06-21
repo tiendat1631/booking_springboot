@@ -1,7 +1,7 @@
 package infrastructure.mapper;
 
-import org.application.booking.domain.entity.Ticket;
-import org.application.booking.domain.entity.Trip;
+import org.application.booking.domain.aggregates.TripModel.Ticket;
+import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.presentation.DTO.TripInfoResponse;
 
 public class TripMapper {

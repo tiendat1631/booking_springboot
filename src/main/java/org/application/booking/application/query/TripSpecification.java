@@ -3,8 +3,8 @@ package org.application.booking.application.query;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import org.application.booking.domain.entity.Ticket;
-import org.application.booking.domain.entity.Trip;
+import org.application.booking.domain.aggregates.TripModel.Ticket;
+import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.springframework.data.jpa.domain.Specification;
 
 

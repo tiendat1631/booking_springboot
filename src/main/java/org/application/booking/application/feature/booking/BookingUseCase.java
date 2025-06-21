@@ -2,8 +2,8 @@
 //
 //import org.application.booking.domain.entity.Booking;
 //import org.application.booking.domain.entity.BusBoundary.Seat;
-//import org.application.booking.domain.entity.Trip;
-//import org.application.booking.domain.entity.User;
+//import org.application.booking.domain.entity.Trip.Trip;
+//import org.application.booking.domain.entity.UserModel.User;
 //import org.application.booking.repository.BookingRepository;
 //import org.application.booking.repository.TripRepository;
 //import org.application.booking.repository.UserRepository;

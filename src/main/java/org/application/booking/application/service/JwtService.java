@@ -1,7 +1,7 @@
 package org.application.booking.application.service;
 
 import org.application.booking.configure.JwtConfiguration;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.UserModel.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

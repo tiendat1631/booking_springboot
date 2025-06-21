@@ -1,27 +1,31 @@
-package org.application.booking.domain.entity;
+package org.application.booking.domain.aggregates.TripModel;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.entity.BusBoundary.Seat;
+import org.application.booking.domain.common.BaseEntity;
+import org.application.booking.domain.aggregates.BusModel.Seat;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
 @Getter
 @Setter
 public class Ticket extends BaseEntity {
-
-    @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id")
+    @JsonIgnore
     private Seat seat;
 
+    @Column(name = "seat_id", insertable = false, updatable = false)
+    private UUID seatId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id")
     @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "trip_id", nullable = false)
     private Trip trip;
 
     private boolean isOccupied;

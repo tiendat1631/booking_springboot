@@ -1,32 +1,44 @@
-package org.application.booking.domain.entity.Booking;
+package org.application.booking.domain.aggregates.BookingModel;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.application.booking.domain.entity.BaseEntity;
-import org.application.booking.domain.entity.Ticket;
-import org.application.booking.domain.entity.Trip;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.common.BaseEntity;
+import org.application.booking.domain.aggregates.TripModel.Ticket;
+import org.application.booking.domain.aggregates.TripModel.Trip;
+import org.application.booking.domain.aggregates.UserModel.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 @Getter
 
 @Entity
 public class Booking extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private UUID userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_id")
+    @JsonIgnore
     private Trip trip;
+
+    @Column(name = "trip_id", insertable = false, updatable = false)
+    private UUID tripId;
 
     private float total;
     private LocalDateTime timeCreate;
 
-    @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "booking", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<BookedTicket> bookedTickets;
 
     protected Booking() {}

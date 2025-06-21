@@ -1,8 +1,8 @@
 package org.application.booking.application.service;
 
 import org.application.booking.configure.RefreshTokenConfiguration;
-import org.application.booking.domain.entity.Session;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.UserModel.Session;
+import org.application.booking.domain.aggregates.UserModel.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.temporal.ChronoUnit;

@@ -1,7 +1,7 @@
 package org.application.booking.application.feature.payment;
 
 import lombok.Getter;
-import org.application.booking.domain.entity.Payment;
+import org.application.booking.domain.aggregates.Payment;
 
 import java.util.UUID;
 @Getter

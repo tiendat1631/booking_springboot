@@ -1,12 +1,11 @@
-package org.application.booking.domain.entity.BusBoundary;
+package org.application.booking.domain.aggregates.BusModel;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.entity.BaseEntity;
+import org.application.booking.domain.common.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class Bus extends BaseEntity {
-    @JsonIgnore
-    @OneToMany(mappedBy = "bus",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Seat> seats; // seat available
 
     private int numberOfSeats;

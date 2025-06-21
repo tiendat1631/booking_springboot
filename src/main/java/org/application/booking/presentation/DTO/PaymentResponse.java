@@ -1,7 +1,7 @@
 package org.application.booking.presentation.DTO;
 
 import lombok.*;
-import org.application.booking.domain.entity.Payment;
+import org.application.booking.domain.aggregates.Payment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package org.application.booking.domain.ValueObject;
+package org.application.booking.domain.aggregates.UserModel;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

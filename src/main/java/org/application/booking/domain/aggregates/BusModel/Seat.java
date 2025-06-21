@@ -1,12 +1,13 @@
-package org.application.booking.domain.entity.BusBoundary;
+package org.application.booking.domain.aggregates.BusModel;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.entity.BaseEntity;
+import org.application.booking.domain.common.BaseEntity;
 //import org.application.booking.domain.entity.Booking.Booking;
 
 @Getter
@@ -14,10 +15,11 @@ import org.application.booking.domain.entity.BaseEntity;
 @Entity
 
 public class Seat extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="bus_id")
     @JsonBackReference
     private Bus bus;
+
     public Seat(Bus bus) {
         this.bus = bus;
     }

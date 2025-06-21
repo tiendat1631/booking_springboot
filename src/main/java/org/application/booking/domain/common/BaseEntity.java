@@ -1,4 +1,4 @@
-package org.application.booking.domain.entity;
+package org.application.booking.domain.common;
 
 
 import jakarta.persistence.*;

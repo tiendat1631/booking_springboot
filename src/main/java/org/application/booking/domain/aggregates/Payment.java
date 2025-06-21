@@ -1,11 +1,13 @@
-package org.application.booking.domain.entity;
+package org.application.booking.domain.aggregates;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.application.booking.domain.entity.Booking.Booking;
+import org.application.booking.domain.aggregates.BookingModel.Booking;
+import org.application.booking.domain.aggregates.UserModel.User;
+import org.application.booking.domain.common.BaseEntity;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;

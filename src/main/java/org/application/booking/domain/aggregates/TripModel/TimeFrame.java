@@ -1,4 +1,4 @@
-package org.application.booking.domain.ValueObject;
+package org.application.booking.domain.aggregates.TripModel;
 
 import jakarta.persistence.Embeddable;
 import lombok.Getter;

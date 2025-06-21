@@ -2,9 +2,9 @@ package org.application.booking.application.feature;
 
 import org.application.booking.application.service.JwtService;
 import org.application.booking.application.service.RefreshTokenService;
-import org.application.booking.domain.ValueObject.Username;
-import org.application.booking.domain.entity.Session;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.UserModel.Username;
+import org.application.booking.domain.aggregates.UserModel.Session;
+import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.repository.SessionRepository;
 import org.application.booking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

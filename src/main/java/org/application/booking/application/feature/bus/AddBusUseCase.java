@@ -1,6 +1,6 @@
 package org.application.booking.application.feature.bus;
 
-import org.application.booking.domain.entity.BusBoundary.Bus;
+import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.repository.BusRepository;
 import org.springframework.stereotype.Service;
 

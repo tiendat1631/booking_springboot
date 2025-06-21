@@ -3,7 +3,7 @@ package org.application.booking.presentation.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.entity.BusBoundary.BusType;
+import org.application.booking.domain.aggregates.BusModel.BusType;
 
 
 @Getter

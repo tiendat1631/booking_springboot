@@ -1,9 +1,8 @@
 package org.application.booking.application.feature.booking;
 
-import jakarta.persistence.JoinColumn;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.entity.Ticket;
+import org.application.booking.domain.aggregates.TripModel.Ticket;
 
 
 

@@ -1,8 +1,8 @@
 package org.application.booking.repository;
 
-import org.application.booking.domain.ValueObject.Email;
-import org.application.booking.domain.ValueObject.Username;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.UserModel.Email;
+import org.application.booking.domain.aggregates.UserModel.Username;
+import org.application.booking.domain.aggregates.UserModel.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

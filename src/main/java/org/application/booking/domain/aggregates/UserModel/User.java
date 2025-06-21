@@ -1,14 +1,12 @@
-package org.application.booking.domain.entity;
+package org.application.booking.domain.aggregates.UserModel;
 
 import jakarta.validation.constraints.Min;
-import org.application.booking.domain.ValueObject.Email;
-import org.application.booking.domain.ValueObject.Role;
-import org.application.booking.domain.ValueObject.Username;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.application.booking.domain.common.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Role role = Role.USER;
 
     @Column(nullable = false)
     @Min(10)
@@ -55,4 +53,5 @@ public class User extends BaseEntity {
             session.setRevoked(true);
         }
     }
+
 }

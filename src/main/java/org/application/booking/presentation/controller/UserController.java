@@ -1,6 +1,6 @@
 package org.application.booking.presentation.controller;
 
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 

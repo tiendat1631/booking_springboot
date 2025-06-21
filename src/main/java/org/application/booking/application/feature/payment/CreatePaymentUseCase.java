@@ -2,9 +2,9 @@ package org.application.booking.application.feature.payment;
 
 import lombok.AllArgsConstructor;
 
-import org.application.booking.domain.entity.Booking.Booking;
-import org.application.booking.domain.entity.Payment;
-import org.application.booking.domain.entity.User;
+import org.application.booking.domain.aggregates.BookingModel.Booking;
+import org.application.booking.domain.aggregates.Payment;
+import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.presentation.DTO.PaymentResponse;
 import org.application.booking.repository.BookingRepository;
 import org.application.booking.repository.PaymentRepository;

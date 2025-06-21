@@ -1,6 +1,6 @@
 package org.application.booking.repository;
 
-import org.application.booking.domain.entity.BusBoundary.Seat;
+import org.application.booking.domain.aggregates.BusModel.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -2,10 +2,10 @@
 
     import org.application.booking.application.service.JwtService;
     import org.application.booking.application.service.RefreshTokenService;
-    import org.application.booking.domain.ValueObject.Email;
-    import org.application.booking.domain.ValueObject.Username;
-    import org.application.booking.domain.entity.Session;
-    import org.application.booking.domain.entity.User;
+    import org.application.booking.domain.aggregates.UserModel.Email;
+    import org.application.booking.domain.aggregates.UserModel.Username;
+    import org.application.booking.domain.aggregates.UserModel.Session;
+    import org.application.booking.domain.aggregates.UserModel.User;
     import org.application.booking.repository.SessionRepository;
     import lombok.RequiredArgsConstructor;
     import org.application.booking.presentation.DTO.RegisterRequest;
@@ -40,6 +40,7 @@
             newUser.setName(registerRequest.getUsername());
             newUser.setAge(registerRequest.getAge());
             newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
             // save the new user to the db
             userRepository.save(newUser);
 
