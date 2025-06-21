@@ -1,10 +1,13 @@
 package org.application.booking.application.feature.trip;
 
 import org.application.booking.domain.entity.BusBoundary.Bus;
+import org.application.booking.domain.entity.Ticket;
 import org.application.booking.domain.entity.Trip;
 import org.application.booking.repository.BusRepository;
 import org.application.booking.repository.TripRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AddTripUseCase {
@@ -26,7 +29,8 @@ public class AddTripUseCase {
                 addTripRequest.getTimeFrame(),
                 bus
         );
-
+        List<Ticket> tickets = trip.generateTicketsFromSeats(bus.getSeats());
+        trip.setTickets(tickets);
         tripRepository.save(trip);
     }
 }
