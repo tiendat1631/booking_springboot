@@ -6,7 +6,6 @@ import org.application.booking.domain.aggregates.BusModel.BusType;
 @Getter
 @Setter
 public class AddBusRequest {
-    public int numberOfSeats;
     public BusType busType;
 
 }

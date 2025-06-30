@@ -22,9 +22,8 @@ public class Trip extends BaseEntity {
     private String departure;
     private String destination;
 
-    //@Embedded
-    //private TimeFrame frame;
-    private String timeFrame;
+    @Embedded
+    private TimeFrame timeFrame;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,7 +38,7 @@ public class Trip extends BaseEntity {
     private List<Ticket> tickets = new ArrayList<>();
 
 
-    public Trip (float pricePerSeat, String departure, String destination, String timeFrame, Bus bus) {
+    public Trip (float pricePerSeat, String departure, String destination, TimeFrame timeFrame, Bus bus) {
         this.pricePerSeat = pricePerSeat;
         this.departure = departure;
         this.destination = destination;
@@ -49,7 +48,7 @@ public class Trip extends BaseEntity {
     public Trip(){}
 
     public static Trip createTrip (String departure, String destination,
-                                   float pricePerSeat , String timeFrameame, Bus bus){
+                                   float pricePerSeat , TimeFrame timeFrame, Bus bus){
 
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
@@ -58,7 +57,7 @@ public class Trip extends BaseEntity {
         if (pricePerSeat <=0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrameame,bus);
+        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,bus);
         for (Seat seat: bus.getSeats()){
             Ticket ticket = new Ticket(seat,trip);
             trip.addTicket(ticket);

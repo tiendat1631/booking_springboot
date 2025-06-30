@@ -13,7 +13,7 @@ public class AddBusUseCase {
     }
 
     public void addBus (AddBusRequest addBusRequest) {
-        Bus bus = new Bus(addBusRequest.numberOfSeats, addBusRequest.busType);
+        Bus bus = new Bus(addBusRequest.busType);
 
         busRepository.save(bus);
     }

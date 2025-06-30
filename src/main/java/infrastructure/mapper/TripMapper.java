@@ -20,7 +20,7 @@ public class TripMapper {
                 trip.getPricePerSeat(),
                 trip.getDeparture(),
                 trip.getDestination(),
-                trip.getTimeFrame(),
+                trip.getTimeFrame().toString(),
                 availableSeats
 
         );

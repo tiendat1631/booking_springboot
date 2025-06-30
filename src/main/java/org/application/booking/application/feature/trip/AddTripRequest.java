@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import org.application.booking.domain.aggregates.TripModel.TimeFrame;
 
 import java.util.UUID;
 
@@ -18,8 +19,8 @@ public class AddTripRequest {
     @NotNull
     @Positive
     private float price;
-    @NotBlank
-    private String timeFrame;
+    @NotNull
+    private TimeFrame timeFrame;
     @NotNull
     private UUID busId;
 }

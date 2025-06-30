@@ -24,10 +24,15 @@ public class Bus extends BaseEntity {
     @Enumerated(EnumType.STRING)
     public BusType type;
 
-    public Bus(int numberOfSeats, BusType type) {
-
-        this.numberOfSeats = numberOfSeats;
+    public Bus(BusType type) {
         this.type = type;
+        if (type==BusType.normal){
+            this.numberOfSeats = 40;
+        }else if (type==BusType.limousine){
+            this.numberOfSeats = 22;
+        }else {
+            this.numberOfSeats = 0;
+        }
         this.seats = new ArrayList<>();
 
         //logic tao seat khi tao bus
