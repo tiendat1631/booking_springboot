@@ -1,5 +1,8 @@
+import { Button } from '@/components/ui/button';
+import { CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import React, { useState } from 'react';
-import { signup } from '../services';
 
 type SignupProps = {
   switcher: () => void;
@@ -17,7 +20,6 @@ export default function Signup({ switcher }: SignupProps) {
     if (isSubmit) return;
 
     setSubmit(true);
-    const result = await signup({ username, email, password });
   };
 
   const handleSwitch = () => {
@@ -27,49 +29,48 @@ export default function Signup({ switcher }: SignupProps) {
 
   return (
     <>
-      <div>
-        <h1 className='text-3xl font-semibold'>Đăng ký</h1>
-        <p className='mt-2'>
-          Đã có tài khoản?{' '}
-          <button onClick={handleSwitch} className='link'>
-            Đăng nhập
-          </button>
-        </p>
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className='mt-6 max-w-[400px] flex flex-col gap-2'>
-        <input
-          onChange={(e) => setUsername(e.target.value)}
-          type='text'
-          name='username'
-          placeholder='Nhập tên người dùng'
-          className='input w-full'
-        />
-        <input
-          onChange={(e) => setEmail(e.target.value)}
-          type='email'
-          name='email'
-          placeholder='Nhập email'
-          className='input w-full'
-        />
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          type='password'
-          name='password'
-          placeholder='Nhập mật khẩu'
-          className='input w-full'
-        />
-        <button className='btn btn-primary btn-block mt-4'>
-          {isSubmit && <span className='loading loading-spinner'></span>}
-          Đăng nhập
-        </button>
-      </form>
-      <p className='mt-6 text-sm text-center'>
-        <a href='#' className='link'>
-          Quên mật khẩu
-        </a>
-      </p>
+      <CardHeader>
+        <CardTitle>Đăng ký</CardTitle>
+        <CardDescription>Nhận thêm nhiều ưu đãi khi đặt vé</CardDescription>
+        <CardAction>
+          <Button variant='link' className='px-2' onClick={handleSwitch}>Đăng nhập</Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        <form>
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Tên người dùng</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="matbao"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="matbao@gmail.com"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <div className="flex items-center">
+                <Label htmlFor="password">Mật khẩu</Label>
+              </div>
+              <Input id="password" type="password" required placeholder='●●●●●●●●' />
+            </div>
+          </div>
+        </form>
+      </CardContent>
+      <CardFooter>
+        <Button type="submit" className="w-full">
+          Đăng ký ngay
+        </Button>
+      </CardFooter>
     </>
   );
 }
