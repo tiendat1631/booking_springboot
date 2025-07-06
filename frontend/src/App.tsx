@@ -1,10 +1,10 @@
-import Welcome from './pages/Welcome';
+import Homepage from './pages/Homepage';
 
 export default function App() {
   return (
     <div className='flex flex-col min-h-screen'>
       <main className='grow bg-background'>
-        <Welcome />
+        <Homepage />
       </main>
     </div>
   );
