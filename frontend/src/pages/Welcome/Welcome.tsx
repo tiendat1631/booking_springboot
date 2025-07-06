@@ -17,7 +17,7 @@ export default function Welcome() {
   return (
     <div className='py-12 flex flex-col gap-4 md:flex-row md:justify-center md:items-start'>
       {/* Header */}
-      <div className='flex flex-col justify-center pl-8'>
+      <div className='flex flex-col justify-center md:pl-8'>
         <div className='text-center'>
           <p className='text-4xl font-bold font-merriweather'>
             VéXe24
