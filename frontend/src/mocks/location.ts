@@ -1,7 +1,7 @@
 export const location = [
-  { label: "Hà Nội", value: "1" },
-  { label: "TP. Hồ Chí Minh", value: "2" },
-  { label: "Lâm Đồng", value: "3" },
-  { label: "Đà Nẵng", value: "4" },
-  { label: "Thanh Hóa", value: "5" }
+  { label: "Hà Nội", value: "29" },
+  { label: "TP. Hồ Chí Minh", value: "59" },
+  { label: "Lâm Đồng", value: "49" },
+  { label: "Đà Nẵng", value: "43" },
+  { label: "Thanh Hóa", value: "36" }
 ];

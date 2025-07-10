@@ -18,7 +18,7 @@ import {
 import { useState } from "react"
 import { Label } from "@/components/ui/label"
 
-export function LocationSearch({ items, label, placeholder, noResultText }: Props) {
+export function LocationSearch({ items, label, placeholder, noResultText, onValueChange }: Props) {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState("")
 
@@ -50,9 +50,11 @@ export function LocationSearch({ items, label, placeholder, noResultText }: Prop
                     key={item.value}
                     value={item.label}
                     onSelect={(selectedLabel) => {
-                      const selectedItem = items.find((i) => i.label === selectedLabel)
-                      setValue(selectedItem?.value ?? "")
-                      setOpen(false)
+                      const selectedItem = items.find((i) => i.label === selectedLabel);
+                      const newValue = selectedItem?.value ?? "";
+                      setValue(newValue);
+                      onValueChange?.(newValue);
+                      setOpen(false);
                     }}
                   >
                     <CheckIcon
@@ -81,4 +83,5 @@ type Props = {
   label: string;
   placeholder: string;
   noResultText: string;
+  onValueChange?: (value: string) => void;
 }

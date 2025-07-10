@@ -17,9 +17,12 @@ public class SearchTripRequest {
     public Specification<Trip> toSpecification() {
         Specification<Trip> spec = Specification.where(null);
 
+        from = Converter(from); //for testing only
         if (from != null && !from.isBlank()) {
             spec = spec.and(TripSpecification.fromLocation(from));
         }
+
+        to = Converter(to);
         if (to != null && !to.isBlank()) {
             spec = spec.and(TripSpecification.toLocation(to));
         }
@@ -31,4 +34,22 @@ public class SearchTripRequest {
         }
         return spec;
     }
+
+    private String Converter(String id) {
+        switch (id) {
+            case "29":
+                return "Ha Noi";
+            case "59":
+                return "HCM";
+            case "49":
+                return "Lam Dong";
+            case "43":
+                return "Da Nang";
+            case "36":
+                return "Thanh Hoa";
+            default:
+                return "";
+        }
+    }
+
 }
