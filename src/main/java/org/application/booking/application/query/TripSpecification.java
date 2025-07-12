@@ -7,6 +7,8 @@ import org.application.booking.domain.aggregates.TripModel.Ticket;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
+
 
 public class TripSpecification {
     public static Specification<Trip> hasTicket(int numberOfTickets) {
@@ -42,7 +44,7 @@ public class TripSpecification {
         return (root, query, builder) ->
                 builder.equal(root.get("destination"),to);
     }
-    public static Specification<Trip> hasDate(String date){
+    public static Specification<Trip> hasDate(LocalDateTime date){
         return (root, query, builder)->
                 builder.equal(root.get("timeFrame"),date);
     }

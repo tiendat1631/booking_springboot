@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.domain.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -23,6 +24,10 @@ public class Bus extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     public BusType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_id")
+    private Trip trip;
 
     public Bus(BusType type) {
         this.type = type;
