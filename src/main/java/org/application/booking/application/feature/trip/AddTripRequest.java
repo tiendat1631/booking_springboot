@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.application.booking.domain.aggregates.TripModel.TimeFrame;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,5 +23,5 @@ public class AddTripRequest {
     @NotNull
     private TimeFrame timeFrame;
     @NotNull
-    private UUID busId;
+    private List<UUID> busIds; // Danh sách ID bus được thêm vào trip
 }

@@ -11,7 +11,6 @@ import org.application.booking.domain.aggregates.BusModel.Seat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Table(name = "Trip")
 @Entity
@@ -26,29 +25,26 @@ public class Trip extends BaseEntity {
     private TimeFrame timeFrame;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="bus_id")
-    private Bus bus;
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
+    private List<Bus> buses = new ArrayList<>();
 
-    @Column(name = "bus_id", insertable = false, updatable = false)
-    private UUID busId;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ticket> tickets = new ArrayList<>();
 
 
-    public Trip (float pricePerSeat, String departure, String destination, TimeFrame timeFrame, Bus bus) {
+    public Trip (float pricePerSeat , String departure, String destination, TimeFrame timeFrame, List<Bus> buses) {
         this.pricePerSeat = pricePerSeat;
         this.departure = departure;
         this.destination = destination;
         this.timeFrame = timeFrame;
-        this.bus = bus;
+        this.buses = buses;
     }
     public Trip(){}
 
     public static Trip createTrip (String departure, String destination,
-                                   float pricePerSeat , TimeFrame timeFrame, Bus bus){
+                                   float pricePerSeat , TimeFrame timeFrame, List<Bus> buses){
 
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
@@ -57,12 +53,21 @@ public class Trip extends BaseEntity {
         if (pricePerSeat <=0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,bus);
-        for (Seat seat: bus.getSeats()){
-            Ticket ticket = new Ticket(seat,trip);
-            trip.addTicket(ticket);
-        }
+        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,buses);
+        for (Bus bus : buses){
+            // check bus da thuoc ve trip nao chua
+            if (bus.getTrip()!=null){
+                throw new IllegalArgumentException("Bus" + bus.getId()+" already exists");
+            }
+            // neu chua thi
+            // gan bus cho trip
+            bus.setTrip(trip);
 
+            for (Seat seat: bus.getSeats()){
+                Ticket ticket = new Ticket(seat,trip);
+                trip.addTicket(ticket);
+            }
+        }
         return trip;
     }
 
