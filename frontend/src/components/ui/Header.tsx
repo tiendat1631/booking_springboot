@@ -1,41 +1,39 @@
 import {Button} from "@/components/ui/button.tsx";
 import {LogInIcon} from "lucide-react";
-
+import MobileSideBar from "@/components/ui/mobileSideBar.tsx";
 export default function Header(){
     return (
         <header className="bg-gradient-to-r from-orange-500 to-red-500 min-h-[180px]">
             <div className="max-w-[1500px] mx-auto px-4 py-3 flex justify-between items-center">
+                <MobileSideBar />
+                {/*tai ung dung*/}
 
-                <div className={"flex items-center gap-2 "}>
-                    <Button variant={"ghost"} className={"text-white hover:bg-white/10 cursor-pointer"}>
-                        Tải ứng dụng
-                    </Button>
-                </div>
+                <Button
+                    variant={"ghost"}
+                    // md:inline-flex Khi viewport ≥ 768px (md) thì hiển thị lại dưới dạng inline-flex
+                    className={"text-white hover:bg-white/10 cursor-pointer hidden md:inline-flex"}>
+                    Tải ứng dụng
+                </Button>
                 {/* Logo */}
-                <div className="flex items-center gap-2">
-                    <img
-                        src={"./public/img/logo.png"}
-                         alt={"Futa logo"}
-                         className={"h-10"}
-                    />
-                </div>
-                {/*login*/}
-                <div className={"flex items-center gap-2 "}>
-                    <Button variant={"ghost"} className={"text-white hover:bg-white/10 cursor-pointer"}>
-                        <LogInIcon/>
-                        Dang nhap/Dang ky
-                    </Button>
-                </div>
 
+                <img
+                    src={"./public/img/logo.png"} alt={"Futa logo"} className={"h-10"}/>
+                {/*login*/}
+
+                <Button
+                    variant={"ghost"}
+                    className={"text-white hover:bg-white/10 cursor-pointer hidden md:inline-flex"}>
+                    <LogInIcon/>
+                    Dang nhap/Dang ky
+                </Button>
 
             </div>
-            <nav className={"hidden md:flex justify-center text-white gap-12 text-sm font-semibold uppercase mx-auto py-2 "}>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Trang chu</a>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Lich trinh</a>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Tra cuu ve</a>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Hoa don</a>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Lien he</a>
-                <a href="" className={"cursor-pointer hover:font-bold"}>Ve chung toi</a>
+            {/*navigation*/}
+            <nav
+                className={"hidden md:flex justify-center text-white gap-12 text-sm font-semibold uppercase mx-auto py-2 "}>
+                {["Trang chủ", "Lịch trình", "Tra cứu vé", "Hóa đơn", "Liên hệ", "Về chúng tôi"].map((label)=>(
+                    <Button key={label} variant={"link"} className={"text-white hover:font-bold p-0 cursor-pointer uppercase"}>{label}</Button>
+                ))}
             </nav>
         </header>
     );
