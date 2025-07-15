@@ -20,4 +20,6 @@ public class RegisterRequest {
     private int age;
     @NotBlank
     private String password;
+    @NotBlank
+    private String phoneNum;
 }

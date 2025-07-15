@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-
 @Entity
 public class Booking extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,6 +29,9 @@ public class Booking extends BaseEntity {
     @JoinColumn(name = "trip_id")
     @JsonIgnore
     private Trip trip;
+
+    @Column(name = "booking_code", nullable = false, updatable = false)
+    private String bookingCode;
 
     @Column(name = "trip_id", insertable = false, updatable = false)
     private UUID tripId;
@@ -58,7 +60,7 @@ public class Booking extends BaseEntity {
         }
 
         booking.total = trip.getPricePerSeat() * tickets.size();
-
+        booking.generateBookingCode();
         return booking;
     }
 
@@ -76,6 +78,10 @@ public class Booking extends BaseEntity {
         this.total = total;
     }
 
-
+    private void generateBookingCode() {
+        String randomPart = UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+        String timePart = String.valueOf(System.currentTimeMillis()).substring(8);
+        this.bookingCode = "BK-" + randomPart + timePart;
+    }
 }
 

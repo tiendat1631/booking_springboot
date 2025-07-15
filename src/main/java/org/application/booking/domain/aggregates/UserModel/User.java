@@ -27,6 +27,9 @@ public class User extends BaseEntity {
     @Embedded
     private Email email;
 
+    @Column(nullable = false)
+    private String phoneNum;
+
     @Column(unique = true, nullable = false)
     private String password;
 
