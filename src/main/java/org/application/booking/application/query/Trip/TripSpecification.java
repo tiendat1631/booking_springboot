@@ -1,4 +1,4 @@
-package org.application.booking.application.query;
+package org.application.booking.application.query.Trip;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;

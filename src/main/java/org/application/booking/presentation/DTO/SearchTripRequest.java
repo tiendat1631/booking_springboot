@@ -2,7 +2,7 @@ package org.application.booking.presentation.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.application.query.TripSpecification;
+import org.application.booking.application.query.Trip.TripSpecification;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.springframework.data.jpa.domain.Specification;
 

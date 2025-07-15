@@ -1,6 +1,4 @@
-package org.application.booking.application.query;
-
-
+package org.application.booking.application.query.Trip;
 
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.presentation.DTO.SearchTripRequest;
