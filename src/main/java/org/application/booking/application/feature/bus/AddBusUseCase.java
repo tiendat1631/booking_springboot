@@ -14,7 +14,7 @@ public class AddBusUseCase {
     }
 
     public void addBus(AddBusRequest addBusRequest) {
-        Bus bus = new Bus(addBusRequest.getBusType()); // ✅ dùng getter
+        Bus bus = new Bus(addBusRequest.getBusType());
         busRepository.save(bus);
     }
 }

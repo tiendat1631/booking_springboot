@@ -26,28 +26,28 @@ public class TripController {
     private final TripRepository tripRepository;
     private final BusRepository busRepository;
 
-    // ✅ Lấy danh sách tất cả chuyến đi
+
     @GetMapping
     public ResponseEntity<List<Trip>> getAllTrips() {
         List<Trip> trips = tripRepository.findAll();
         return ResponseEntity.ok(trips);
     }
 
-    // ✅ Tạo mới chuyến đi
+
     @PostMapping
     public ResponseEntity<String> addTrip(@RequestBody @Valid AddTripRequest request) {
         addTripUseCase.addTrip(request);
         return ResponseEntity.ok("Trip created successfully.");
     }
 
-    // ✅ Lấy chi tiết chuyến đi theo ID
+
     @GetMapping("/{id}")
     public ResponseEntity<Trip> getTripById(@PathVariable UUID id) {
         Optional<Trip> trip = tripRepository.findById(id);
         return trip.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // ✅ Xoá chuyến đi
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTrip(@PathVariable UUID id) {
         if (!tripRepository.existsById(id)) {
@@ -57,7 +57,7 @@ public class TripController {
         return ResponseEntity.ok("Trip deleted successfully.");
     }
 
-    // ✅ Cập nhật chuyến đi
+
     @PutMapping("/{id}")
     public ResponseEntity<String> updateTrip(@PathVariable UUID id, @RequestBody @Valid AddTripRequest request) {
         Optional<Trip> optionalTrip = tripRepository.findById(id);

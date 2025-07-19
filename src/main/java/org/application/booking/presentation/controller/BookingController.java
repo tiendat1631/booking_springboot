@@ -20,33 +20,33 @@ public class BookingController {
     private final CreateBookingUseCase createBookingUseCase;
     private final BookingRepository bookingRepository;
 
-    // ✅ Tạo booking
+
     @PostMapping
     public ResponseEntity<String> createBooking(@RequestBody CreateBookingRequest bookingRequest) {
         createBookingUseCase.book(bookingRequest);
         return ResponseEntity.ok("Booking created successfully.");
     }
 
-    // ✅ Lấy tất cả booking của 1 user (cho user)
+
     @GetMapping
     public List<Booking> getBooking(@RequestParam("userId") UUID userId) {
         return bookingRepository.findByUserId(userId);
     }
 
-    // ✅ Lấy toàn bộ booking (cho admin)
+
     @GetMapping("/all")
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    // ✅ Lấy chi tiết 1 booking
+
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable UUID id) {
         Optional<Booking> booking = bookingRepository.findById(id);
         return booking.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // ✅ Xoá 1 booking
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable UUID id) {
         if (!bookingRepository.existsById(id)) {
