@@ -6,15 +6,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AddBusUseCase {
+
     private final BusRepository busRepository;
 
     public AddBusUseCase(BusRepository busRepository) {
         this.busRepository = busRepository;
     }
 
-    public void addBus (AddBusRequest addBusRequest) {
-        Bus bus = new Bus(addBusRequest.busType);
-
+    public void addBus(AddBusRequest addBusRequest) {
+        Bus bus = new Bus(addBusRequest.getBusType()); // ✅ dùng getter
         busRepository.save(bus);
     }
 }
