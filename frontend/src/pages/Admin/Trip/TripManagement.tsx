@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "@/utils/axiosInstance";
+import { axiosInstance } from "@/lib/fetcher";
 
 interface TimeFrame {
   departureTime: string;
@@ -39,7 +39,7 @@ const TripManagement: React.FC = () => {
 
   const fetchTrips = async () => {
     try {
-      const res = await axios.get("/trip");
+      const res = await axiosInstance.get("/trip");
       setTrips(res.data);
     } catch (err) {
       console.error("Lỗi lấy danh sách chuyến đi", err);
@@ -48,14 +48,16 @@ const TripManagement: React.FC = () => {
 
   const fetchBuses = async () => {
     try {
-      const res = await axios.get("/bus/all");
+      const res = await axiosInstance.get("/bus/all");
       setBuses(res.data);
     } catch (err) {
       console.error("Lỗi lấy danh sách xe buýt", err);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
     if (name === "departureTime" || name === "arrivalTime") {
@@ -80,38 +82,38 @@ const TripManagement: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-  try {
-    setError("");
+    try {
+      setError("");
 
-    const { id, ...formData } = form;
+      const { id, ...formData } = form;
 
-    if (editingId) {
-      await axios.put(`/trip/${editingId}`, {
-        ...formData,
-        tripId: editingId,
+      if (editingId) {
+        await axiosInstance.put(`/trip/${editingId}`, {
+          ...formData,
+          tripId: editingId,
+        });
+      } else {
+        await axiosInstance.post("/trip", formData);
+      }
+
+      setForm({
+        departure: "",
+        destination: "",
+        price: 0,
+        timeFrame: {
+          departureTime: "",
+          arrivalTime: "",
+        },
+        busId: "",
       });
-    } else {
-      await axios.post("/trip", formData);
+
+      setEditingId(null);
+      fetchTrips();
+    } catch (err) {
+      console.error("Lỗi khi lưu chuyến đi:", err);
+      setError("Đã xảy ra lỗi khi lưu thông tin chuyến đi.");
     }
-
-    setForm({
-      departure: "",
-      destination: "",
-      price: 0,
-      timeFrame: {
-        departureTime: "",
-        arrivalTime: "",
-      },
-      busId: "",
-    });
-
-    setEditingId(null);
-    fetchTrips();
-  } catch (err) {
-    console.error("Lỗi khi lưu chuyến đi:", err);
-    setError("Đã xảy ra lỗi khi lưu thông tin chuyến đi.");
-  }
-};
+  };
 
   const handleEdit = (trip: Trip) => {
     setForm({
@@ -131,7 +133,7 @@ const TripManagement: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (confirm("Bạn có chắc chắn muốn xoá chuyến đi này không?")) {
       try {
-        await axios.delete(`/trip/${id}`);
+        await axiosInstance.delete(`/trip/${id}`);
         fetchTrips();
       } catch (err) {
         console.error("Lỗi khi xoá chuyến đi:", err);
@@ -230,7 +232,8 @@ const TripManagement: React.FC = () => {
               </td>
               <td className="p-2 border">{trip.price} đ</td>
               <td className="p-2 border">
-                {trip.timeFrame?.departureTime ?? "N/A"} → {trip.timeFrame?.arrivalTime ?? "N/A"}
+                {trip.timeFrame?.departureTime ?? "N/A"} →{" "}
+                {trip.timeFrame?.arrivalTime ?? "N/A"}
               </td>
               <td className="p-2 border">{trip.busId}</td>
               <td className="p-2 border">
