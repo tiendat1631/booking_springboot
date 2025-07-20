@@ -1,7 +1,7 @@
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react"
+import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -9,18 +9,26 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { useState } from "react"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/popover";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
 
-export function LocationSearch({ items, label, placeholder, noResultText, onValueChange }: Props) {
-  const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
+export function LocationSearch({
+  value,
+  setValue,
+  items,
+  label,
+  placeholder,
+  noResultText,
+}: Props) {
+  const [open, setOpen] = useState(false);
+
+  console.log(value);
 
   return (
     <div className="flex flex-col gap-2">
@@ -50,10 +58,11 @@ export function LocationSearch({ items, label, placeholder, noResultText, onValu
                     key={item.value}
                     value={item.label}
                     onSelect={(selectedLabel) => {
-                      const selectedItem = items.find((i) => i.label === selectedLabel);
+                      const selectedItem = items.find(
+                        (i) => i.label === selectedLabel
+                      );
                       const newValue = selectedItem?.value ?? "";
                       setValue(newValue);
-                      onValueChange?.(newValue);
                       setOpen(false);
                     }}
                   >
@@ -72,10 +81,12 @@ export function LocationSearch({ items, label, placeholder, noResultText, onValu
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }
 
 type Props = {
+  value: string;
+  setValue: (newValue: string) => void;
   items: {
     label: string;
     value: string;
@@ -83,5 +94,4 @@ type Props = {
   label: string;
   placeholder: string;
   noResultText: string;
-  onValueChange?: (value: string) => void;
-}
+};

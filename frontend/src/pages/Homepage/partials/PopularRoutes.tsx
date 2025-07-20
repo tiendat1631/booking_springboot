@@ -33,7 +33,7 @@ const routes =[
 export default function PopularRoutes(){
      //const today = new Date.toLocaleDateString('en-GB')
     return (
-      <section className={"py-12 py-12 px-20"}>
+      <section className={"py-12 px-20"}>
           <div className={"text-center mb-10"}>
               <h2 className={"text-2xl font-bold text-green-800 "}>TUYẾN PHỔ BIẾN</h2>
               <p className={"mt-2"}>Được khách hàng tin tưởng và lựa chọn</p>

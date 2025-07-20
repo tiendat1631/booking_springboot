@@ -1,14 +1,5 @@
+import { TicketInfo } from '@/services/ticket/types';
 import React from 'react';
-
-export type TicketInfo = {
-  name: string;
-  phone: string;
-  ticketCode: string;
-  trip: string;
-  departureTime: string;
-  seatNumber: string;
-  price: number;
-};
 
 type TicketInvoiceProps = {
   data: TicketInfo;

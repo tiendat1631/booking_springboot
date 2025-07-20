@@ -1,7 +1,7 @@
 import {Button} from "@/components/ui/button.tsx";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover.tsx";
 import {LogInIcon} from "lucide-react";
-import MobileSideBar from "@/components/ui/mobileSideBar.tsx";
+import MobileSideBar from "@/components/shared/mobileSideBar";
 export default function Header(){
 
     return (
