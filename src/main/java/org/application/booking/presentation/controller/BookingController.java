@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.application.booking.application.feature.booking.CreateBookingRequest;
 import org.application.booking.application.feature.booking.CreateBookingUseCase;
 import org.application.booking.domain.aggregates.BookingModel.Booking;
+import org.application.booking.repository.BookedTicketRepository;
 import org.application.booking.repository.BookingRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class BookingController {
 
     private final CreateBookingUseCase createBookingUseCase;
     private final BookingRepository bookingRepository;
+    private final BookedTicketRepository bookedTicketRepository;
 
 
     @PostMapping
@@ -43,16 +45,28 @@ public class BookingController {
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable UUID id) {
         Optional<Booking> booking = bookingRepository.findById(id);
-        return booking.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return booking.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBooking(@PathVariable UUID id) {
         if (!bookingRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        bookingRepository.deleteById(id);
-        return ResponseEntity.ok("Booking deleted successfully.");
+
+        try {
+            // Xoá các vé đã đặt liên quan trước
+            bookedTicketRepository.deleteByBookingId(id);
+
+            // Sau đó xoá chính booking
+            bookingRepository.deleteById(id);
+
+            return ResponseEntity.ok("Booking deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Không thể xoá booking do ràng buộc dữ liệu.");
+        }
     }
 }
