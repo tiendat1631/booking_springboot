@@ -1,4 +1,4 @@
-import fetcher from "@/utils/fetcher";
+import fetcher from "@/lib/fetcher";
 import { LoginPayload, SignupPayload } from "./types";
 
 export async function login(payload: LoginPayload) {

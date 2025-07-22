@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "@/utils/axiosInstance";
+import { axiosInstance } from "@/lib/fetcher";
 
 interface Bus {
   id?: string;
@@ -18,7 +18,7 @@ const BusManagement: React.FC = () => {
 
   const fetchBuses = async () => {
     try {
-      const res = await axios.get("/bus/all");
+      const res = await axiosInstance.get("/bus/all");
       setBuses(res.data);
     } catch (err) {
       console.error("Lỗi lấy danh sách xe buýt:", err);
@@ -43,9 +43,9 @@ const BusManagement: React.FC = () => {
     try {
       setError("");
       if (editingId) {
-        await axios.put(`/bus/${editingId}`, form);
+        await axiosInstance.put(`/bus/${editingId}`, form);
       } else {
-        await axios.post("/bus", { busType: form.type });
+        await axiosInstance.post("/bus", { busType: form.type });
       }
 
       setForm({
@@ -72,7 +72,7 @@ const BusManagement: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (confirm("Bạn có chắc chắn muốn xoá xe buýt này không?")) {
       try {
-        await axios.delete(`/bus/${id}`);
+        await axiosInstance.delete(`/bus/${id}`);
         fetchBuses();
       } catch (err) {
         console.error("Lỗi khi xoá xe buýt:", err);

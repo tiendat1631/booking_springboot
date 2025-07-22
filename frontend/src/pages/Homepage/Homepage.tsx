@@ -1,19 +1,15 @@
-import SearchBox from './partials/SearchBox'
-import Header from "@/components/ui/Header.tsx";
-import Banner from "@/components/ui/Banner.tsx";
-import Slider from "@/components/ui/Slider.tsx";
-import PopularRoutes from "@/components/ui/PopularRoutes.tsx";
-import TicketLookup from '../Lookup/TicketLookup';
+import Header from "@/components/shared/Header";
+import TicketLookup from "../Lookup/TicketLookup";
+import { Banner, PopularRoutes, SearchBox, Slider } from "./partials";
 export default function Homepage() {
   return (
-      <div>
-        <Header />
-          {/* <Banner/> */}
-        {/* <SearchBox /> */}
-        <TicketLookup />
-          <Slider />
-          <PopularRoutes />
-      </div>
-
-  )
+    <div>
+      <Header />
+      {/* <Banner /> */}
+      <SearchBox />
+      <TicketLookup />
+      <Slider />
+      <PopularRoutes />
+    </div>
+  );
 }
