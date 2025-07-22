@@ -1,17 +1,16 @@
-import { Button } from '@/components/ui/button';
-import { CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import React, { useState } from 'react';
+import { login } from '../services';
+import axios from "axios";
+import {Route} from "react-router-dom";
 
 type LoginProps = {
   switcher: () => void;
 };
 
 export default function Login({ switcher }: LoginProps) {
-  const [isSubmitting, setSubmitting] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('')
 
   const [isSubmit, setSubmit] = useState(false);
 
@@ -20,54 +19,75 @@ export default function Login({ switcher }: LoginProps) {
     if (isSubmit) return;
 
     setSubmit(true);
-  };
+    try {
+      const {token, refreshToken} = await login({ username, password });
 
+      // Lưu vào localStorage hoặc context
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setMessage("Đăng nhập thành công!");
+      // Điều hướng hoặc cập nhật state
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        setMessage(error.response?.data?.message || "Đăng nhập thất bại.");
+      } else {
+        setMessage("Lỗi không xác định.");
+      }
+    } finally {
+      setSubmit(false);
+    }
+  };
   const handleSwitch = () => {
     if (isSubmit) return;
+    
     switcher();
   };
 
   return (
     <>
-      <CardHeader>
-        <CardTitle>Đăng nhập</CardTitle>
-        <CardDescription>Nhận thêm nhiều ưu đãi khi đặt vé</CardDescription>
-        <CardAction>
-          <Button variant='link' className='px-2' onClick={handleSwitch}>Đăng ký</Button>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <form>
-          <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="matbao@gmail.com"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Mật khẩu</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Quên mật khẩu?
-                </a>
-              </div>
-              <Input id="password" type="password" required placeholder='●●●●●●●●' />
-            </div>
-          </div>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Button type="submit" className="w-full">
+      <div>
+        <h1 className='text-3xl font-semibold'>Đăng nhập</h1>
+        <p className='mt-2'>
+          Chưa có tài khoản?{' '}
+          <button onClick={handleSwitch} className='link'>
+            Đăng ký ngay
+          </button>
+        </p>
+      </div>
+      <form
+        onSubmit={handleSubmit}
+        className='mt-6 max-w-[400px] flex flex-col gap-2'>
+        <input
+          onChange={(e) => setUsername(e.target.value)}
+          type='text'
+          name='username'
+          placeholder='Nhập tên người dùng'
+          className='input w-full'
+        />
+        <input
+          onChange={(e) => setPassword(e.target.value)}
+          type='password'
+          name='password'
+          placeholder='Nhập mật khẩu'
+          className='input w-full'
+        />
+        <button className='btn btn-primary btn-block mt-4'>
+          {isSubmit && <span className='loading loading-spinner'></span>}
           Đăng nhập
-        </Button>
-      </CardFooter>
+        </button>
+      </form>
+      <p className='mt-6 text-sm text-center'>
+        <a href='#' className='link'>
+          Quên mật khẩu
+        </a>
+      </p>
+      {message && (
+        <div className="text-green-600 font-semibold">
+          {message}
+        </div>
+      )}
     </>
   );
 }
