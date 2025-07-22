@@ -7,25 +7,27 @@ type LoginPayload = {
 };
 
 type SignupPayload = {
-  email: string;
   username: string;
   password: string;
+  email: string;
+  name: string;
+  age: string;
 };
 
 export async function login(payload: LoginPayload) {
   try {
-    const response = await axiosInstance.post('/users/login', payload);
+    const response = await axiosInstance.post('/auth/login', payload);
     console.log(response);
     return response.data;
   } catch (err) {
     const error = err as AxiosError;
-    return error;
+    throw error;
   }
 }
 
 export async function signup(payload: SignupPayload) {
   try {
-    const response = await axiosInstance.post('/users/signup', payload);
+    const response = await axiosInstance.post('/auth/register', payload);
     return response.data;
   } catch (err) {
     const error = err as AxiosError;

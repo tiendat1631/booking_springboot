@@ -27,7 +27,7 @@ public class User extends BaseEntity {
     @Embedded
     private Email email;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)

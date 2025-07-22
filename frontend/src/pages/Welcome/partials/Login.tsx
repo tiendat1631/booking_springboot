@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { login } from '../services';
+import axios from "axios";
+import {Route} from "react-router-dom";
 
 type LoginProps = {
   switcher: () => void;
@@ -8,6 +10,7 @@ type LoginProps = {
 export default function Login({ switcher }: LoginProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('')
 
   const [isSubmit, setSubmit] = useState(false);
 
@@ -16,9 +19,26 @@ export default function Login({ switcher }: LoginProps) {
     if (isSubmit) return;
 
     setSubmit(true);
-    const result = await login({ username, password });
-  };
+    try {
+      const {token, refreshToken} = await login({ username, password });
 
+      // Lưu vào localStorage hoặc context
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      setMessage("Đăng nhập thành công!");
+      // Điều hướng hoặc cập nhật state
+
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        setMessage(error.response?.data?.message || "Đăng nhập thất bại.");
+      } else {
+        setMessage("Lỗi không xác định.");
+      }
+    } finally {
+      setSubmit(false);
+    }
+  };
   const handleSwitch = () => {
     if (isSubmit) return;
     
@@ -63,6 +83,11 @@ export default function Login({ switcher }: LoginProps) {
           Quên mật khẩu
         </a>
       </p>
+      {message && (
+        <div className="text-green-600 font-semibold">
+          {message}
+        </div>
+      )}
     </>
   );
 }

@@ -2,6 +2,7 @@ package org.application.booking.presentation.controller;
 
 import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.repository.UserRepository;
+import org.springframework.context.annotation.Role;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +20,6 @@ public class UserController {
     @GetMapping
     public List<User> getUsers() {
         return userRepository.findAll();
-    }
-
-    // Create a new user
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
     }
 
 }
