@@ -1,13 +1,17 @@
 package org.application.booking.application.feature.trip;
 
 import lombok.RequiredArgsConstructor;
+import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.domain.aggregates.TripModel.TimeFrame;
 import org.application.booking.repository.BusRepository;
 import org.application.booking.repository.TripRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

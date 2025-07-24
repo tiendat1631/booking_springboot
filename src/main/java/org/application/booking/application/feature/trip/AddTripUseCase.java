@@ -19,30 +19,22 @@ public class AddTripUseCase {
         this.busRepository = busRepository;
     }
 
-    public void addTrip(AddTripRequest addTripRequest) {
-        List<Bus> buses = new ArrayList<>();
-        // lay danh sach Bus tu busId
-        for (UUID busId : addTripRequest.getBusIds()) {
-            Bus bus = busRepository.findById(busId)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid bus id: " + busId));
+    public void addTrip(AddTripRequest request) {
+        Bus bus = busRepository.findById(request.getBusId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid bus id: " + request.getBusId()));
 
-            if (bus.getTrip() != null) {
-                throw new IllegalArgumentException("Bus with this id: " + busId + " is already assigned");
-            }
-            buses.add(bus);
-        }
+        // TODO: Kiểm tra Bus trùng chuyen di khac hay khong
 
 //        String normalizeDeparture = ProvinceConverter.convert(addTripRequest.getDeparture());
 //        String normalizeDestination = ProvinceConverter.convert(addTripRequest.getDestination());
         Trip trip = Trip.createTrip(
-                addTripRequest.getDeparture(),
-                addTripRequest.getDestination(),
-                addTripRequest.getPrice(),
-                addTripRequest.getTimeFrame(),
-                buses
+                request.getDeparture(),
+                request.getDestination(),
+                request.getPrice(),
+                request.getTimeFrame(),
+                bus
         );
 
-        // sau khi save trip nay thi trip nay se co 1 list cac bus
         tripRepository.save(trip);
 
     }
