@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { login } from '../services';
+
 import axios from "axios";
-import {Route} from "react-router-dom";
+import {login} from "@/pages/Welcome/services.ts";
+
+
 
 type LoginProps = {
   switcher: () => void;
@@ -41,53 +43,62 @@ export default function Login({ switcher }: LoginProps) {
   };
   const handleSwitch = () => {
     if (isSubmit) return;
-    
     switcher();
   };
 
   return (
-    <>
-      <div>
-        <h1 className='text-3xl font-semibold'>Đăng nhập</h1>
-        <p className='mt-2'>
-          Chưa có tài khoản?{' '}
-          <button onClick={handleSwitch} className='link'>
-            Đăng ký ngay
-          </button>
-        </p>
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className='mt-6 max-w-[400px] flex flex-col gap-2'>
-        <input
-          onChange={(e) => setUsername(e.target.value)}
-          type='text'
-          name='username'
-          placeholder='Nhập tên người dùng'
-          className='input w-full'
-        />
-        <input
-          onChange={(e) => setPassword(e.target.value)}
-          type='password'
-          name='password'
-          placeholder='Nhập mật khẩu'
-          className='input w-full'
-        />
-        <button className='btn btn-primary btn-block mt-4'>
-          {isSubmit && <span className='loading loading-spinner'></span>}
-          Đăng nhập
-        </button>
-      </form>
-      <p className='mt-6 text-sm text-center'>
-        <a href='#' className='link'>
-          Quên mật khẩu
-        </a>
-      </p>
-      {message && (
-        <div className="text-green-600 font-semibold">
-          {message}
+
+        <div className={"p-6"}>
+          <div className={"text-center py-6"}>
+            <h1 className='text-3xl font-semibold py-4'>Đăng nhập tài khoản </h1>
+            <div>
+              <button
+                  className="px-4 py-2 font-semibold  text-orange-500 border-b-2
+                  border-orange-500 cursor-pointer ">
+                Đăng nhập
+              </button>
+              <button
+                    className={"px-4 py-2 font-semibold text-orange-500  cursor-pointer"}
+                  onClick={handleSwitch}
+              >
+                Đăng ký
+              </button>
+            </div>
+
+          </div>
+          <form onSubmit={handleSubmit} className='flex flex-col gap-6'>
+            {/*username*/}
+            <input
+                onChange={(e) => setUsername(e.target.value)}
+                type='text'
+                name='username'
+                placeholder='Nhập tên người dùng'
+                className='input w-full border-2 h-[30px] p-6 rounded-xl'
+            />
+            <input
+                onChange={(e) => setPassword(e.target.value)}
+                type='password'
+                name='password'
+                placeholder='Nhập mật khẩu'
+                className='input w-full border-2 h-[30px] p-6 rounded-xl'
+            />
+            <button className='bg-orange-500 btn btn-primary btn-block mt-4 h-[44px] rounded-full cursor-pointer'>
+              {isSubmit && <span className='loading loading-spinner'></span>}
+              Đăng nhập
+            </button>
+          </form>
+          <p className='mt-6 text-sm '>
+            <a href='#' className='link'>
+              Quên mật khẩu
+            </a>
+          </p>
+          {message && (
+              <div className="text-green-600 font-semibold">
+                {message}
+              </div>
+          )}
         </div>
-      )}
-    </>
+
+
   );
 }

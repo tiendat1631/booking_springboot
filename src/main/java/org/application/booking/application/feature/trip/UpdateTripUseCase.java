@@ -7,6 +7,7 @@ import org.application.booking.repository.BusRepository;
 import org.application.booking.repository.TripRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,8 +29,8 @@ public class UpdateTripUseCase {
         trip.setDestination(request.getDestination());
         trip.setPricePerSeat(request.getPrice());
         trip.setTimeFrame(request.getTimeFrame());
-        trip.setBus(busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new IllegalArgumentException("Bus not found")));
+        trip.setBuses(List.of(busRepository.findById(request.getBusId())
+                .orElseThrow(() -> new IllegalArgumentException("Bus not found"))));
 
         tripRepository.save(trip);
     }

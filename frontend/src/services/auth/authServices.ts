@@ -6,5 +6,5 @@ export async function login(payload: LoginPayload) {
 }
 
 export async function signup(payload: SignupPayload) {
-  return await fetcher({ method: 'POST', route: '/users/signup', payload });
+  return await fetcher({ method: 'POST', route: '/users/register', payload });
 }

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "@/utils/axiosInstance";
+import axios from "axios";
+import {useEffect, useState} from "react";
+
 
 interface Booking {
   id: string;

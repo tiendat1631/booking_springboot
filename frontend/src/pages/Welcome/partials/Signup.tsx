@@ -44,69 +44,71 @@ export default function Signup({ switcher }: SignupProps) {
   };
 
   return (
-    <>
-      <div>
-        <h1 className='text-3xl font-semibold'>Đăng ký</h1>
-        <p className='mt-2'>
-          Đã có tài khoản?{' '}
-          <button onClick={handleSwitch} className='link'>
+    <div className={"p-6"}>
+      <div className={"text-center py-6"}>
+        <h1 className='text-3xl font-semibold py-4'>Tạo tài khoản</h1>
+          <button
+              className={"px-4 py-2 font-semibold text-orange-600 border-orange-500 cursor-pointer"}
+              onClick={handleSwitch}
+          >
             Đăng nhập
           </button>
-        </p>
+          <button  className='px-4 py-2 font-semibold text-orange-600 border-b-2 border-orange-500 cursor-pointer'>
+            Đăng ký
+          </button>
+
       </div>
       <form
           onSubmit={handleSubmit}
-          className='mt-6 max-w-[400px] flex flex-col gap-2'>
+          className=' max-w-[400px] flex flex-col gap-4'>
         <input
             onChange={(e) => setName(e.target.value)}
             type='text'
             name='name'
             placeholder='nhap ten'
-            className='input w-full'
+            className='input w-full border-2 h-[30px] p-4 rounded-xl'
         />
         <input
             onChange={(e) => setUsername(e.target.value)}
             type='text'
             name='username'
             placeholder='Nhập tên dang nhap'
-            className='input w-full'
+            className='input w-full border-2 h-[30px] p-4 rounded-xl'
         />
         <input
             onChange={(e) => setAge(e.target.value)}
             type='text'
             name='age'
             placeholder='Nhập tuoi'
-            className='input w-full'
+            className='input w-full border-2 h-[30px] p-4 rounded-xl'
         />
         <input
             onChange={(e) => setEmail(e.target.value)}
             type='email'
             name='email'
             placeholder='Nhập email'
-            className='input w-full'
+            className='input w-full border-2 h-[30px] p-4 rounded-xl'
         />
         <input
             onChange={(e) => setPassword(e.target.value)}
             type='password'
             name='password'
             placeholder='Nhập mật khẩu'
-            className='input w-full'
+            className='input w-full border-2 h-[30px] p-4 rounded-xl'
         />
-        <button className='btn btn-primary btn-block mt-4'>
+        <button className=' bg-orange-500 btn btn-primary btn-block mt-4 h-[44px] rounded-full cursor-pointer'>
           {isSubmit && <span className='loading loading-spinner'></span>}
           Đăng nhập
         </button>
       </form>
-      <p className='mt-6 text-sm text-center'>
-        <a href='#' className='link'>
-          Quên mật khẩu
-        </a>
-      </p>
+
       {message && (
           <div className="text-center text-sm text-red-500 mt-2">
             {message}
           </div>
       )}
-    </>
+    </div>
+
+
   );
 }

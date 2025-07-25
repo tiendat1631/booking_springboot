@@ -1,3 +1,4 @@
+/*
 package org.application.booking.application.query.TicketInvoice;
 
 import lombok.RequiredArgsConstructor;
@@ -47,3 +48,4 @@ public class TicketQueryService {
 
     }
 }
+*/

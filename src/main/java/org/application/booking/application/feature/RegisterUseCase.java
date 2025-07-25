@@ -40,7 +40,7 @@
             newUser.setName(registerRequest.getUsername());
             newUser.setAge(registerRequest.getAge());
             newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            newUser.setPhoneNum(registerRequest.getPhoneNum());
+            //newUser.setPhoneNum(registerRequest.getPhoneNum());
 
             // save the new user to the db
             userRepository.save(newUser);

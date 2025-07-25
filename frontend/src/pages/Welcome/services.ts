@@ -1,5 +1,6 @@
-import axiosInstance from '@/utils/axiosInstance';
+
 import { AxiosError } from 'axios';
+import {axiosInstance} from "@/lib/fetcher.ts";
 
 type LoginPayload = {
   username: string;
