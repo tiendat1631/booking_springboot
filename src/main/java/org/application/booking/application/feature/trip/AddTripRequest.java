@@ -23,5 +23,5 @@ public class AddTripRequest {
     @NotNull
     private TimeFrame timeFrame;
     @NotNull
-    private List<UUID> busIds; // Danh sách ID bus được thêm vào trip
+    private UUID busId;
 }

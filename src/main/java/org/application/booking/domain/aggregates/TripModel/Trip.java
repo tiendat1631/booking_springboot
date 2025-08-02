@@ -25,8 +25,8 @@ public class Trip extends BaseEntity {
     private TimeFrame timeFrame;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
-    private List<Bus> buses = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Bus bus;
 
 
     @JsonManagedReference
@@ -34,17 +34,17 @@ public class Trip extends BaseEntity {
     private List<Ticket> tickets = new ArrayList<>();
 
 
-    public Trip (float pricePerSeat , String departure, String destination, TimeFrame timeFrame, List<Bus> buses) {
+    public Trip (float pricePerSeat , String departure, String destination, TimeFrame timeFrame, Bus bus) {
         this.pricePerSeat = pricePerSeat;
         this.departure = departure;
         this.destination = destination;
         this.timeFrame = timeFrame;
-        this.buses = buses;
+        this.bus = bus;
     }
     public Trip(){}
 
     public static Trip createTrip (String departure, String destination,
-                                   float pricePerSeat , TimeFrame timeFrame, List<Bus> buses){
+                                   float pricePerSeat , TimeFrame timeFrame, Bus bus){
 
         if (departure.equals(destination)){
             throw new IllegalArgumentException("Departure and destination are the same");
@@ -53,20 +53,11 @@ public class Trip extends BaseEntity {
         if (pricePerSeat <=0){
             throw new IllegalArgumentException("Price per seat should be greater than 0");
         }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame,buses);
-        for (Bus bus : buses){
-            // check bus da thuoc ve trip nao chua
-            if (bus.getTrip()!=null){
-                throw new IllegalArgumentException("Bus" + bus.getId()+" already exists");
-            }
-            // neu chua thi
-            // gan bus cho trip
-            bus.setTrip(trip);
+        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame, bus);
 
-            for (Seat seat: bus.getSeats()){
-                Ticket ticket = new Ticket(seat,trip);
-                trip.addTicket(ticket);
-            }
+        for (Seat seat: bus.getSeats()){
+            Ticket ticket = new Ticket(seat,trip);
+            trip.addTicket(ticket);
         }
         return trip;
     }

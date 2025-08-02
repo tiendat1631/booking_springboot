@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
+import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.domain.aggregates.TripModel.TimeFrame;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
