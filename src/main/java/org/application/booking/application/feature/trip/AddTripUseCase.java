@@ -20,8 +20,10 @@ public class AddTripUseCase {
     }
 
     public void addTrip(AddTripRequest request) {
-        Bus bus = busRepository.findById(request.getBusId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid bus id: " + request.getBusId()));
+        List<Bus> buses = busRepository.findAllById(request.getBusIds());
+        if (buses.size() != request.getBusIds().size()) {
+            throw new IllegalArgumentException("Một hoặc nhiều busId không tồn tại.");
+        }
 
         // TODO: Kiểm tra Bus trùng chuyen di khac hay khong
 
@@ -32,7 +34,7 @@ public class AddTripUseCase {
                 request.getDestination(),
                 request.getPrice(),
                 request.getTimeFrame(),
-                bus
+                buses
         );
 
         tripRepository.save(trip);

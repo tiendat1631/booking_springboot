@@ -8,7 +8,24 @@ import { LogInIcon } from "lucide-react";
 import MobileSideBar from "@/components/shared/mobileSideBar";
 import { Link } from "react-router";
 import routeInfo from "@/routeInfo";
+import { useNavigate} from "react-router-dom";
+
+
 export default function Header() {
+  const navigate = useNavigate();
+  const handleNavigation = (label: string) =>{
+    switch (label){
+      case "Trang chủ":
+        navigate("/");
+        break;
+      case "Lịch trình":
+        navigate("/schedule");
+        break;
+      case "Tra cứu vé":
+        navigate("/ticket-lookup");
+        break;
+    }
+  }
   return (
     <header className="bg-gradient-to-r from-orange-500 to-red-500 min-h-[180px]">
       <div className="max-w-[1500px] mx-auto px-4 py-3 flex justify-between items-center">
@@ -69,6 +86,7 @@ export default function Header() {
         ].map((label) => (
           <Button
             key={label}
+            onClick={() => handleNavigation(label)}
             variant={"link"}
             className={
               "text-white hover:font-bold p-0 cursor-pointer uppercase"

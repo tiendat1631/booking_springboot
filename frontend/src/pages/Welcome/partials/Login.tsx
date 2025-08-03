@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import axios from "axios";
 import {login} from "@/pages/Welcome/services.ts";
-
-
+import { useNavigate } from "react-router-dom";
+import routeInfo from "@/routeInfo";
 
 type LoginProps = {
   switcher: () => void;
@@ -15,7 +15,7 @@ export default function Login({ switcher }: LoginProps) {
   const [message, setMessage] = useState('')
 
   const [isSubmit, setSubmit] = useState(false);
-
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isSubmit) return;
@@ -28,8 +28,9 @@ export default function Login({ switcher }: LoginProps) {
       localStorage.setItem("accessToken", token);
       localStorage.setItem("refreshToken", refreshToken);
 
-      setMessage("Đăng nhập thành công!");
+      //setMessage("Đăng nhập thành công!");
       // Điều hướng hoặc cập nhật state
+      navigate(routeInfo.homepage);
 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {

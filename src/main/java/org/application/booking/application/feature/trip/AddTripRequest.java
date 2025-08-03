@@ -23,5 +23,5 @@ public class AddTripRequest {
     @NotNull
     private TimeFrame timeFrame;
     @NotNull
-    private UUID busId;
+    private List<UUID> busIds;
 }
