@@ -10,8 +10,10 @@ import { Link } from "react-router";
 import routeInfo from "@/routeInfo";
 import { useNavigate} from "react-router-dom";
 
-
-export default function Header() {
+type HeaderProps ={
+  variant?: "default" | "ticket-lockup"
+}
+export default function Header({ variant = "default"}: HeaderProps) {
   const navigate = useNavigate();
   const handleNavigation = (label: string) =>{
     switch (label){
@@ -26,8 +28,13 @@ export default function Header() {
         break;
     }
   }
+  // style rieng cho tung variant
+  const isTicketLockup = variant === "ticket-lockup";
+  const headerClass = isTicketLockup
+    ? " bg-gradient-to-r from-orange-500 to-red-500 min-h-[150px]"// cai minh muon
+    : "bg-gradient-to-r from-orange-500 to-red-500 min-h-[180px]";
   return (
-    <header className="bg-gradient-to-r from-orange-500 to-red-500 min-h-[180px]">
+    <header className={headerClass}>
       <div className="max-w-[1500px] mx-auto px-4 py-3 flex justify-between items-center">
         <MobileSideBar />
         {/*tai ung dung*/}
