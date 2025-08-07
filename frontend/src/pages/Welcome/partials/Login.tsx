@@ -4,6 +4,7 @@ import axios from "axios";
 import {login} from "@/pages/Welcome/services.ts";
 import { useNavigate } from "react-router-dom";
 import routeInfo from "@/routeInfo";
+import { toast } from 'react-toastify';
 
 type LoginProps = {
   switcher: () => void;
@@ -12,9 +13,8 @@ type LoginProps = {
 export default function Login({ switcher }: LoginProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('')
-
   const [isSubmit, setSubmit] = useState(false);
+
   const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,11 +22,13 @@ export default function Login({ switcher }: LoginProps) {
 
     setSubmit(true);
     try {
-      const {token, refreshToken} = await login({ username, password });
-
+      const {token, userId} = await login({ username, password });
+      
       // Lưu vào localStorage hoặc context
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
+
+      toast.success("Đăng nhập thành công!")
 
       //setMessage("Đăng nhập thành công!");
       // Điều hướng hoặc cập nhật state
@@ -34,9 +36,9 @@ export default function Login({ switcher }: LoginProps) {
 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
-        setMessage(error.response?.data?.message || "Đăng nhập thất bại.");
+        toast.error(error.response?.data?.message || "Đăng nhập thất bại.")
       } else {
-        setMessage("Lỗi không xác định.");
+        toast.error("Lỗi không xác định.");
       }
     } finally {
       setSubmit(false);
@@ -48,7 +50,6 @@ export default function Login({ switcher }: LoginProps) {
   };
 
   return (
-
         <div className={"p-6"}>
           <div className={"text-center py-6"}>
             <h1 className='text-3xl font-semibold py-4'>Đăng nhập tài khoản </h1>
@@ -93,11 +94,6 @@ export default function Login({ switcher }: LoginProps) {
               Quên mật khẩu
             </a>
           </p>
-          {message && (
-              <div className="text-green-600 font-semibold">
-                {message}
-              </div>
-          )}
         </div>
 
 

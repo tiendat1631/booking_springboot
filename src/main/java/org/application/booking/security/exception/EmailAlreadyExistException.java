@@ -1,7 +1,7 @@
 package org.application.booking.security.exception;
 
 public class EmailAlreadyExistException extends RuntimeException {
-    private static final String DEFAULT_MESSAGE = "Email already exists";
+    private static final String DEFAULT_MESSAGE = "Email đã tồn tại";
 
     public EmailAlreadyExistException() {
     super(DEFAULT_MESSAGE);

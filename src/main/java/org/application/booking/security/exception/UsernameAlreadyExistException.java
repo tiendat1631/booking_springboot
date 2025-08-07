@@ -1,7 +1,7 @@
 package org.application.booking.security.exception;
 
 public class UsernameAlreadyExistException extends RuntimeException {
-  private static final String DEFAULT_MESSAGE = "Username already exists";
+  private static final String DEFAULT_MESSAGE = "Username đã tồn tại";
 
   public UsernameAlreadyExistException() {
     super(DEFAULT_MESSAGE);

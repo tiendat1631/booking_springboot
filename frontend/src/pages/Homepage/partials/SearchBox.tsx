@@ -1,19 +1,32 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
-import { location } from "@/mocks/location";
 import { searchTicket } from "@/services/ticket/ticketServices";
 import { isBefore, startOfToday } from "date-fns";
 import { LucideMessageCircleQuestion } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "./DatePicker";
 import { LocationSearch } from "./LocationComboBox";
 import TicketCounter from "./TicketCounter";
+import { ProvinceResponse } from "@/services/province/types";
+import { getProvince } from "@/services/province/provinceSerivce";
 
 export default function SearchBox() {
   const [ticket, setTicket] = useState(1);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
+
+
+  const [location, setLocation] = useState<ProvinceResponse[]>([]);
+
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const provinces = await getProvince();
+      setLocation(provinces);
+    };
+
+    fetchLocation();
+  }, []);
 
   const handleSearch = async () => {
     const data = await searchTicket({ from, to, date, ticket });

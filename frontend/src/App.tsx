@@ -6,21 +6,39 @@ import BookingManagement from "./pages/Admin/Booking/BookingManagement";
 import TicketLookup from "@/pages/Lookup/TicketLookup.tsx";
 import { Homepage, Welcome } from "@/pages";
 import routeInfo from "./routeInfo";
+import { AuthProvider } from "./context/AuthContext";
+import { Bounce, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Routes>
-        <Route path="/admin/*" element={<AdminLayout />}>
-          <Route index element={<TripManagement />} />
-          <Route path="trip" element={<TripManagement />} />
-          <Route path="bus" element={<BusManagement />} />
-          <Route path="booking" element={<BookingManagement />} />
-        </Route>
-        <Route path="/ticket-lookup" element={<TicketLookup />} />
-        <Route path={routeInfo.homepage} element={<Homepage />} />
-        <Route path={routeInfo.welcome} element={<Welcome />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/admin/*" element={<AdminLayout />}>
+            <Route index element={<TripManagement />} />
+            <Route path="trip" element={<TripManagement />} />
+            <Route path="bus" element={<BusManagement />} />
+            <Route path="booking" element={<BookingManagement />} />
+          </Route>
+          <Route path="/ticket-lookup" element={<TicketLookup />} />
+          <Route path={routeInfo.homepage} element={<Homepage />} />
+          <Route path={routeInfo.welcome} element={<Welcome />} />
+        </Routes>
+      </AuthProvider>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover={false}
+        theme="light"
+        transition={Bounce}
+    />
     </div>
   );
 }

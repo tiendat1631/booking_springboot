@@ -28,8 +28,6 @@ export function LocationSearch({
 }: Props) {
   const [open, setOpen] = useState(false);
 
-  console.log(value);
-
   return (
     <div className="flex flex-col gap-2">
       <Label>{label}</Label>
@@ -42,7 +40,7 @@ export function LocationSearch({
             className="md:w-sm justify-between"
           >
             {value
-              ? items.find((items) => items.value === value)?.label
+              ? items.find((item) => item.code.toString() === value)?.name
               : placeholder}
             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
@@ -55,13 +53,15 @@ export function LocationSearch({
               <CommandGroup>
                 {items.map((item) => (
                   <CommandItem
-                    key={item.value}
-                    value={item.label}
+                    key={item.code}
+                    value={item.name}
                     onSelect={(selectedLabel) => {
                       const selectedItem = items.find(
-                        (i) => i.label === selectedLabel
+                        (i) => i.name === selectedLabel
                       );
-                      const newValue = selectedItem?.value ?? "";
+                      const newValue = selectedItem
+                        ? selectedItem.code.toString()
+                        : "";
                       setValue(newValue);
                       setOpen(false);
                     }}
@@ -69,10 +69,12 @@ export function LocationSearch({
                     <CheckIcon
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === item.value ? "opacity-100" : "opacity-0"
+                        value === item.code.toString()
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
-                    {item.label}
+                    {item.name}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -88,8 +90,9 @@ type Props = {
   value: string;
   setValue: (newValue: string) => void;
   items: {
-    label: string;
-    value: string;
+    name: string;
+    code: number;
+    codename: string;
   }[];
   label: string;
   placeholder: string;
