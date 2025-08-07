@@ -1,15 +1,16 @@
 import Header from "@/components/shared/Header";
-//import TicketLookup from "../Lookup/TicketLookup";
 import { Banner, PopularRoutes, SearchBox, Slider } from "./partials";
+import Footer from "@/components/shared/Footer.tsx";
 export default function Homepage() {
   return (
     <div>
       <Header />
        <Banner />
       <SearchBox />
-      {/*<TicketLookup />*/}
+
       <Slider />
       <PopularRoutes />
+        <Footer/>
     </div>
   );
 }
