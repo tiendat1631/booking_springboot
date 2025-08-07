@@ -1,6 +1,7 @@
 package org.application.booking.application.feature.booking;
 
 import lombok.AllArgsConstructor;
+import org.application.booking.application.common.exception.NotFoundException;
 import org.application.booking.domain.aggregates.BookingModel.Booking;
 import org.application.booking.domain.aggregates.TripModel.Ticket;
 import org.application.booking.domain.aggregates.TripModel.Trip;
@@ -15,20 +16,19 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CreateBookingUseCase {
+public class BookingService {
     private final BookingRepository bookingRepository;
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
 
     public void book(CreateBookingRequest request){
-        Trip trip = tripRepository.findById(request.tripId)
-                .orElseThrow(() -> new IllegalArgumentException("Trip not found"));
-
-        User user = userRepository.findById(request.userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Trip trip = tripRepository.findById(request.tripId())
+                .orElseThrow(() -> new NotFoundException(Trip.class, request.tripId()));
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new NotFoundException(User.class, request.userId()));
 
         List<Ticket> tickets = trip.getTickets().stream()
-                .filter(ticket -> request.seatIds.contains(ticket.getSeat().getId()))
+                .filter(ticket -> request.seatIds().contains(ticket.getSeat().getId()))
                 .toList();
 
         Booking booking = Booking.Create(user, trip, LocalDateTime.now(), tickets);

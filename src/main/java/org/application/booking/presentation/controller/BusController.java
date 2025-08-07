@@ -2,10 +2,8 @@ package org.application.booking.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.application.booking.application.feature.bus.AddBusRequest;
-import org.application.booking.application.feature.bus.AddBusUseCase;
-import org.application.booking.application.feature.bus.UpdateBusRequest;
-import org.application.booking.application.feature.bus.UpdateBusUseCase;
-import org.application.booking.application.feature.bus.DeleteBusUseCase;
+import org.application.booking.application.feature.bus.BusService;
+import org.application.booking.application.feature.bus.UpdateLicensePlateRequest;
 import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.repository.BusRepository;
 import org.springframework.http.ResponseEntity;
@@ -20,43 +18,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BusController {
 
-    private final AddBusUseCase addBusUseCase;
-    private final UpdateBusUseCase updateBusUseCase;
-    private final DeleteBusUseCase deleteBusUseCase;
-    private final BusRepository busRepository;
-
+    private final BusService busService;
 
     @PostMapping
     public ResponseEntity<String> addBus(@RequestBody AddBusRequest request) {
-        addBusUseCase.addBus(request);
+        busService.addBus(request);
         return ResponseEntity.ok("Bus created successfully.");
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateBus(@PathVariable UUID id, @RequestBody UpdateBusRequest request) {
-        updateBusUseCase.updateBus(id, request);
+    public ResponseEntity<String> updateBus(@PathVariable UUID id, @RequestBody UpdateLicensePlateRequest request) {
+        busService.updateLicensePlate(id, request);
         return ResponseEntity.ok("Bus updated successfully.");
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBus(@PathVariable UUID id) {
-        deleteBusUseCase.deleteBus(id);
+        busService.deleteBus(id);
         return ResponseEntity.ok("Bus deleted successfully.");
     }
 
-
     @GetMapping("/all")
     public ResponseEntity<List<Bus>> getAllBuses() {
-        return ResponseEntity.ok(busRepository.findAll());
+        return ResponseEntity.ok(busService.getBuses());
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Bus> getBusById(@PathVariable UUID id) {
-        Optional<Bus> bus = busRepository.findById(id);
-        return bus.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(busService.getBus(id));
     }
 }

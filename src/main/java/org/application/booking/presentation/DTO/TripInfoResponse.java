@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.application.booking.domain.aggregates.BusModel.BusType;
-import org.application.booking.domain.aggregates.TripModel.TimeFrame;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +17,6 @@ public class TripInfoResponse {
     private float price;
     private String departure;
     private String destination;
-    private TimeFrame time;
     private List<BusInfo> buses;
 
     @Getter

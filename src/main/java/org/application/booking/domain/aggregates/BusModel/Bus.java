@@ -2,10 +2,10 @@ package org.application.booking.domain.aggregates.BusModel;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.domain.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -16,39 +16,47 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class Bus extends BaseEntity {
-    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = false, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private List<Seat> seats; // seat available
-
-    private int numberOfSeats;
+    @Column(unique = true)
+    private String licensePlate;
 
     @Enumerated(EnumType.STRING)
     public BusType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_id")
-    private Trip trip;
+    @Setter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Seat> seats;
 
-    public Bus(BusType type) {
+    @Setter(AccessLevel.NONE)
+    private int capacity;
+
+    private Bus(BusType type, String licensePlate) {
+        this.licensePlate = licensePlate;
         this.type = type;
-        if (type==BusType.normal){
-            this.numberOfSeats = 40;
-        }else if (type==BusType.limousine){
-            this.numberOfSeats = 22;
-        }else {
-            this.numberOfSeats = 0;
-        }
+    }
+
+    public static Bus Create(BusType type, String licensePlate){
+        Bus bus = new Bus(type, licensePlate);
+        bus.GenerateSeat();
+
+        return bus;
+    }
+
+    private void GenerateSeat(){
         this.seats = new ArrayList<>();
 
-        //logic tao seat khi tao bus
-        for(int i = 0; i < numberOfSeats; i++){
+        if (type==BusType.normal){
+            this.capacity = 40;
+        }else if (type==BusType.limousine){
+            this.capacity = 22;
+        }else {
+            this.capacity = 0;
+        }
+
+        for(int i = 0; i < capacity; i++){
             seats.add(new Seat(this));
         }
     }
 
-
-
-    protected Bus() {
-
-    } //lombok
+    protected Bus() {}
 }

@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User extends BaseEntity {
-
     @Column(nullable = false)
     private String name;
 
@@ -37,21 +36,4 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Min(10)
     private int age;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Session> sessions;
-
-    public void addSession(Session session) {
-        if (sessions == null) {
-            sessions = new ArrayList<>();
-        }
-        sessions.add(session);
-        session.setUser(this);
-    }
-    public void revokeSession(Session session) {
-        if (sessions.contains(session)) {
-            session.setRevoked(true);
-        }
-    }
-
 }

@@ -1,12 +1,10 @@
 package org.application.booking.application.feature.bus;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.application.booking.domain.aggregates.BusModel.BusType;
 
-@Getter
-@Setter
-public class AddBusRequest {
-    private BusType busType;
-
-}
+public record AddBusRequest(
+        @NotNull BusType busType,
+        @NotBlank String licensePlate
+) { }

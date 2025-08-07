@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.application.booking.domain.aggregates.UserModel.exception.InvalidUsernameException;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class Username {
         if(isValidUsername(username)) {
             return new Username(username);
         }else{
-            throw new IllegalArgumentException("Invalid username");
+            throw new InvalidUsernameException();
         }
     }
     private static boolean isValidUsername(String username) {

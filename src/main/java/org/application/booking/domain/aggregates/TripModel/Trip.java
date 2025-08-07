@@ -1,14 +1,13 @@
 package org.application.booking.domain.aggregates.TripModel;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.application.booking.domain.common.BaseEntity;
 import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.domain.aggregates.BusModel.Seat;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,57 +15,42 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder(access = AccessLevel.PRIVATE)
+
 public class Trip extends BaseEntity {
-    private float pricePerSeat;
-    private String departure;
-    private String destination;
+    private float ticketPrice;
 
     @Embedded
-    private TimeFrame timeFrame;
+    private Route route;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bus> buses = new ArrayList<>();
+    private LocalDateTime departureTime;
+    private LocalDateTime estimatedArrivalTime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Ticket> tickets = new ArrayList<>();
+    private List<Ticket> tickets;
 
+    public static Trip Create(Route route, Bus bus, LocalDateTime departureTime, LocalDateTime estimatedArrivalTime, float ticketPrice){
+        Trip trip = Trip.builder()
+                .route(route)
+                .bus(bus)
+                .departureTime(departureTime)
+                .estimatedArrivalTime(estimatedArrivalTime)
+                .ticketPrice(ticketPrice)
+                .build();
 
-    public Trip (float pricePerSeat , String departure, String destination, TimeFrame timeFrame, List<Bus> buses) {
-        this.pricePerSeat = pricePerSeat;
-        this.departure = departure;
-        this.destination = destination;
-        this.timeFrame = timeFrame;
-        this.buses = buses;
-    }
-    public Trip(){}
-
-    public static Trip createTrip (String departure, String destination,
-                                   float pricePerSeat , TimeFrame timeFrame, List<Bus> buses){
-
-        if (departure.equals(destination)){
-            throw new IllegalArgumentException("Departure and destination are the same");
-        }
-
-        if (pricePerSeat <=0){
-            throw new IllegalArgumentException("Price per seat should be greater than 0");
-        }
-        Trip trip = new Trip(pricePerSeat,departure,destination,timeFrame, buses);
-
-        for (Bus bus : buses){
-            for (Seat seat: bus.getSeats()){
-                Ticket ticket = new Ticket(seat,trip);
-                trip.addTicket(ticket);
-            }
-        }
-
+        trip.GenerateTickets();
         return trip;
     }
 
-    private void addTicket(Ticket ticket){
-        this.tickets.add(ticket);
+    private void GenerateTickets(){
+        this.tickets = bus.getSeats().stream()
+                .map(seat -> new Ticket(seat, this))
+                .toList();
     }
 }
 

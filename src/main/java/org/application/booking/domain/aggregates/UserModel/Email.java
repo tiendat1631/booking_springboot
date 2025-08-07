@@ -3,6 +3,7 @@ package org.application.booking.domain.aggregates.UserModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
+import org.application.booking.domain.aggregates.UserModel.exception.InvalidEmailException;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class Email {
         if (isValidEmail(email)) {
             return new Email(email);
         }else {
-            throw new IllegalArgumentException("Invalid email");
+            throw new InvalidEmailException();
         }
     }
     private static boolean isValidEmail(String email) {

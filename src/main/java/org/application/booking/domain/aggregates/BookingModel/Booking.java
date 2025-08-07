@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.application.booking.domain.aggregates.TripModel.Ticket;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.domain.aggregates.UserModel.User;
@@ -60,7 +59,7 @@ public class Booking extends BaseEntity {
         for (Ticket ticket : tickets) {
             booking.AddTicket(ticket);
         }
-        booking.total = trip.getPricePerSeat() * tickets.size();
+        booking.total = trip.getTicketPrice() * tickets.size();
         return booking;
     }
 
