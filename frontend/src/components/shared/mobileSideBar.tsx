@@ -2,26 +2,36 @@ import React from "react";
 import {Button} from "@/components/ui/button";
 import {MenuIcon} from "lucide-react";
 import {Dialog} from "@/components/ui/dialog";
-
+import {useNavigate} from "react-router-dom";
 
 export default function MobileSideBar(){
+     const navigate = useNavigate();
+  const handleNavigation = (label: string) =>{
+    switch (label){
+      case "Trang chủ":
+        navigate("/");
+        break;
+      case "Lịch trình":
+        navigate("/schedule");
+        break;
+      case "Tra cứu vé":
+        navigate("/ticket-lookup");
+        break;
+      case "Về chúng tôi":
+        navigate("/about-us");
+        break;        
+    }
+  }
     const [open, setOpen] = React.useState(false);
 
     const navItems = [
         "Đăng nhập/Đăng ký",
         "Trang chủ",
-        "Lịch trình",
         "Tra cứu vé",
         "Tin tức",
         "Hóa đơn",
         "Liên hệ",
         "Về chúng tôi",
-        "Tuyển dụng",
-        "Mạng lưới văn phòng",
-        "Điều khoản sử dụng",
-        "Câu hỏi thường gặp",
-        "Hướng dẫn đặt vé trên Web",
-        "Hướng dẫn nạp tiền trên App",
     ]
     return(
         <div className={"md:hidden"}>
@@ -50,6 +60,10 @@ export default function MobileSideBar(){
                             {navItems.map((item, index) => (
                                 <a
                                     key={index}
+                                    onClick={()=>{
+                                        handleNavigation(item);
+                                        setOpen(false); // Đóng sidebar sau khi click
+                                    }}
                                     href="#"
                                     className={`py-3 border-b text-left ${
                                         index === 0 ? "text-orange-600 font-semibold " : ""

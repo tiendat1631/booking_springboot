@@ -9,11 +9,17 @@ import routeInfo from "./routeInfo";
 import { AuthProvider } from "./context/AuthContext";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Schedule from "@/pages/Schedule/Schedule.tsx";
+import AboutUs from "@/pages/AboutUs/AboutUs.tsx";
+import Header from "@/components/shared/Header.tsx";
+import Footer from "@/components/shared/Footer.tsx";
 
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen">
+      <Header/>
       <AuthProvider>
+
         <Routes>
           <Route path="/admin/*" element={<AdminLayout />}>
             <Route index element={<TripManagement />} />
@@ -21,11 +27,16 @@ export default function App() {
             <Route path="bus" element={<BusManagement />} />
             <Route path="booking" element={<BookingManagement />} />
           </Route>
+
           <Route path="/ticket-lookup" element={<TicketLookup />} />
           <Route path={routeInfo.homepage} element={<Homepage />} />
           <Route path={routeInfo.welcome} element={<Welcome />} />
+          <Route path={routeInfo.schedule} element={<Schedule/>} />
+          <Route path={routeInfo.aboutus} element={<AboutUs />} />
         </Routes>
+
       </AuthProvider>
+      <Footer/>
       <ToastContainer
         position="top-center"
         autoClose={5000}

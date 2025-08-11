@@ -2,7 +2,7 @@
 export default function Banner(){
 
     return(
-      <div className={"relative flex justify-center items-center -mt-[60px] pb-[40px] "}>
+      <div className={"relative flex justify-center items-center -mt-[35px] pb-[40px] "}>
         <img
             src={"/img/banner.jpg"}
             alt={"futa phuong trang"}

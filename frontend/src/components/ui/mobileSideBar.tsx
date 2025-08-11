@@ -13,15 +13,8 @@ export default function MobileSideBar(){
         "Lịch trình",
         "Tra cứu vé",
         "Tin tức",
-        "Hóa đơn",
         "Liên hệ",
         "Về chúng tôi",
-        "Tuyển dụng",
-        "Mạng lưới văn phòng",
-        "Điều khoản sử dụng",
-        "Câu hỏi thường gặp",
-        "Hướng dẫn đặt vé trên Web",
-        "Hướng dẫn nạp tiền trên App",
     ]
     return(
         <div className={"md:hidden"}>

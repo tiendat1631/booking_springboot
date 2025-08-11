@@ -2,7 +2,6 @@ import { lookupBooking } from "@/services/ticket/ticketServices";
 import { TicketInfo } from "@/services/ticket/types";
 import { useState } from "react";
 import TicketInvoice from "./partials/TicketInvoice";
-import Header from "@/components/shared/Header";
 import Footer from "@/components/shared/Footer";
 const TicketLookup = () => {
   const [phoneNum, setPhoneNum] = useState("");
@@ -21,7 +20,7 @@ const TicketLookup = () => {
 
   return (
       <>
-        <Header variant={"ticket-lockup"}/>
+        {/*<Header variant={"ticket-lockup"}/>*/}
         <div className="flex flex-col ju items-center py-8">
           <h1 className="text-green-800 mb-6 text-xl font-medium">
             TRA CỨU THÔNG TIN ĐẶT VÉ
