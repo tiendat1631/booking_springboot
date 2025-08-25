@@ -11,6 +11,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+
+// ===== Debug only =====
 @Component
 public class DebugAuthoritiesFilter extends OncePerRequestFilter {
 

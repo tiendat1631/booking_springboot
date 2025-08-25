@@ -1,15 +1,17 @@
 package org.application.booking.security;
 
 import lombok.RequiredArgsConstructor;
+import org.application.booking.controller.dto.RegisterRequest;
 import org.application.booking.domain.aggregates.UserModel.Email;
 import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.domain.aggregates.UserModel.Username;
-import org.application.booking.presentation.guest.dto.RegisterRequest;
+import org.application.booking.exception.EmailAlreadyExistException;
+import org.application.booking.exception.UsernameAlreadyExistException;
 import org.application.booking.repository.UserRepository;
-import org.application.booking.security.exception.EmailAlreadyExistException;
-import org.application.booking.security.exception.UsernameAlreadyExistException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +39,14 @@ public class SecurityService {
 
         // save the new user to the db
         userRepository.save(newUser);
+    }
+
+    public void setRefreshToken(User user, String token) {
+        user.setRefreshToken(token);
+        userRepository.save(user);
+    }
+
+    public Optional<User> findUserByUserNameAndRefreshToken(String username, String token) {
+        return userRepository.findByUsernameAndRefreshToken(Username.CreateUsername(username), token);
     }
 }

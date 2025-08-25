@@ -3,7 +3,7 @@ package org.application.booking.domain.aggregates.TripModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
-import org.application.booking.application.feature.trip.exception.SameProvinceRouteException;
+import org.application.booking.exception.SameProvinceRouteException;
 
 @Value
 @Embeddable

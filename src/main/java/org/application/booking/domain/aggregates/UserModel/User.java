@@ -36,6 +36,9 @@ public class User extends BaseEntity {
     @Min(10)
     private int age;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String refreshToken;
+
     @Override
     protected void handleBeforeCreate() {
         this.createdAt = LocalDateTime.now();

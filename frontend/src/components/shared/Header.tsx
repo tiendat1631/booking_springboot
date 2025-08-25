@@ -8,12 +8,12 @@ import { LogInIcon } from "lucide-react";
 import MobileSideBar from "@/components/shared/mobileSideBar";
 import { Link } from "react-router";
 import routeInfo from "@/routeInfo";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const navigate = useNavigate();
-  const handleNavigation = (label: string) =>{
-    switch (label){
+  const handleNavigation = (label: string) => {
+    switch (label) {
       case "Trang chủ":
         navigate("/");
         break;
@@ -25,7 +25,7 @@ export default function Header() {
         break;
       case "Về chúng tôi":
         navigate("/about-us");
-        break;        
+        break;
     }
   }
 

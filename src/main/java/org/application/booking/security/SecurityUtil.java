@@ -3,10 +3,11 @@ package org.application.booking.security;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
 import lombok.RequiredArgsConstructor;
+import org.application.booking.domain.aggregates.UserModel.User;
+import org.application.booking.exception.InvalidTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +20,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +33,13 @@ public class SecurityUtil {
     @Value("${app.jwt.refresh.expiration-in-seconds}")
     private long jwtRefreshExpiration;
 
-    public static final String AUTHORITIES_KEY = "authorities";
+    public static final String ROLE_KEY = "role";
+    public static final String REFRESH_TOKEN = "refresh_token";
 
     // Hash Algorithm
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
-    public String createAccessToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+    public String createAccessToken(User user) {
 
         Instant now = Instant.now();
         Instant validity = now.plus(jwtAccessExpiration, ChronoUnit.SECONDS);
@@ -47,22 +47,22 @@ public class SecurityUtil {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
-                .subject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .subject(user.getUsername().getUsername())
+                .claim(ROLE_KEY, user.getRole().name())
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return jwtEncoder().encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    public String createRefreshToken(Authentication authentication) {
+    public String createRefreshToken(String subject) {
         Instant now = Instant.now();
         Instant validity = now.plus(jwtRefreshExpiration, ChronoUnit.SECONDS);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
-                .subject(authentication.getName())
+                .subject(subject)
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -86,7 +86,7 @@ public class SecurityUtil {
                 return jwtDecoder.decode(token);
             } catch (Exception e) {
                 System.out.println("JWT error: " + e.getMessage());
-                throw e;
+                throw new InvalidTokenException();
             }
         };
     }
@@ -118,5 +118,6 @@ public class SecurityUtil {
         }
         return null;
     }
+
 
 }
