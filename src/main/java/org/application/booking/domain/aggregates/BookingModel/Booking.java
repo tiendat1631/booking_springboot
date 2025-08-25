@@ -45,7 +45,8 @@ public class Booking extends BaseEntity {
     private List<BookedTicket> bookedTickets;
 
     // ====== Constructors ======
-    protected Booking() {}
+    protected Booking() {
+    }
 
     private Booking(User user, Trip trip, LocalDateTime timeCreate) {
         this.user = user;

@@ -13,18 +13,19 @@ import org.application.booking.domain.common.BaseEntity;
 @Getter
 @Setter
 @Entity
-
 public class Seat extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="bus_id")
     @JsonBackReference
     private Bus bus;
 
-    public Seat(Bus bus) {
+    private int seatNum;
+
+    public Seat(Bus bus, int seatNum) {
         this.bus = bus;
+        this.seatNum = seatNum;
     }
 
     public Seat() {
-
     }
 }

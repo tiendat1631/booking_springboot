@@ -1,4 +1,4 @@
-package org.application.booking.presentation.DTO;
+package org.application.booking.presentation.guest.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,10 +1,10 @@
 package org.application.booking.security;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.application.booking.domain.aggregates.UserModel.Email;
 import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.domain.aggregates.UserModel.Username;
-import org.application.booking.presentation.DTO.RegisterRequest;
+import org.application.booking.presentation.guest.dto.RegisterRequest;
 import org.application.booking.repository.UserRepository;
 import org.application.booking.security.exception.EmailAlreadyExistException;
 import org.application.booking.security.exception.UsernameAlreadyExistException;
@@ -12,13 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityService {
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void register (RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
         Username username = Username.CreateUsername(registerRequest.getUsername());
         Email email = Email.createEmail(registerRequest.getEmail());
 

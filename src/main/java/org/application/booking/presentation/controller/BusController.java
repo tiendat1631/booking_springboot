@@ -5,16 +5,17 @@ import org.application.booking.application.feature.bus.AddBusRequest;
 import org.application.booking.application.feature.bus.BusService;
 import org.application.booking.application.feature.bus.UpdateLicensePlateRequest;
 import org.application.booking.domain.aggregates.BusModel.Bus;
-import org.application.booking.repository.BusRepository;
+import org.application.booking.presentation.ApiResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/bus")
+@RequestMapping("/api/bus")
 @RequiredArgsConstructor
 public class BusController {
 
@@ -38,9 +39,15 @@ public class BusController {
         return ResponseEntity.ok("Bus deleted successfully.");
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Bus>> getAllBuses() {
-        return ResponseEntity.ok(busService.getBuses());
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<Bus>>> getAllBuses(
+            @RequestParam(name = "current", defaultValue = "0") int current,
+            @RequestParam(name = "pageSize", defaultValue = "1") int pageSize
+    ) {
+        Pageable pageable = PageRequest.of(current, pageSize);
+        List<Bus> buses = busService.getBuses(pageable);
+        ApiResponse<List<Bus>> response = ApiResponse.success("Bus fetched successfully", buses);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

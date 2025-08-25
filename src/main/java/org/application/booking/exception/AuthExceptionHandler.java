@@ -1,6 +1,5 @@
-package org.application.booking.presentation.middleware;
+package org.application.booking.exception;
 
-import org.application.booking.application.common.exception.NotFoundException;
 import org.application.booking.presentation.ApiResponse;
 import org.application.booking.security.exception.EmailAlreadyExistException;
 import org.application.booking.security.exception.UsernameAlreadyExistException;
@@ -16,7 +15,7 @@ public class AuthExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(AuthExceptionHandler.class);
 
     @ExceptionHandler(EmailAlreadyExistException.class)
-    public ResponseEntity<ApiResponse<Object>> handleEmailAlreadyExistException(EmailAlreadyExistException ex){
+    public ResponseEntity<ApiResponse<Object>> handleEmailAlreadyExistException(EmailAlreadyExistException ex) {
         logger.error(ex.getMessage());
 
         ApiResponse<Object> response = ApiResponse.failure(ex.getMessage());
@@ -24,7 +23,7 @@ public class AuthExceptionHandler {
     }
 
     @ExceptionHandler(UsernameAlreadyExistException.class)
-    public ResponseEntity<ApiResponse<Object>> handleUsernameAlreadyExistException(UsernameAlreadyExistException ex){
+    public ResponseEntity<ApiResponse<Object>> handleUsernameAlreadyExistException(UsernameAlreadyExistException ex) {
         logger.error(ex.getMessage());
 
         ApiResponse<Object> response = ApiResponse.failure(ex.getMessage());

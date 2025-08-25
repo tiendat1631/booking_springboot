@@ -12,8 +12,8 @@ import { getProvince } from "@/services/province/provinceSerivce";
 
 export default function SearchBox() {
   const [ticket, setTicket] = useState(1);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [fromCode, setFromCode] = useState<number | null>(null);
+  const [toCode, setToCode] = useState<number | null>(null);
   const [date, setDate] = useState<Date | undefined>(undefined);
 
 
@@ -22,16 +22,17 @@ export default function SearchBox() {
   useEffect(() => {
     const fetchLocation = async () => {
       const provinces = await getProvince();
-      setLocation(provinces);
+      setLocation(provinces.map(({ name, code, codename }) => ({ name, code, codename })));
     };
 
     fetchLocation();
   }, []);
 
   const handleSearch = async () => {
-    const data = await searchTicket({ from, to, date, ticket });
+    console.log(fromCode)
+    console.log(toCode)
+    const data = await searchTicket({ from: fromCode, to: toCode, date, ticket });
     if (data.success) {
-      // TODO: hien thi ket qua
       console.log("Kết quả chuyến đi:", data);
     } else {
       console.error("Lỗi:", data.error);
@@ -58,20 +59,18 @@ export default function SearchBox() {
       <div className=" flex flex-col px-4 gap-5 md:px-16 md:flex-row sm:items-center md:justify-between md:flex-wrap">
         {/* Starting location */}
         <LocationSearch
-          value={from}
+          value={fromCode}
           items={location}
-          setValue={(val) => setFrom(val)}
+          setValue={setFromCode}
           label="Điểm đi"
           placeholder="Chọn địa điểm đi"
           noResultText="Không tìm thấy địa điểm"
         />
         {/* Destination */}
         <LocationSearch
-          value={to}
+          value={toCode}
           items={location}
-          setValue={(val) => {
-            setTo(val);
-          }}
+          setValue={setToCode}
           label="Điểm đến"
           placeholder="Chọn địa điểm đến"
           noResultText="Không tìm thấy địa điểm"

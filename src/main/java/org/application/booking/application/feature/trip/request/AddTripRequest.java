@@ -1,4 +1,4 @@
-package org.application.booking.application.feature.trip;
+package org.application.booking.application.feature.trip.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
@@ -17,7 +17,11 @@ public record AddTripRequest(
         @NotNull @Positive float price,
         @NotNull @Future LocalDateTime departureTime,
         @NotNull @Future LocalDateTime estimateArrivalTime
-) {}
+) {
+    public Route getRoute(){
+        return route.toRoute();
+    }
+}
 
 record ProvinceDTO(
         @NotBlank String name,

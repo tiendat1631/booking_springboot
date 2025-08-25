@@ -2,8 +2,8 @@ package org.application.booking.application.feature.bus;
 
 import lombok.AllArgsConstructor;
 import org.application.booking.domain.aggregates.BusModel.Bus;
-import org.application.booking.domain.aggregates.BusModel.BusType;
 import org.application.booking.repository.BusRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import java.util.UUID;
 public class BusService {
     private final BusRepository busRepository;
 
-    public List<Bus> getBuses(){
-        return busRepository.findAll();
+    public List<Bus> getBuses(Pageable request) {
+        return busRepository.findAll(request).getContent();
     }
 
-    public Bus getBus(UUID busId){
+    public Bus getBus(UUID busId) {
         return busRepository.getReferenceById(busId);
     }
 

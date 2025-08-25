@@ -1,15 +1,14 @@
 package org.application.booking.domain.aggregates.UserModel;
 
-import jakarta.validation.constraints.Min;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.application.booking.domain.common.BaseEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -36,4 +35,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Min(10)
     private int age;
+
+    @Override
+    protected void handleBeforeCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.createdBy = this.username.getUsername();
+    }
 }

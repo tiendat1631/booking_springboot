@@ -1,16 +1,18 @@
 package org.application.booking.security;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.domain.aggregates.UserModel.Username;
 import org.application.booking.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Component("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 

@@ -54,7 +54,7 @@ public class Bus extends BaseEntity {
         }
 
         for(int i = 0; i < capacity; i++){
-            seats.add(new Seat(this));
+            seats.add(new Seat(this, i+1));
         }
     }
 

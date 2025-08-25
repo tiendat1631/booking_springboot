@@ -1,14 +1,15 @@
 package org.application.booking.domain.aggregates.TripModel;
 
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.NotNull;
 import lombok.Value;
 
 @Value
 @Embeddable
 public class Province {
-    String name;
-    int code;
-    String codename;
+    @NotNull String name;
+    @NotNull int code;
+    @NotNull String codename;
 
     public Province(String name, int code, String codename) {
         this.name = name;

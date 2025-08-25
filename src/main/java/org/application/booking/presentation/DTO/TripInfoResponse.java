@@ -13,10 +13,13 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 public class TripInfoResponse {
-    private UUID tripId;
-    private float price;
-    private String departure;
-    private String destination;
+    private UUID id;
+    private String departureName;
+    private String destinationName;
+
+    private float ticketPrice;
+
+
     private List<BusInfo> buses;
 
     @Getter
