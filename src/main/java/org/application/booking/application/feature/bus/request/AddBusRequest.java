@@ -1,4 +1,4 @@
-package org.application.booking.application.feature.bus;
+package org.application.booking.application.feature.bus.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -7,4 +7,5 @@ import org.application.booking.domain.aggregates.BusModel.BusType;
 public record AddBusRequest(
         @NotNull BusType busType,
         @NotBlank String licensePlate
-) { }
+) {
+}

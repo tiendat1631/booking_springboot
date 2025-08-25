@@ -1,6 +1,5 @@
 package org.application.booking.application.feature.trip;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.application.booking.application.common.exception.NotFoundException;
 import org.application.booking.application.feature.trip.exception.BusScheduleConflictException;
@@ -23,15 +22,15 @@ public class TripService {
     private final TripRepository tripRepository;
     private final BusRepository busRepository;
 
-    public Trip getTrip(UUID tripId){
+    public Trip getTrip(UUID tripId) {
         return tripRepository.findById(tripId)
                 .orElseThrow(() -> new NotFoundException(Trip.class, tripId));
     }
 
-    public List<TripCardResponse> getTrips(SearchTripRequest request){
+    public List<TripCardResponse> getTrips(SearchTripRequest request) {
         List<Trip> trips = tripRepository.findAll(request.toSpecification());
         return trips.stream()
-                .map(TripCardResponse::toTripCardResponse)
+                .map(TripCardResponse::from)
                 .toList();
     }
 
@@ -40,7 +39,7 @@ public class TripService {
                 .orElseThrow(() -> new NotFoundException(Bus.class, request.busId()));
 
         // ===== Kiểm tra trùng chuyến =====
-        if(tripRepository.isBusBusyDuring(
+        if (tripRepository.isBusBusyDuring(
                 request.departureTime(),
                 request.estimateArrivalTime(),
                 request.busId()))
@@ -60,7 +59,8 @@ public class TripService {
         tripRepository.save(trip);
 
     }
-    public void deleteTrip(UUID tripId){
+
+    public void deleteTrip(UUID tripId) {
         tripRepository.deleteById(tripId);
     }
 }

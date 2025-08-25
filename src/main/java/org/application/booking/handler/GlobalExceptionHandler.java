@@ -1,5 +1,6 @@
-package org.application.booking.exception;
+package org.application.booking.handler;
 
+import org.application.booking.application.common.exception.DuplicateFieldException;
 import org.application.booking.application.common.exception.NotFoundException;
 import org.application.booking.application.feature.trip.exception.BusScheduleConflictException;
 import org.application.booking.application.feature.trip.exception.SameProvinceRouteException;
@@ -30,6 +31,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(DuplicateFieldException.class)
+    public ResponseEntity<ApiResponse<String>> handleDuplicateField(DuplicateFieldException ex) {
+        logger.warn(ex.getMessage());
+        ApiResponse<String> response = ApiResponse.failure(ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -44,9 +55,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+    public ResponseEntity<ApiResponse<String>> handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
         logger.warn("AuthorizationDeniedException: {}", ex.getMessage());
-        ApiResponse<Object> response = ApiResponse.failure("Access Denied");
+        ApiResponse<String> response = ApiResponse.failure("Access Denied");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 

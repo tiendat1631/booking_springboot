@@ -1,4 +1,4 @@
-package org.application.booking.exception;
+package org.application.booking.handler;
 
 import org.application.booking.presentation.ApiResponse;
 import org.application.booking.security.exception.EmailAlreadyExistException;

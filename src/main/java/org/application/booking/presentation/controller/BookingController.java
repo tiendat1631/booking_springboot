@@ -1,14 +1,15 @@
 package org.application.booking.presentation.controller;
 
-import lombok.AllArgsConstructor;
-import org.application.booking.application.feature.booking.CreateBookingRequest;
+import lombok.RequiredArgsConstructor;
 import org.application.booking.application.feature.booking.BookingService;
+import org.application.booking.application.feature.booking.CreateBookingRequest;
 import org.application.booking.domain.aggregates.BookingModel.Booking;
 import org.application.booking.presentation.ApiResponse;
 import org.application.booking.repository.BookedTicketRepository;
 import org.application.booking.repository.BookingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +18,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/booking")
-@AllArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
+@RequiredArgsConstructor
 public class BookingController {
 
     private final BookingService bookingService;

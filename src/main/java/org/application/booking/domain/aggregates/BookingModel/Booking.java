@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.application.booking.domain.aggregates.TripModel.Ticket;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.domain.aggregates.UserModel.User;
@@ -37,6 +38,7 @@ public class Booking extends BaseEntity {
     private UUID tripId;
 
     // ====== Thông tin khác ======
+    @Setter
     private float total;
     private LocalDateTime timeCreate;
 
@@ -72,19 +74,5 @@ public class Booking extends BaseEntity {
             bookedTickets.add(new BookedTicket(ticket, this));
             ticket.occupy();
         }
-    }
-
-    // ====== Setters cho cập nhật ======
-
-    public void setTotal(float total) {
-        this.total = total;
-    }
-
-    public void setTripId(UUID tripId) {
-        this.tripId = tripId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 }

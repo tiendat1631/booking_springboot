@@ -18,8 +18,8 @@ public class SecurityService {
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterRequest registerRequest) {
-        Username username = Username.CreateUsername(registerRequest.getUsername());
-        Email email = Email.createEmail(registerRequest.getEmail());
+        Username username = Username.CreateUsername(registerRequest.username());
+        Email email = Email.createEmail(registerRequest.email());
 
         if (userRepository.existsByUsername(username)) {
             throw new UsernameAlreadyExistException();
@@ -31,9 +31,9 @@ public class SecurityService {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setEmail(email);
-        newUser.setName(registerRequest.getUsername());
-        newUser.setAge(registerRequest.getAge());
-        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        newUser.setName(registerRequest.username());
+        newUser.setAge(registerRequest.age());
+        newUser.setPassword(passwordEncoder.encode(registerRequest.password()));
 
         // save the new user to the db
         userRepository.save(newUser);

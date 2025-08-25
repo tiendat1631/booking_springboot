@@ -4,9 +4,10 @@ import org.application.booking.domain.aggregates.TripModel.Trip;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record TripCardResponse(
-        String id,
+        UUID id,
         String departureName,
         String destinationName,
         LocalDateTime departureTime,
@@ -14,10 +15,10 @@ public record TripCardResponse(
         List<TicketDTO> tickets,
         double ticketPrice
 ) {
-    public static TripCardResponse toTripCardResponse(Trip trip) {
+    public static TripCardResponse from(Trip trip) {
         List<TicketDTO> ticketDTOs = trip.getTickets().stream()
                 .map(ticket -> new TicketDTO(
-                        ticket.getId().toString(),
+                        ticket.getId(),
                         ticket.isOccupied(),
                         ticket.getSeat().getSeatNum()
                 ))
@@ -27,7 +28,7 @@ public record TripCardResponse(
         assert trip.getRoute().getDestination() != null;
 
         return new TripCardResponse(
-                trip.getId().toString(),
+                trip.getId(),
                 trip.getRoute().getDeparture().getName(),
                 trip.getRoute().getDestination().getName(),
                 trip.getDepartureTime(),
@@ -37,8 +38,10 @@ public record TripCardResponse(
         );
     }
 }
+
 record TicketDTO(
-        String id,
+        UUID id,
         boolean isOccupied,
         int seatNum
-) {}
+) {
+}
