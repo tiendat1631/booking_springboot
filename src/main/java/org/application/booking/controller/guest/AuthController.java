@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -73,6 +74,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> logout(
             @CookieValue(name = REFRESH_TOKEN, required = false) String refreshToken) {
 
@@ -108,7 +110,6 @@ public class AuthController {
         securityService.register(registerRequest);
         return ResponseEntity.ok(ApiResponse.success("Đăng ký thành công", null));
     }
-
 
     @GetMapping("/refresh")
     public ResponseEntity<ApiResponse<LoginResponse>> getRefreshToken(

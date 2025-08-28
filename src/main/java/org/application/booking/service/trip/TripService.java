@@ -3,7 +3,7 @@ package org.application.booking.service.trip;
 import lombok.RequiredArgsConstructor;
 import org.application.booking.controller.dto.AddTripRequest;
 import org.application.booking.controller.dto.SearchTripRequest;
-import org.application.booking.controller.dto.TripCardResponse;
+import org.application.booking.controller.dto.TripResponse;
 import org.application.booking.domain.aggregates.BusModel.Bus;
 import org.application.booking.domain.aggregates.TripModel.Route;
 import org.application.booking.domain.aggregates.TripModel.Trip;
@@ -27,10 +27,10 @@ public class TripService {
                 .orElseThrow(() -> new NotFoundException(Trip.class, tripId));
     }
 
-    public List<TripCardResponse> getTrips(SearchTripRequest request) {
+    public List<TripResponse> getTrips(SearchTripRequest request) {
         List<Trip> trips = tripRepository.findAll(request.toSpecification());
         return trips.stream()
-                .map(TripCardResponse::from)
+                .map(TripResponse::from)
                 .toList();
     }
 

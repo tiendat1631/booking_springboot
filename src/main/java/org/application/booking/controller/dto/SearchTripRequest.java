@@ -12,14 +12,14 @@ public record SearchTripRequest(
         @NotNull @Positive Integer departureCode,
         @NotNull @Positive Integer destinationCode,
         @NotNull LocalDate departureTime,
-        @NotNull @Positive Integer ticketNums
+        @NotNull @Positive Integer ticketNum
 ) {
     public Specification<Trip> toSpecification() {
         return Specification.allOf(
                 TripSpecification.fromLocation(departureCode),
                 TripSpecification.toLocation(destinationCode),
                 TripSpecification.hasDate(departureTime),
-                TripSpecification.hasTicket(ticketNums)
+                TripSpecification.hasTicket(ticketNum)
         );
     }
 }

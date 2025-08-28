@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { logout } from "@/services/auth/authServices";
 import { toast } from "react-toastify";
+import { el } from "date-fns/locale";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -99,7 +100,12 @@ const AuthButton = () => {
     const res = await logout();
 
     handleLogout();
-    toast.success(res.message || "Logout...")
+    if (res.success) {
+      toast.success(res.message)
+    } else {
+      toast.error("Cannot logout")
+    }
+
   }
 
   if (isAuthenticated) {

@@ -3,7 +3,7 @@ package org.application.booking.controller.guest;
 import lombok.RequiredArgsConstructor;
 import org.application.booking.controller.ApiResponse;
 import org.application.booking.controller.dto.SearchTripRequest;
-import org.application.booking.controller.dto.TripCardResponse;
+import org.application.booking.controller.dto.TripResponse;
 import org.application.booking.domain.aggregates.TripModel.Trip;
 import org.application.booking.service.trip.TripService;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,9 @@ public class TripController {
     private final TripService tripService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<TripCardResponse>>> getTrips(@ModelAttribute SearchTripRequest request) {
-        List<TripCardResponse> trips = tripService.getTrips(request);
-        ApiResponse<List<TripCardResponse>> response = ApiResponse.success("Trips fetched successfully", trips);
+    public ResponseEntity<ApiResponse<List<TripResponse>>> getTrips(@ModelAttribute SearchTripRequest request) {
+        List<TripResponse> trips = tripService.getTrips(request);
+        ApiResponse<List<TripResponse>> response = ApiResponse.success("Trips fetched successfully", trips);
         return ResponseEntity.ok(response);
     }
 
