@@ -1,27 +1,27 @@
 import React from "react";
-import {Button} from "@/components/ui/button";
-import {MenuIcon} from "lucide-react";
-import {Dialog} from "@/components/ui/dialog";
-import {useNavigate} from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { MenuIcon } from "lucide-react";
+import { Dialog } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 
-export default function MobileSideBar(){
-     const navigate = useNavigate();
-  const handleNavigation = (label: string) =>{
-    switch (label){
-      case "Trang chủ":
-        navigate("/");
-        break;
-      case "Lịch trình":
-        navigate("/schedule");
-        break;
-      case "Tra cứu vé":
-        navigate("/ticket-lookup");
-        break;
-      case "Về chúng tôi":
-        navigate("/about-us");
-        break;        
+export default function MobileSideBar() {
+    const navigate = useNavigate();
+    const handleNavigation = (label: string) => {
+        switch (label) {
+            case "Trang chủ":
+                navigate("/");
+                break;
+            case "Lịch trình":
+                navigate("/schedule");
+                break;
+            case "Tra cứu vé":
+                navigate("/ticket-lookup");
+                break;
+            case "Về chúng tôi":
+                navigate("/about-us");
+                break;
+        }
     }
-  }
     const [open, setOpen] = React.useState(false);
 
     const navItems = [
@@ -33,15 +33,15 @@ export default function MobileSideBar(){
         "Liên hệ",
         "Về chúng tôi",
     ]
-    return(
+    return (
         <div className={"md:hidden"}>
             {/*nut menu ben trai*/}
             <Button
                 variant={"ghost"}
                 className={"cursor-pointer"}
                 size={"icon"}
-                onClick={()=>setOpen(true)}>
-                <MenuIcon className={"w-6 h-6 text-white"}/>
+                onClick={() => setOpen(true)}>
+                <MenuIcon className={"w-6 h-6 text-white"} />
             </Button>
             {/*sidebar*/}
             <Dialog open={open} onOpenChange={setOpen}>
@@ -60,14 +60,13 @@ export default function MobileSideBar(){
                             {navItems.map((item, index) => (
                                 <a
                                     key={index}
-                                    onClick={()=>{
+                                    onClick={() => {
                                         handleNavigation(item);
                                         setOpen(false); // Đóng sidebar sau khi click
                                     }}
                                     href="#"
-                                    className={`py-3 border-b text-left ${
-                                        index === 0 ? "text-orange-600 font-semibold " : ""
-                                    }`}
+                                    className={`py-3 border-b text-left ${index === 0 ? "text-orange-600 font-semibold " : ""
+                                        }`}
                                 >
                                     {item}
                                 </a>

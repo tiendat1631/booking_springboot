@@ -72,11 +72,43 @@ public class AuthController {
                 .body(response);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @CookieValue(name = REFRESH_TOKEN, required = false) String refreshToken) {
+
+        if (refreshToken != null && !refreshToken.isBlank()) {
+            // fail to decode or user not found -> throw log only
+            try {
+                Jwt jwt = jwtDecoder.decode(refreshToken);
+
+                // Get sub
+                String username = jwt.getSubject();
+
+                // Remove refresh token in database
+                securityService.removeRefreshToken(username);
+            } catch (Exception e) {
+                System.out.println("Invalid refresh token during logout: " + e.getMessage());
+            }
+        }
+
+        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(ApiResponse.success("Logout success", null));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         securityService.register(registerRequest);
         return ResponseEntity.ok(ApiResponse.success("Đăng ký thành công", null));
     }
+
 
     @GetMapping("/refresh")
     public ResponseEntity<ApiResponse<LoginResponse>> getRefreshToken(

@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button.tsx";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover.tsx";
-import { LogInIcon } from "lucide-react";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover.tsx";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 import MobileSideBar from "@/components/shared/mobileSideBar";
 import { Link } from "react-router";
 import routeInfo from "@/routeInfo";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { logout } from "@/services/auth/authServices";
+import { toast } from "react-toastify";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -61,17 +60,7 @@ export default function Header() {
         {/* Logo */}
         <img src={"/img/logo.png"} alt={"Futa logo"} className={"h-10"} />
         {/*login*/}
-        <Link to={routeInfo.welcome}>
-          <Button
-            variant={"ghost"}
-            className={
-              "text-white hover:bg-white/10 cursor-pointer hidden md:inline-flex"
-            }
-          >
-            <LogInIcon />
-            Đăng nhập / Đăng ký
-          </Button>
-        </Link>
+        <AuthButton />
       </div>
       {/*navigation*/}
       <nav
@@ -99,6 +88,45 @@ export default function Header() {
           </Button>
         ))}
       </nav>
-    </header>
+    </header >
+  );
+}
+
+const AuthButton = () => {
+  const { user, isAuthenticated, handleLogout } = useAuth();
+
+  const loggingout = async () => {
+    const res = await logout();
+
+    handleLogout();
+    toast.success(res.message || "Logout...")
+  }
+
+  if (isAuthenticated) {
+    return (
+      <div className="flex items-center space-x-2 hidden md:flex">
+        <span className="text-white">{user?.username}</span>
+        <Button
+          variant="ghost"
+          className="text-white hover:bg-white/10 cursor-pointer"
+          onClick={loggingout}
+        >
+          <LogOutIcon />
+          Logout
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Link to={routeInfo.login}>
+      <Button
+        variant="ghost"
+        className="text-white hover:bg-white/10 cursor-pointer hidden md:inline-flex"
+      >
+        <LogInIcon />
+        Đăng nhập / Đăng ký
+      </Button>
+    </Link>
   );
 }

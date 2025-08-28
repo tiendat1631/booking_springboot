@@ -9,7 +9,6 @@ export async function getProvince() {
 
     const data = await res.json();
 
-    // Trả về đúng định dạng bạn cần (nếu muốn giữ name, code, codename)
     return data as ProvinceResponse[];
   } catch (error) {
     console.error('Error fetching provinces:', error);

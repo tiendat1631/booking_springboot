@@ -4,7 +4,7 @@ export default function Homepage() {
   return (
     <div>
 
-       <Banner />
+      <Banner />
       <SearchBox />
 
       <Slider />

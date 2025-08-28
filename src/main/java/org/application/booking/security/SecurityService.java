@@ -6,6 +6,7 @@ import org.application.booking.domain.aggregates.UserModel.Email;
 import org.application.booking.domain.aggregates.UserModel.User;
 import org.application.booking.domain.aggregates.UserModel.Username;
 import org.application.booking.exception.EmailAlreadyExistException;
+import org.application.booking.exception.NotFoundException;
 import org.application.booking.exception.UsernameAlreadyExistException;
 import org.application.booking.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,5 +49,12 @@ public class SecurityService {
 
     public Optional<User> findUserByUserNameAndRefreshToken(String username, String token) {
         return userRepository.findByUsernameAndRefreshToken(Username.CreateUsername(username), token);
+    }
+
+    public void removeRefreshToken(String username) {
+        User user = userRepository.findByUsername(Username.CreateUsername(username))
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        user.removeRefreshToken();
+        userRepository.save(user);
     }
 }

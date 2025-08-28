@@ -44,4 +44,8 @@ public class User extends BaseEntity {
         this.createdAt = LocalDateTime.now();
         this.createdBy = this.username.getUsername();
     }
+
+    public void removeRefreshToken() {
+        this.refreshToken = null;
+    }
 }
