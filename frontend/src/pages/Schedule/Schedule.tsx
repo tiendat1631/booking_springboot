@@ -1,9 +1,6 @@
-
-
-export default function Schedule(){
-    return(
-      <div>
-          
-      </div>
-    );
+export default function Schedule() {
+  return (
+    <div>
+    </div>
+  );
 }

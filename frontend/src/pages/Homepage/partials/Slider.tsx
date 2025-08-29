@@ -49,20 +49,6 @@ export default function Slider() {
                     ))}
                 </Swiper>
 
-                <style jsx global>{`
-                    .swiper-pagination {
-                        position: relative;
-                        margin-top: 20px;
-                        text-align: center;
-                    }
-
-                    .swiper-pagination-bullet-active {
-                        width: 24px;
-                        background-color: #ea580c;
-                        opacity: 1;
-                        border-radius: 9999px;
-                    }
-                `}</style>
             </div>
         </div>
     );

@@ -20,8 +20,6 @@ import { Label } from "@/components/ui/label";
 import { ProvinceResponse } from "@/services/province/types";
 
 
-
-
 export function LocationSearch({
   value,
   setValue,
@@ -31,7 +29,7 @@ export function LocationSearch({
   noResultText,
 }: Props) {
   const [open, setOpen] = useState(false);
-  
+
   const selectedItem = useMemo(
     () => items.find((item) => item.code === value),
     [items, value]
@@ -48,7 +46,7 @@ export function LocationSearch({
             aria-expanded={open}
             className="md:w-sm justify-between"
           >
-            {selectedItem ? selectedItem.name : placeholder}  
+            {selectedItem ? selectedItem.name : placeholder}
             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
