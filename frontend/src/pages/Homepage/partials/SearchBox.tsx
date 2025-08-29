@@ -12,7 +12,7 @@ import { SearchTrips } from "@/services/trip/tripService";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { TripResponse } from "@/services/trip/types";
-import { TripCard } from "@/components/trip/tripCard";
+import { TripList } from "@/components/trip/TripFilter";
 
 export default function SearchBox() {
   const [ticket, setTicket] = useState(1);
@@ -40,6 +40,7 @@ export default function SearchBox() {
 
     const res = await SearchTrips({ departureCode, destinationCode, departureTime: dayjs(date).format("YYYY-MM-DD"), ticketNum: ticket })
     if (res.success) {
+      console.log(res.data)
       setTrips(res.data);
       toast.success(res.message)
     } else {
@@ -54,7 +55,7 @@ export default function SearchBox() {
   };
 
   return (
-    <>
+    <div className="space-y-10">
       <Card className="max-w-[1500px]">
         <CardHeader>
           <CardTitle>Tìm kiếm chuyến đi</CardTitle>
@@ -106,15 +107,7 @@ export default function SearchBox() {
         </div>
       </Card>
 
-      {
-        trips.length > 0 && (
-          <div className="mt-8 grid grid-cols-1 gap-6">
-            {trips.map((trip) => (
-              <TripCard key={trip.id} trip={trip} />
-            ))}
-          </div>
-        )
-      }
-    </>
+      {trips.length > 0 && <TripList trips={trips} />}
+    </div>
   );
 }
