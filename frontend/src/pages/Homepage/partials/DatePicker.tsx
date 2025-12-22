@@ -29,6 +29,7 @@ export default function DatePicker({ label, value, setValue, disabledOn }: Props
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
+            required
             mode="single"
             selected={value}
             onSelect={setValue}
@@ -43,7 +44,7 @@ export default function DatePicker({ label, value, setValue, disabledOn }: Props
 
 type Props = {
   label: string;
-  value: Date | undefined;
-  setValue: (value: Date | undefined) => void;
+  value: Date;
+  setValue: (value: Date) => void;
   disabledOn: (date: Date) => boolean;
 };

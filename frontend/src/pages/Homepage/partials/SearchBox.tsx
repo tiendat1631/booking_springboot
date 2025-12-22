@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardHeader, CardTitle } from "@/components/ui/card";
-import { searchTicket } from "@/services/ticket/ticketServices";
 import { isBefore, startOfToday } from "date-fns";
 import { LucideMessageCircleQuestion } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,32 +8,44 @@ import { LocationSearch } from "./LocationComboBox";
 import TicketCounter from "./TicketCounter";
 import { ProvinceResponse } from "@/services/province/types";
 import { getProvince } from "@/services/province/provinceSerivce";
+import { SearchTrips } from "@/services/trip/tripService";
+import { toast } from "react-toastify";
+import dayjs from "dayjs";
+import { TripResponse } from "@/services/trip/types";
+import { TripList } from "@/components/trip/TripFilter";
 
 export default function SearchBox() {
   const [ticket, setTicket] = useState(1);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [date, setDate] = useState<Date | undefined>(undefined);
-
+  const [departureCode, setDepartureCode] = useState<number>(1);
+  const [destinationCode, setDestinationCode] = useState<number>(79);
+  const [date, setDate] = useState<Date>(new Date());
 
   const [location, setLocation] = useState<ProvinceResponse[]>([]);
+  const [trips, setTrips] = useState<TripResponse[]>([]);
 
   useEffect(() => {
     const fetchLocation = async () => {
       const provinces = await getProvince();
-      setLocation(provinces);
+      setLocation(provinces.map(({ name, code, codename }) => ({ name, code, codename })));
     };
 
     fetchLocation();
   }, []);
 
   const handleSearch = async () => {
-    const data = await searchTicket({ from, to, date, ticket });
-    if (data.success) {
-      // TODO: hien thi ket qua
-      console.log("Kết quả chuyến đi:", data);
+    console.log(departureCode)
+    console.log(destinationCode)
+    console.log(dayjs(date).format("YYYY-MM-DD"))
+    console.log(ticket)
+
+    const res = await SearchTrips({ departureCode, destinationCode, departureTime: dayjs(date).format("YYYY-MM-DD"), ticketNum: ticket })
+    if (res.success) {
+      console.log(res.data)
+      setTrips(res.data);
+      toast.success(res.message)
     } else {
-      console.error("Lỗi:", data.error);
+      setTrips([]);
+      toast.error(res.message);
     }
   };
 
@@ -44,57 +55,59 @@ export default function SearchBox() {
   };
 
   return (
-    <Card className="max-w-[1500px]">
-      <CardHeader>
-        <CardTitle>Tìm kiếm chuyến đi</CardTitle>
-        <CardAction>
-          <Button variant="link" className="py-0 pr-0">
-            <LucideMessageCircleQuestion />
-            Hướng dẫn
-          </Button>
-        </CardAction>
-      </CardHeader>
+    <div className="space-y-10">
+      <Card className="max-w-[1500px]">
+        <CardHeader>
+          <CardTitle>Tìm kiếm chuyến đi</CardTitle>
+          <CardAction>
+            <Button variant="link" className="py-0 pr-0">
+              <LucideMessageCircleQuestion />
+              Hướng dẫn
+            </Button>
+          </CardAction>
+        </CardHeader>
 
-      <div className=" flex flex-col px-4 gap-5 md:px-16 md:flex-row sm:items-center md:justify-between md:flex-wrap">
-        {/* Starting location */}
-        <LocationSearch
-          value={from}
-          items={location}
-          setValue={(val) => setFrom(val)}
-          label="Điểm đi"
-          placeholder="Chọn địa điểm đi"
-          noResultText="Không tìm thấy địa điểm"
-        />
-        {/* Destination */}
-        <LocationSearch
-          value={to}
-          items={location}
-          setValue={(val) => {
-            setTo(val);
-          }}
-          label="Điểm đến"
-          placeholder="Chọn địa điểm đến"
-          noResultText="Không tìm thấy địa điểm"
-        />
+        <div className=" flex flex-col px-4 gap-5 md:px-16 md:flex-row sm:items-center md:justify-between md:flex-wrap">
+          {/* Starting location */}
+          <LocationSearch
+            value={departureCode}
+            items={location}
+            setValue={setDepartureCode}
+            label="Điểm đi"
+            placeholder="Chọn địa điểm đi"
+            noResultText="Không tìm thấy địa điểm"
+          />
+          {/* Destination */}
+          <LocationSearch
+            value={destinationCode}
+            items={location}
+            setValue={setDestinationCode}
+            label="Điểm đến"
+            placeholder="Chọn địa điểm đến"
+            noResultText="Không tìm thấy địa điểm"
+          />
 
-        <DatePicker
-          label="Ngày đi"
-          value={date}
-          setValue={(newDate) => setDate(newDate)}
-          disabledOn={(date) => isBefore(date, startOfToday())}
-        />
-        <TicketCounter max={10} value={ticket} setValue={setTicketCountValue} />
+          <DatePicker
+            label="Ngày đi"
+            value={date}
+            setValue={(newDate) => setDate(newDate)}
+            disabledOn={(date) => isBefore(date, startOfToday())}
+          />
+          <TicketCounter max={10} value={ticket} setValue={setTicketCountValue} />
 
-        {/* Nút Tìm chuyến xe */}
-        <div className="flex justify-center py-6 w-full">
-          <Button
-            onClick={handleSearch}
-            className="cursor-pointer bg-[#FF5722] hover:bg-[#e64a19] text-white px-8 py-4 text-lg rounded-full"
-          >
-            Tìm chuyến xe
-          </Button>
+          {/* Nút Tìm chuyến xe */}
+          <div className="flex justify-center py-6 w-full">
+            <Button
+              onClick={handleSearch}
+              className="cursor-pointer bg-[#FF5722] hover:bg-[#e64a19] text-white px-8 py-4 text-lg rounded-full"
+            >
+              Tìm chuyến xe
+            </Button>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+
+      {trips.length > 0 && <TripList trips={trips} />}
+    </div>
   );
 }

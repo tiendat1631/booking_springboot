@@ -1,5 +1,6 @@
 package org.application.booking.domain.aggregates.TripModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +17,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class Trip extends BaseEntity {
     private float ticketPrice;
@@ -28,11 +31,13 @@ public class Trip extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bus_id", nullable = false)
+    @JsonIgnore
     private Bus bus;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Ticket> tickets;
+
 
     public static Trip Create(Route route, Bus bus, LocalDateTime departureTime, LocalDateTime estimatedArrivalTime, float ticketPrice){
         Trip trip = Trip.builder()

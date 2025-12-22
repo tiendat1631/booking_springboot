@@ -1,8 +1,9 @@
 package org.application.booking.domain.aggregates.TripModel;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Value;
-import org.application.booking.application.feature.trip.exception.SameProvinceRouteException;
+import org.application.booking.exception.SameProvinceRouteException;
 
 @Value
 @Embeddable
@@ -13,6 +14,7 @@ public class Route {
             @AttributeOverride(name = "code", column = @Column(name = "departure_code")),
             @AttributeOverride(name = "codename", column = @Column(name = "departure_codename"))
     })
+    @NotNull
     Province departure;
 
     @Embedded
@@ -21,6 +23,7 @@ public class Route {
             @AttributeOverride(name = "code", column = @Column(name = "destination_code")),
             @AttributeOverride(name = "codename", column = @Column(name = "destination_codename"))
     })
+    @NotNull
     Province destination;
 
     public Route(Province departure, Province destination) {

@@ -10,6 +10,7 @@ import org.application.booking.domain.common.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Table(name = "bus")
 @Entity
 @Getter
@@ -20,7 +21,7 @@ public class Bus extends BaseEntity {
     private String licensePlate;
 
     @Enumerated(EnumType.STRING)
-    public BusType type;
+    private BusType type;
 
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -35,28 +36,29 @@ public class Bus extends BaseEntity {
         this.type = type;
     }
 
-    public static Bus Create(BusType type, String licensePlate){
+    public static Bus Create(BusType type, String licensePlate) {
         Bus bus = new Bus(type, licensePlate);
         bus.GenerateSeat();
 
         return bus;
     }
 
-    private void GenerateSeat(){
+    private void GenerateSeat() {
         this.seats = new ArrayList<>();
 
-        if (type==BusType.normal){
+        if (type == BusType.normal) {
             this.capacity = 40;
-        }else if (type==BusType.limousine){
+        } else if (type == BusType.limousine) {
             this.capacity = 22;
-        }else {
+        } else {
             this.capacity = 0;
         }
 
-        for(int i = 0; i < capacity; i++){
-            seats.add(new Seat(this));
+        for (int i = 0; i < capacity; i++) {
+            seats.add(new Seat(this, i + 1));
         }
     }
 
-    protected Bus() {}
+    protected Bus() {
+    }
 }

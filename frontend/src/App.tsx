@@ -1,42 +1,35 @@
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { Bounce, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { MainLayout } from "./layouts/MainLayout";
+import routeInfo from "./routeInfo";
+import Login from "./pages/Login";
+import { Homepage } from "./pages";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import TripManagement from "./pages/Admin/Trip/TripManagement";
 import BusManagement from "./pages/Admin/Bus/BusManagement";
 import BookingManagement from "./pages/Admin/Booking/BookingManagement";
-import TicketLookup from "@/pages/Lookup/TicketLookup.tsx";
-import { Homepage, Welcome } from "@/pages";
-import routeInfo from "./routeInfo";
-import { AuthProvider } from "./context/AuthContext";
-import { Bounce, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Schedule from "@/pages/Schedule/Schedule.tsx";
-import AboutUs from "@/pages/AboutUs/AboutUs.tsx";
-import Header from "@/components/shared/Header.tsx";
-import Footer from "@/components/shared/Footer.tsx";
 
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Header/>
       <AuthProvider>
-
         <Routes>
-          <Route path="/admin/*" element={<AdminLayout />}>
-            <Route index element={<TripManagement />} />
-            <Route path="trip" element={<TripManagement />} />
-            <Route path="bus" element={<BusManagement />} />
-            <Route path="booking" element={<BookingManagement />} />
+          <Route path="/" element={<MainLayout />}>
+            <Route path={routeInfo.homepage} element={<Homepage />} ></Route>
+
           </Route>
 
-          <Route path="/ticket-lookup" element={<TicketLookup />} />
-          <Route path={routeInfo.homepage} element={<Homepage />} />
-          <Route path={routeInfo.welcome} element={<Welcome />} />
-          <Route path={routeInfo.schedule} element={<Schedule/>} />
-          <Route path={routeInfo.aboutus} element={<AboutUs />} />
+          <Route path={routeInfo.login} element={<Login />}></Route>
+          
+          <Route path="/admin" element = {<AdminLayout/>}>
+            <Route path="trip" element={<TripManagement/>}></Route>
+            <Route path="bus" element={<BusManagement/>}></Route>
+            <Route path="booking" element ={<BookingManagement/>}></Route>
+          </Route>
         </Routes>
-
       </AuthProvider>
-      <Footer/>
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -49,7 +42,7 @@ export default function App() {
         pauseOnHover={false}
         theme="light"
         transition={Bounce}
-    />
-    </div>
+      />
+    </div >
   );
 }

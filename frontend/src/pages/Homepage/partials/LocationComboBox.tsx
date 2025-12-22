@@ -15,8 +15,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Label } from "@/components/ui/label";
+import { ProvinceResponse } from "@/services/province/types";
+
 
 export function LocationSearch({
   value,
@@ -27,6 +29,11 @@ export function LocationSearch({
   noResultText,
 }: Props) {
   const [open, setOpen] = useState(false);
+
+  const selectedItem = useMemo(
+    () => items.find((item) => item.code === value),
+    [items, value]
+  );
 
   return (
     <div className="flex flex-col gap-2">
@@ -39,9 +46,7 @@ export function LocationSearch({
             aria-expanded={open}
             className="md:w-sm justify-between"
           >
-            {value
-              ? items.find((item) => item.code.toString() === value)?.name
-              : placeholder}
+            {selectedItem ? selectedItem.name : placeholder}
             <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -55,21 +60,15 @@ export function LocationSearch({
                   <CommandItem
                     key={item.code}
                     value={item.name}
-                    onSelect={(selectedLabel) => {
-                      const selectedItem = items.find(
-                        (i) => i.name === selectedLabel
-                      );
-                      const newValue = selectedItem
-                        ? selectedItem.code.toString()
-                        : "";
-                      setValue(newValue);
+                    onSelect={() => {
+                      setValue(item.code);
                       setOpen(false);
                     }}
                   >
                     <CheckIcon
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === item.code.toString()
+                        value === item.code
                           ? "opacity-100"
                           : "opacity-0"
                       )}
@@ -86,14 +85,11 @@ export function LocationSearch({
   );
 }
 
+
 type Props = {
-  value: string;
-  setValue: (newValue: string) => void;
-  items: {
-    name: string;
-    code: number;
-    codename: string;
-  }[];
+  value: number | null;
+  setValue: (newValue: number) => void;
+  items: ProvinceResponse[];
   label: string;
   placeholder: string;
   noResultText: string;
