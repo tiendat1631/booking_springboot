@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán thành công</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .success-icon {
+            text-align: center;
+            font-size: 60px;
+            margin: 20px 0;
+        }
+
+        .booking-code {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .booking-code h2 {
+            color: #28a745;
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        .info-section {
+            margin: 25px 0;
+        }
+
+        .info-section h3 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .payment-success {
+            background-color: #28a745;
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .payment-amount {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .route-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .route-arrow {
+            text-align: center;
+            font-size: 24px;
+            color: #28a745;
+            margin: 10px 0;
+        }
+
+        .station {
+            text-align: center;
+        }
+
+        .station-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .station-time {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .ticket-note {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ THANH TOÁN THÀNH CÔNG</h1>
+        </div>
+
+        <div class="content">
+            <div class="success-icon">🎉</div>
+
+            <p style="text-align: center;">Xin chào <strong th:text="${passengerName}">Khách hàng</strong>,</p>
+            <p style="text-align: center;">Thanh toán của bạn đã được xử lý thành công!</p>
+
+            <div class="payment-success">
+                <p style="margin: 0;">Số tiền thanh toán</p>
+                <div class="payment-amount" th:text="${paymentAmount}">700.000 VND</div>
+                <p style="margin: 5px 0 0 0; font-size: 14px;">
+                    <span th:text="${paymentMethod}">VNPAY</span> •
+                    <span th:text="${paidAt}">24/12/2024 20:00</span>
+                </p>
+            </div>
+
+            <div class="booking-code">
+                <p style="margin: 0 0 5px 0; color: #155724;">Mã vé điện tử</p>
+                <h2 th:text="${bookingCode}">BK2024122400001</h2>
+            </div>
+
+            <div class="route-info">
+                <div class="station">
+                    <div class="station-name" th:text="${departureStation}">Bến xe Miền Đông</div>
+                    <div class="station-time" th:text="${departureDate} + ' - ' + ${departureTime}">25/12/2024 - 22:00
+                    </div>
+                </div>
+                <div class="route-arrow">↓</div>
+                <div class="station">
+                    <div class="station-name" th:text="${arrivalStation}">Bến xe Đà Lạt</div>
+                    <div class="station-time" th:text="${arrivalTime}">05:00</div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>🎫 Chi tiết vé</h3>
+                <div class="info-row">
+                    <span class="info-label">Tuyến:</span>
+                    <span class="info-value" th:text="${routeName}">Sài Gòn - Đà Lạt</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số ghế:</span>
+                    <span class="info-value" th:text="${seats}">A01, A02</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Biển số xe:</span>
+                    <span class="info-value" th:text="${busLicensePlate}">51B-12345</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mã giao dịch:</span>
+                    <span class="info-value" th:text="${transactionId}">VNP123456789</span>
+                </div>
+            </div>
+
+            <div class="ticket-note">
+                <strong>🎫 Đây là vé điện tử của bạn</strong>
+                <p style="margin: 10px 0 0 0;">Vui lòng xuất trình mã đặt vé này khi lên xe.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
+            <p>Nếu bạn có thắc mắc, vui lòng liên hệ hotline: <strong>1900 xxxx</strong></p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import com.dkpm.bus_booking_api.config.JwtProperties;
+
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;
@@ -18,22 +20,22 @@ import java.util.stream.Collectors;
 public class TokenService {
 
     private final JwtEncoder encoder;
+    private final JwtProperties jwtProperties;
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
 
-        System.out.println("===== DEBUG AUTHORITIES: " + authentication.getAuthorities() + " =====");
-
-        String scope = authentication.getAuthorities().stream()
+        String roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
+                .filter(auth -> auth.startsWith("ROLE_"))
                 .collect(Collectors.joining(" "));
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(7, ChronoUnit.DAYS))
+                .expiresAt(now.plus(jwtProperties.expiration(), ChronoUnit.MILLIS))
                 .subject(authentication.getName())
-                .claim("scope", scope)
+                .claim("roles", roles)
                 .build();
 
         return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

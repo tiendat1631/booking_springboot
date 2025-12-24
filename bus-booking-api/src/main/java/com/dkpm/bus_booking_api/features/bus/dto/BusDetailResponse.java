@@ -5,7 +5,7 @@ import com.dkpm.bus_booking_api.domain.bus.BusStatus;
 import com.dkpm.bus_booking_api.domain.bus.BusType;
 import com.dkpm.bus_booking_api.domain.bus.SeatLayout;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record BusDetailResponse(
@@ -15,8 +15,8 @@ public record BusDetailResponse(
         BusStatus status,
         int totalSeats,
         SeatLayout seatLayout,
-        Instant createdAt,
-        Instant updatedAt) {
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt) {
     public static BusDetailResponse from(Bus bus) {
         return new BusDetailResponse(
                 bus.getId(),

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác nhận đặt vé</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .booking-code {
+            background-color: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .booking-code h2 {
+            color: #667eea;
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+        .info-section {
+            margin: 25px 0;
+        }
+        .info-section h3 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+        .route-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .route-arrow {
+            text-align: center;
+            font-size: 24px;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .station {
+            text-align: center;
+        }
+        .station-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .station-time {
+            font-size: 14px;
+            color: #666;
+        }
+        .price-section {
+            background-color: #667eea;
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .price-total {
+            font-size: 20px;
+            font-weight: bold;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .note {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚌 XÁC NHẬN ĐẶT VÉ THÀNH CÔNG</h1>
+        </div>
+        
+        <div class="content">
+            <p>Xin chào <strong th:text="${passengerName}">Khách hàng</strong>,</p>
+            <p>Cảm ơn bạn đã đặt vé. Dưới đây là thông tin chi tiết đặt vé của bạn:</p>
+            
+            <div class="booking-code">
+                <p style="margin: 0 0 5px 0; color: #666;">Mã đặt vé</p>
+                <h2 th:text="${bookingCode}">BK2024122400001</h2>
+            </div>
+            
+            <div class="route-info">
+                <div class="station">
+                    <div class="station-name" th:text="${departureStation}">Bến xe Miền Đông</div>
+                    <div class="station-time" th:text="${departureTime}">22:00</div>
+                </div>
+                <div class="route-arrow">↓</div>
+                <div class="station">
+                    <div class="station-name" th:text="${arrivalStation}">Bến xe Đà Lạt</div>
+                    <div class="station-time" th:text="${arrivalTime}">05:00</div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>📅 Thông tin chuyến đi</h3>
+                <div class="info-row">
+                    <span class="info-label">Tuyến:</span>
+                    <span class="info-value" th:text="${routeName}">Sài Gòn - Đà Lạt</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ngày khởi hành:</span>
+                    <span class="info-value" th:text="${departureDate}">25/12/2024</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Biển số xe:</span>
+                    <span class="info-value" th:text="${busLicensePlate}">51B-12345</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Loại xe:</span>
+                    <span class="info-value" th:text="${busType}">SLEEPER</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số ghế:</span>
+                    <span class="info-value" th:text="${seats}">A01, A02</span>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>👤 Thông tin hành khách</h3>
+                <div class="info-row">
+                    <span class="info-label">Họ tên:</span>
+                    <span class="info-value" th:text="${passengerName}">Nguyễn Văn A</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số điện thoại:</span>
+                    <span class="info-value" th:text="${passengerPhone}">0901234567</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" th:text="${passengerEmail}">email@example.com</span>
+                </div>
+            </div>
+            
+            <div class="price-section">
+                <div class="price-row">
+                    <span>Tổng tiền vé:</span>
+                    <span th:text="${totalAmount}">700.000 VND</span>
+                </div>
+                <div class="price-row" th:if="${discountAmount != '0 VND'}">
+                    <span>Giảm giá:</span>
+                    <span th:text="'-' + ${discountAmount}">-0 VND</span>
+                </div>
+                <div class="price-row price-total">
+                    <span>THÀNH TIỀN:</span>
+                    <span th:text="${finalAmount}">700.000 VND</span>
+                </div>
+            </div>
+            
+            <div class="note">
+                <p class="note-title">⚠️ Lưu ý quan trọng:</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Vui lòng có mặt tại bến xe ít nhất 30 phút trước giờ khởi hành.</li>
+                    <li>Mang theo CMND/CCCD và mã đặt vé khi lên xe.</li>
+                    <li>Vé đã thanh toán không được hoàn lại.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
+            <p>Nếu bạn có thắc mắc, vui lòng liên hệ hotline: <strong>1900 xxxx</strong></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,11 +28,11 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    protected Instant createdAt;
+    protected LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    protected Instant updatedAt;
+    protected LocalDateTime updatedAt;
 
     @CreatedBy
     @Column(name = "created_by", updatable = false)

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực tài khoản</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #4A90E2;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            background-color: #4A90E2;
+            color: white !important;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .token-info {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CHÀO MỪNG BẠN! 👋</h1>
+        </div>
+        <div class="content">
+            <p>Chào mừng bạn đã đăng ký tài khoản tại <strong th:text="${appName}">Bus Booking</strong>.</p>
+            <p>Vui lòng nhấn vào nút bên dưới để xác thực địa chỉ email của bạn và kích hoạt tài khoản:</p>
+            
+            <div class="button-container">
+                <a th:href="${verificationUrl}" class="btn">XÁC THỰC TÀI KHOẢN</a>
+            </div>
+
+            <p>Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
+            <p>Liên kết này sẽ hết hạn sau 24 giờ.</p>
+
+            <div class="token-info">
+                Nếu nút trên không hoạt động, vui lòng copy liên kết này dán vào trình duyệt:<br/>
+                <span th:text="${verificationUrl}">http://localhost:8080/api/auth/verify?token=xxx</span>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
+            <p>© 2024 Bus Booking Service. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

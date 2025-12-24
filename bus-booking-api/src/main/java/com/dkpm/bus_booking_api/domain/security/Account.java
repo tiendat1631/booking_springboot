@@ -31,6 +31,10 @@ public class Account extends BaseEntity {
 
     private boolean enabled;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
+
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Profile profile;
 }

@@ -1,0 +1,1340 @@
+{
+	"info": {
+		"_postman_id": "3c010ca2-bb7e-48ee-8393-aea0df693137",
+		"name": "Bus Booking API",
+		"description": "Complete API collection for the Bus Booking System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42926723"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const token = pm.response.text();\r",
+									"\r",
+									"    pm.collectionVariables.set(\"token\", token);\r",
+									"    \r",
+									"    console.log(\"Token has been updated successfully!\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin@example.com\",\r\n    \"password\": \"Admin@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"0123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/verify?token=VERIFICATION_TOKEN_HERE",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "VERIFICATION_TOKEN_HERE"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stations",
+			"item": [
+				{
+					"name": "Get Stations (Search)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations?keyword=&page=0&size=10&sort=name,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Optional search keyword"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Active Stations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/all?page=0&size=10&sort=name,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Station By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{stationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Station By Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/code/:code",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								"code",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "HN-MY-DINH"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Stations By City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/search?city=Hanoi&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								"search"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Hanoi"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Station (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My Dinh Bus Station\",\n  \"code\": \"HN-MY-DINH\",\n  \"address\": \"20 Pham Hung, My Dinh\",\n  \"city\": \"Hanoi\",\n  \"province\": \"Hanoi\",\n  \"latitude\": 21.0285,\n  \"longitude\": 105.7823\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Station (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My Dinh Bus Station - Updated\",\n  \"address\": \"20 Pham Hung, My Dinh, Cau Giay\",\n  \"city\": \"Hanoi\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{stationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Station (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/stations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"stations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{stationId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Routes",
+			"item": [
+				{
+					"name": "Get Routes (Search)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes?keyword=&page=0&size=10&sort=name,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Optional search keyword"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Active Routes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/all?page=0&size=10&sort=name,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Route By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{routeId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Route By Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/code/:code",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"code",
+								":code"
+							],
+							"variable": [
+								{
+									"key": "code",
+									"value": "HN-SG-001"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Routes By Stations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								"search"
+							],
+							"query": [
+								{
+									"key": "departureStationId",
+									"value": "{{departureStationId}}"
+								},
+								{
+									"key": "arrivalStationId",
+									"value": "{{arrivalStationId}}"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Route (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hanoi - Ho Chi Minh City\",\n  \"code\": \"HN-SG-001\",\n  \"departureStationId\": \"{{departureStationId}}\",\n  \"arrivalStationId\": \"{{arrivalStationId}}\",\n  \"distanceKm\": 1700,\n  \"estimatedDurationMinutes\": 1800,\n  \"basePrice\": 500000,\n  \"description\": \"Express route from Hanoi to HCMC\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Route (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hanoi - Ho Chi Minh City Express\",\n  \"basePrice\": 550000,\n  \"description\": \"Updated express route\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{routeId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Route (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/routes/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"routes",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{routeId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Buses",
+			"item": [
+				{
+					"name": "Get Buses (Search)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buses?keyword=&type=&status=&minSeats=&maxSeats=&page=0&size=10&sort=createdAt,desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buses"
+							],
+							"query": [
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Search by license plate"
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "STANDARD, VIP, SLEEPER"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"description": "ACTIVE, MAINTENANCE, INACTIVE"
+								},
+								{
+									"key": "minSeats",
+									"value": ""
+								},
+								{
+									"key": "maxSeats",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bus By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/buses/:busId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buses",
+								":busId"
+							],
+							"variable": [
+								{
+									"key": "busId",
+									"value": "{{busId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Bus (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"licensePlate\": \"29A-12345\",\n  \"type\": \"VIP\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/buses",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"buses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trips",
+			"item": [
+				{
+					"name": "Search Available Trips",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&departureDate=2025-01-15&passengers=1&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								"search"
+							],
+							"query": [
+								{
+									"key": "departureStationId",
+									"value": "{{departureStationId}}"
+								},
+								{
+									"key": "arrivalStationId",
+									"value": "{{arrivalStationId}}"
+								},
+								{
+									"key": "departureDate",
+									"value": "2025-01-15",
+									"description": "ISO date format: YYYY-MM-DD"
+								},
+								{
+									"key": "passengers",
+									"value": "1"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Upcoming Trips",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/upcoming?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								"upcoming"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trip Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/:tripId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								":tripId"
+							],
+							"variable": [
+								{
+									"key": "tripId",
+									"value": "{{tripId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trip Seats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/:tripId/seats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								":tripId",
+								"seats"
+							],
+							"variable": [
+								{
+									"key": "tripId",
+									"value": "{{tripId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Trip (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"routeId\": \"{{routeId}}\",\n  \"busId\": \"{{busId}}\",\n  \"departureTime\": \"2025-01-15T08:00:00\",\n  \"arrivalTime\": \"2025-01-16T14:00:00\",\n  \"price\": 550000\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/trips",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Trip (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"departureTime\": \"2025-01-15T09:00:00\",\n  \"arrivalTime\": \"2025-01-16T15:00:00\",\n  \"price\": 600000,\n  \"status\": \"SCHEDULED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/:tripId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								":tripId"
+							],
+							"variable": [
+								{
+									"key": "tripId",
+									"value": "{{tripId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Trip (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/:tripId/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								":tripId",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "tripId",
+									"value": "{{tripId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Trip (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips/:tripId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips",
+								":tripId"
+							],
+							"variable": [
+								{
+									"key": "tripId",
+									"value": "{{tripId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"seatIds\": [\"A1\", \"A2\"],\n  \"passengerName\": \"Nguyen Van A\",\n  \"passengerPhone\": \"0901234567\",\n  \"passengerEmail\": \"nguyenvana@email.com\",\n  \"notes\": \"Window seat preferred\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/my?page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"my"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/:bookingId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Booking By Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/code/:bookingCode",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"code",
+								":bookingCode"
+							],
+							"variable": [
+								{
+									"key": "bookingCode",
+									"value": "BK-ABC123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/:bookingId/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								":bookingId",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Bookings (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/admin?status=&keyword=&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"description": "PENDING, CONFIRMED, CANCELLED, COMPLETED"
+								},
+								{
+									"key": "keyword",
+									"value": "",
+									"description": "Search by code, name, phone"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Cancel Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/admin/:bookingId/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"admin",
+								":bookingId",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Initiate Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"method\": \"VNPAY\",\n  \"returnUrl\": \"http://localhost:3000/payment/callback\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/booking/:bookingId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"booking",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/booking/:bookingId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"booking",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VNPay Callback",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/vnpay/callback?vnp_TxnRef=&vnp_ResponseCode=00&vnp_TransactionNo=&vnp_SecureHash=",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"vnpay",
+								"callback"
+							],
+							"query": [
+								{
+									"key": "vnp_TxnRef",
+									"value": ""
+								},
+								{
+									"key": "vnp_ResponseCode",
+									"value": "00"
+								},
+								{
+									"key": "vnp_TransactionNo",
+									"value": ""
+								},
+								{
+									"key": "vnp_SecureHash",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Cash Payment (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/payments/cash/confirm/:bookingId?note=Paid in cash at counter",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"payments",
+								"cash",
+								"confirm",
+								":bookingId"
+							],
+							"query": [
+								{
+									"key": "note",
+									"value": "Paid in cash at counter"
+								}
+							],
+							"variable": [
+								{
+									"key": "bookingId",
+									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
