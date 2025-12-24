@@ -15,7 +15,7 @@ import org.application.booking.domain.common.BaseEntity;
 @Entity
 public class Seat extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="bus_id")
+    @JoinColumn(name = "bus_id")
     @JsonBackReference
     private Bus bus;
 
