@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.payment.dto.InitiatePaymentRequest;
 import com.dkpm.bus_booking_api.features.payment.dto.PaymentResponse;
 import com.dkpm.bus_booking_api.infrastructure.payment.VNPayClient;
@@ -36,7 +37,7 @@ public class PaymentController {
      * Initiate payment for a booking
      */
     @PostMapping("/booking/{bookingId}")
-    public ResponseEntity<PaymentResponse> initiatePayment(
+    public ResponseEntity<ApiResponse<PaymentResponse>> initiatePayment(
             @PathVariable UUID bookingId,
             @Valid @RequestBody InitiatePaymentRequest request,
             HttpServletRequest httpRequest) {
@@ -50,20 +51,22 @@ public class PaymentController {
                 ipAddress);
 
         PaymentResponse payment = paymentService.initiatePayment(bookingId, requestWithIp);
-        return ResponseEntity.ok(payment);
+        return ResponseEntity.ok(ApiResponse.success(payment, "Payment initiated successfully"));
     }
 
     /**
      * Get payment status for a booking
      */
     @GetMapping("/booking/{bookingId}")
-    public ResponseEntity<PaymentResponse> getPaymentStatus(@PathVariable UUID bookingId) {
+    public ResponseEntity<ApiResponse<PaymentResponse>> getPaymentStatus(@PathVariable UUID bookingId) {
         PaymentResponse payment = paymentService.getPaymentStatus(bookingId);
-        return ResponseEntity.ok(payment);
+        return ResponseEntity.ok(ApiResponse.success(payment));
     }
 
     /**
      * VNPay IPN callback (Instant Payment Notification)
+     * NOTE: This endpoint returns raw Map format as required by VNPay,
+     * not wrapped in ApiResponse.
      */
     @GetMapping("/vnpay/callback")
     public ResponseEntity<Map<String, String>> vnpayCallback(
@@ -109,12 +112,12 @@ public class PaymentController {
      */
     @PostMapping("/cash/confirm/{bookingId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PaymentResponse> confirmCashPayment(
+    public ResponseEntity<ApiResponse<PaymentResponse>> confirmCashPayment(
             @PathVariable UUID bookingId,
             @RequestParam(required = false) String note) {
 
         PaymentResponse payment = paymentService.confirmCashPayment(bookingId, note);
-        return ResponseEntity.ok(payment);
+        return ResponseEntity.ok(ApiResponse.success(payment, "Cash payment confirmed successfully"));
     }
 
     /**

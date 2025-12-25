@@ -33,8 +33,13 @@ public interface IBookingService {
 
     /**
      * Cancel a booking
+     * 
+     * @param bookingId the booking to cancel
+     * @param callerId  the ID of the caller (admin or customer)
+     *                  - Admin: can cancel any booking
+     *                  - Customer: can only cancel their own booking
      */
-    BookingResponse cancelBooking(UUID bookingId, UUID customerId);
+    BookingResponse cancelBooking(UUID bookingId, UUID callerId);
 
     /**
      * Search bookings (admin)
@@ -50,4 +55,14 @@ public interface IBookingService {
      * Confirm booking after successful payment
      */
     BookingResponse confirmBooking(UUID bookingId);
+
+    /**
+     * Request booking cancellation (sends OTP to email)
+     */
+    void requestCancelBooking(String bookingCode, String passengerPhone);
+
+    /**
+     * Confirm booking cancellation with OTP
+     */
+    BookingResponse confirmCancelBooking(String bookingCode, String otpCode);
 }

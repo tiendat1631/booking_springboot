@@ -9,10 +9,11 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerial
 
 import com.dkpm.bus_booking_api.config.RsaKeyProperties;
 import com.dkpm.bus_booking_api.config.JwtProperties;
+import com.dkpm.bus_booking_api.config.VnpayProperties;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableConfigurationProperties({ RsaKeyProperties.class, JwtProperties.class })
+@EnableConfigurationProperties({ RsaKeyProperties.class, JwtProperties.class, VnpayProperties.class })
 @EnableSpringDataWebSupport(pageSerializationMode = PageSerializationMode.VIA_DTO)
 public class BusBookingApiApplication {
 

@@ -77,8 +77,7 @@ public class EmailService implements IEmailService {
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent booking cancellation email for {}", booking.getBookingCode());
         } catch (Exception e) {
-            log.error("Failed to send booking cancellation email for {}: {}",
-                    booking.getBookingCode(), e.getMessage());
+            log.error("Failed to send booking cancellation email for {}", booking.getBookingCode());
         }
     }
 
@@ -130,6 +129,33 @@ public class EmailService implements IEmailService {
             sendEmail(account.getEmail(), "Xác thực tài khoản - " + appName, htmlContent);
         } catch (Exception e) {
             log.error("Failed to send verification email to {}: {}", account.getEmail(), e.getMessage());
+        }
+    }
+
+    @Override
+    @Async
+    public void sendCancellationOtp(Booking booking, String otpCode) {
+        if (booking.getPassengerEmail() == null || booking.getPassengerEmail().isBlank()) {
+            log.warn("No email address for booking {}, skipping OTP email", booking.getBookingCode());
+            return;
+        }
+
+        try {
+            Context context = new Context();
+            context.setVariable("bookingCode", booking.getBookingCode());
+            context.setVariable("passengerName", booking.getPassengerName());
+            context.setVariable("otpCode", otpCode);
+            context.setVariable("appName", appName);
+            context.setVariable("expiryMinutes", 10);
+
+            String htmlContent = templateEngine.process("email/cancellation-otp", context);
+            String subject = String.format("[%s] Mã xác nhận hủy vé - %s", appName, booking.getBookingCode());
+
+            sendEmail(booking.getPassengerEmail(), subject, htmlContent);
+            log.info("Sent cancellation OTP email for {}", booking.getBookingCode());
+        } catch (Exception e) {
+            log.error("Failed to send cancellation OTP email for {}: {}",
+                    booking.getBookingCode(), e.getMessage());
         }
     }
 

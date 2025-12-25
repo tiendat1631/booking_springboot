@@ -28,6 +28,11 @@ public interface IEmailService {
     void sendVerificationEmail(com.dkpm.bus_booking_api.domain.security.Account account, String token);
 
     /**
+     * Send cancellation OTP email
+     */
+    void sendCancellationOtp(Booking booking, String otpCode);
+
+    /**
      * Send generic email
      */
     void sendEmail(String to, String subject, String htmlContent);

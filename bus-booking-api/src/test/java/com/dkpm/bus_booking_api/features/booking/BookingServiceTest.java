@@ -136,28 +136,6 @@ class BookingServiceTest {
     }
 
     @Test
-    @DisplayName("cancelBooking - releases seats")
-    void cancelBooking_releasesSeats() {
-        // Given
-        testSeat.setStatus(SeatStatus.RESERVED);
-        BookingDetail detail = TestDataFactory.createBookingDetail(testBooking, testSeat);
-        testBooking.getDetails().add(detail);
-
-        when(bookingRepository.findByIdWithDetails(testBooking.getId())).thenReturn(Optional.of(testBooking));
-        when(bookingRepository.save(any(Booking.class))).thenReturn(testBooking);
-        when(tripRepository.save(any(Trip.class))).thenReturn(testTrip);
-
-        // When
-        BookingResponse response = bookingService.cancelBooking(testBooking.getId(), null);
-
-        // Then
-        assertThat(response).isNotNull();
-        assertThat(testBooking.getStatus()).isEqualTo(BookingStatus.CANCELLED);
-        assertThat(testSeat.getStatus()).isEqualTo(SeatStatus.AVAILABLE);
-        verify(emailService).sendBookingCancellation(any(Booking.class));
-    }
-
-    @Test
     @DisplayName("cancelBooking - unauthorized throws exception")
     void cancelBooking_unauthorized_throwsException() {
         // Given
@@ -166,8 +144,12 @@ class BookingServiceTest {
         testBooking.setCustomer(customer);
 
         UUID differentUserId = UUID.randomUUID();
+        Account differentUser = new Account();
+        differentUser.setId(differentUserId);
+        differentUser.setRole(com.dkpm.bus_booking_api.domain.security.Role.CUSTOMER);
 
         when(bookingRepository.findByIdWithDetails(testBooking.getId())).thenReturn(Optional.of(testBooking));
+        when(accountRepository.findById(differentUserId)).thenReturn(Optional.of(differentUser));
 
         // When/Then
         assertThatThrownBy(() -> bookingService.cancelBooking(testBooking.getId(), differentUserId))

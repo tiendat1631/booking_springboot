@@ -15,9 +15,11 @@ import java.util.TimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.dkpm.bus_booking_api.config.VnpayProperties;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -26,22 +28,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class VNPayClient {
 
-    @Value("${vnpay.tmn-code:DEMO}")
-    private String vnpTmnCode;
-
-    @Value("${vnpay.hash-secret:DEMO_SECRET}")
-    private String vnpHashSecret;
-
-    @Value("${vnpay.url:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}")
-    private String vnpUrl;
-
-    @Value("${vnpay.return-url:http://localhost:8080/api/payments/vnpay/callback}")
-    private String vnpReturnUrl;
-
-    @Value("${vnpay.version:2.1.0}")
-    private String vnpVersion;
+    private final VnpayProperties vnpayProperties;
 
     /**
      * Create VNPay payment URL
@@ -58,16 +48,16 @@ public class VNPayClient {
 
         Map<String, String> vnpParams = new HashMap<>();
 
-        vnpParams.put("vnp_Version", vnpVersion);
+        vnpParams.put("vnp_Version", vnpayProperties.version());
         vnpParams.put("vnp_Command", "pay");
-        vnpParams.put("vnp_TmnCode", vnpTmnCode);
+        vnpParams.put("vnp_TmnCode", vnpayProperties.tmnCode());
         vnpParams.put("vnp_Amount", String.valueOf(amount.multiply(BigDecimal.valueOf(100)).longValue()));
         vnpParams.put("vnp_CurrCode", "VND");
         vnpParams.put("vnp_TxnRef", txnRef);
         vnpParams.put("vnp_OrderInfo", orderInfo);
         vnpParams.put("vnp_OrderType", "billpayment");
         vnpParams.put("vnp_Locale", "vn");
-        vnpParams.put("vnp_ReturnUrl", customReturnUrl != null ? customReturnUrl : vnpReturnUrl);
+        vnpParams.put("vnp_ReturnUrl", customReturnUrl != null ? customReturnUrl : vnpayProperties.returnUrl());
         vnpParams.put("vnp_IpAddr", ipAddress != null ? ipAddress : "127.0.0.1");
 
         // Create date
@@ -109,10 +99,10 @@ public class VNPayClient {
         }
 
         // Generate secure hash
-        String vnpSecureHash = hmacSHA512(vnpHashSecret, hashData.toString());
+        String vnpSecureHash = hmacSHA512(vnpayProperties.hashSecret(), hashData.toString());
         query.append("&vnp_SecureHash=").append(vnpSecureHash);
 
-        String paymentUrl = vnpUrl + "?" + query;
+        String paymentUrl = vnpayProperties.url() + "?" + query;
 
         log.info("Created VNPay payment URL for txnRef: {}", txnRef);
 
@@ -150,7 +140,7 @@ public class VNPayClient {
             }
         }
 
-        String calculatedHash = hmacSHA512(vnpHashSecret, hashData.toString());
+        String calculatedHash = hmacSHA512(vnpayProperties.hashSecret(), hashData.toString());
 
         return vnpSecureHash.equalsIgnoreCase(calculatedHash);
     }

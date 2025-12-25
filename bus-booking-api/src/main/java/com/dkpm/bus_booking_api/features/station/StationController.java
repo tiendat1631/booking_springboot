@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.station.dto.CreateStationRequest;
 import com.dkpm.bus_booking_api.features.station.dto.StationResponse;
 import com.dkpm.bus_booking_api.features.station.dto.UpdateStationRequest;
@@ -34,60 +35,62 @@ public class StationController {
     private final IStationService stationService;
 
     @GetMapping
-    public ResponseEntity<Page<StationResponse>> getStations(
+    public ResponseEntity<ApiResponse<Page<StationResponse>>> getStations(
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<StationResponse> result = stationService.searchStations(keyword, pageable);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<StationResponse>> getAllActiveStations(
+    public ResponseEntity<ApiResponse<Page<StationResponse>>> getAllActiveStations(
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<StationResponse> stations = stationService.getAllActiveStations(pageable);
-        return ResponseEntity.ok(stations);
+        return ResponseEntity.ok(ApiResponse.success(stations));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> getStationById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<StationResponse>> getStationById(@PathVariable UUID id) {
         StationResponse station = stationService.getStationById(id);
-        return ResponseEntity.ok(station);
+        return ResponseEntity.ok(ApiResponse.success(station));
     }
 
     @GetMapping("/code/{code}")
-    public ResponseEntity<StationResponse> getStationByCode(@PathVariable String code) {
+    public ResponseEntity<ApiResponse<StationResponse>> getStationByCode(@PathVariable String code) {
         StationResponse station = stationService.getStationByCode(code);
-        return ResponseEntity.ok(station);
+        return ResponseEntity.ok(ApiResponse.success(station));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<StationResponse>> getStationsByCity(
+    public ResponseEntity<ApiResponse<Page<StationResponse>>> getStationsByCity(
             @RequestParam String city,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<StationResponse> stations = stationService.getStationsByCity(city, pageable);
-        return ResponseEntity.ok(stations);
+        return ResponseEntity.ok(ApiResponse.success(stations));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody CreateStationRequest request) {
+    public ResponseEntity<ApiResponse<StationResponse>> createStation(
+            @Valid @RequestBody CreateStationRequest request) {
         StationResponse station = stationService.createStation(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(station);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(station, "Station created successfully"));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<StationResponse> updateStation(
+    public ResponseEntity<ApiResponse<StationResponse>> updateStation(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateStationRequest request) {
         StationResponse station = stationService.updateStation(id, request);
-        return ResponseEntity.ok(station);
+        return ResponseEntity.ok(ApiResponse.success(station, "Station updated successfully"));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteStation(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteStation(@PathVariable UUID id) {
         stationService.deleteStation(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Station deleted successfully"));
     }
 }

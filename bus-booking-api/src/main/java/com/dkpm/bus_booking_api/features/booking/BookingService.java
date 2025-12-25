@@ -16,13 +16,17 @@ import com.dkpm.bus_booking_api.domain.booking.Booking;
 import com.dkpm.bus_booking_api.domain.booking.BookingDetail;
 import com.dkpm.bus_booking_api.domain.booking.BookingRepository;
 import com.dkpm.bus_booking_api.domain.booking.BookingStatus;
+import com.dkpm.bus_booking_api.domain.booking.CancellationToken;
+import com.dkpm.bus_booking_api.domain.booking.CancellationTokenRepository;
 import com.dkpm.bus_booking_api.domain.exception.ResourceNotFoundException;
 import com.dkpm.bus_booking_api.domain.security.Account;
 import com.dkpm.bus_booking_api.domain.security.AccountRepository;
+import com.dkpm.bus_booking_api.domain.security.Role;
 import com.dkpm.bus_booking_api.domain.trip.Trip;
 import com.dkpm.bus_booking_api.domain.trip.TripRepository;
 import com.dkpm.bus_booking_api.domain.trip.TripSeat;
 import com.dkpm.bus_booking_api.domain.trip.TripSeatRepository;
+import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 import com.dkpm.bus_booking_api.features.booking.dto.BookingResponse;
 import com.dkpm.bus_booking_api.features.booking.dto.CreateBookingRequest;
 import com.dkpm.bus_booking_api.infrastructure.email.IEmailService;
@@ -40,6 +44,7 @@ public class BookingService implements IBookingService {
     private final TripRepository tripRepository;
     private final TripSeatRepository tripSeatRepository;
     private final AccountRepository accountRepository;
+    private final CancellationTokenRepository cancellationTokenRepository;
     private final IEmailService emailService;
 
     private static final int BOOKING_EXPIRY_MINUTES = 15;
@@ -51,7 +56,7 @@ public class BookingService implements IBookingService {
         Trip trip = tripRepository.findByIdWithDetails(request.tripId())
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + request.tripId()));
 
-        if (trip.getStatus() != com.dkpm.bus_booking_api.domain.trip.TripStatus.SCHEDULED) {
+        if (trip.getStatus() != TripStatus.SCHEDULED) {
             throw new IllegalStateException("Trip is not available for booking");
         }
 
@@ -156,18 +161,35 @@ public class BookingService implements IBookingService {
 
     @Override
     @Transactional
-    public BookingResponse cancelBooking(UUID bookingId, UUID customerId) {
+    public BookingResponse cancelBooking(UUID bookingId, UUID callerId) {
         Booking booking = bookingRepository.findByIdWithDetails(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
 
-        // Validate owner (skip if admin - customerId is null)
-        if (customerId != null && booking.getCustomer() != null &&
-                !booking.getCustomer().getId().equals(customerId)) {
-            throw new IllegalArgumentException("Not authorized to cancel this booking");
+        // Validate caller authorization
+        // - Admin: can cancel any booking
+        // - Customer: can only cancel their own booking
+        Account caller = accountRepository.findById(callerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + callerId));
+
+        boolean isAdmin = caller.getRole() == Role.ADMIN;
+
+        if (!isAdmin) {
+            // Non-admin logic
+            if (booking.getCustomer() == null) {
+                throw new IllegalArgumentException("Guest bookings must be cancelled via OTP verification");
+            }
+            if (!booking.getCustomer().getId().equals(callerId)) {
+                throw new IllegalArgumentException("Not authorized to cancel this booking");
+            }
         }
 
         if (!booking.canBeCancelled()) {
             throw new IllegalStateException("Booking cannot be cancelled with status: " + booking.getStatus());
+        }
+
+        // Check if trip has already departed
+        if (booking.getTrip().getDepartureTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Cannot cancel booking after trip has departed");
         }
 
         // Release seats
@@ -243,6 +265,90 @@ public class BookingService implements IBookingService {
         return BookingResponse.from(booking);
     }
 
+    @Override
+    @Transactional
+    public void requestCancelBooking(String bookingCode, String passengerPhone) {
+        Booking booking = bookingRepository.findByBookingCodeWithDetails(bookingCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with code: " + bookingCode));
+
+        // Verify phone number
+        if (!booking.getPassengerPhone().equals(passengerPhone)) {
+            throw new IllegalArgumentException("Phone number does not match");
+        }
+
+        if (!booking.canBeCancelled()) {
+            throw new IllegalStateException("Booking cannot be cancelled with status: " + booking.getStatus());
+        }
+
+        // Delete existing token if any
+        cancellationTokenRepository.deleteByBookingId(booking.getId());
+
+        // Generate OTP
+        String otpCode = generateOtpCode();
+
+        // Create and save token
+        CancellationToken token = CancellationToken.create(booking, otpCode);
+        cancellationTokenRepository.save(token);
+
+        // Send OTP via email
+        emailService.sendCancellationOtp(booking, otpCode);
+
+        log.info("Sent cancellation OTP for booking {}", bookingCode);
+    }
+
+    @Override
+    @Transactional
+    public BookingResponse confirmCancelBooking(String bookingCode, String otpCode) {
+        CancellationToken token = cancellationTokenRepository.findByBookingCode(bookingCode)
+                .orElseThrow(() -> new IllegalStateException(
+                        "No cancellation request found. Please request cancellation first."));
+
+        // Check if expired
+        if (token.isExpired()) {
+            cancellationTokenRepository.delete(token);
+            throw new IllegalStateException("OTP has expired. Please request a new one.");
+        }
+
+        // Check max attempts
+        if (token.hasExceededMaxAttempts()) {
+            cancellationTokenRepository.delete(token);
+            throw new IllegalStateException("Maximum attempts exceeded. Please request a new OTP.");
+        }
+
+        // Verify OTP
+        if (!token.getOtpCode().equals(otpCode)) {
+            token.incrementAttempts();
+            cancellationTokenRepository.save(token);
+            throw new IllegalArgumentException("Invalid OTP code");
+        }
+
+        // OTP verified - proceed with cancellation
+        Booking booking = token.getBooking();
+
+        // Check if trip has already departed
+        if (booking.getTrip().getDepartureTime().isBefore(LocalDateTime.now())) {
+            cancellationTokenRepository.delete(token);
+            throw new IllegalStateException("Cannot cancel booking after trip has departed");
+        }
+
+        // Release seats
+        releaseBookingSeats(booking);
+
+        // Update booking status
+        booking.setStatus(BookingStatus.CANCELLED);
+        booking = bookingRepository.save(booking);
+
+        // Delete token
+        cancellationTokenRepository.delete(token);
+
+        // Send cancellation confirmation email
+        emailService.sendBookingCancellation(booking);
+
+        log.info("Guest cancelled booking {} via OTP", booking.getBookingCode());
+
+        return BookingResponse.from(booking);
+    }
+
     /**
      * Release seats when booking is cancelled or expired
      */
@@ -275,5 +381,12 @@ public class BookingService implements IBookingService {
         }
 
         return code;
+    }
+
+    /**
+     * Generate 6-digit OTP code
+     */
+    private String generateOtpCode() {
+        return String.format("%06d", ThreadLocalRandom.current().nextInt(1000000));
     }
 }

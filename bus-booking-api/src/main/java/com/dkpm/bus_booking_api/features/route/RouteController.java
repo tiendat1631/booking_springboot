@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.route.dto.CreateRouteRequest;
 import com.dkpm.bus_booking_api.features.route.dto.RouteResponse;
 import com.dkpm.bus_booking_api.features.route.dto.UpdateRouteRequest;
@@ -34,61 +35,61 @@ public class RouteController {
     private final IRouteService routeService;
 
     @GetMapping
-    public ResponseEntity<Page<RouteResponse>> getRoutes(
+    public ResponseEntity<ApiResponse<Page<RouteResponse>>> getRoutes(
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<RouteResponse> result = routeService.searchRoutes(keyword, pageable);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<RouteResponse>> getAllActiveRoutes(
+    public ResponseEntity<ApiResponse<Page<RouteResponse>>> getAllActiveRoutes(
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<RouteResponse> routes = routeService.getAllActiveRoutes(pageable);
-        return ResponseEntity.ok(routes);
+        return ResponseEntity.ok(ApiResponse.success(routes));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RouteResponse> getRouteById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<RouteResponse>> getRouteById(@PathVariable UUID id) {
         RouteResponse route = routeService.getRouteById(id);
-        return ResponseEntity.ok(route);
+        return ResponseEntity.ok(ApiResponse.success(route));
     }
 
     @GetMapping("/code/{code}")
-    public ResponseEntity<RouteResponse> getRouteByCode(@PathVariable String code) {
+    public ResponseEntity<ApiResponse<RouteResponse>> getRouteByCode(@PathVariable String code) {
         RouteResponse route = routeService.getRouteByCode(code);
-        return ResponseEntity.ok(route);
+        return ResponseEntity.ok(ApiResponse.success(route));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<RouteResponse>> searchRoutes(
+    public ResponseEntity<ApiResponse<Page<RouteResponse>>> searchRoutes(
             @RequestParam UUID departureStationId,
             @RequestParam UUID arrivalStationId,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<RouteResponse> routes = routeService.findRoutesByStations(departureStationId, arrivalStationId, pageable);
-        return ResponseEntity.ok(routes);
+        return ResponseEntity.ok(ApiResponse.success(routes));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RouteResponse> createRoute(@Valid @RequestBody CreateRouteRequest request) {
+    public ResponseEntity<ApiResponse<RouteResponse>> createRoute(@Valid @RequestBody CreateRouteRequest request) {
         RouteResponse route = routeService.createRoute(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(route);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(route, "Route created successfully"));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RouteResponse> updateRoute(
+    public ResponseEntity<ApiResponse<RouteResponse>> updateRoute(
             @PathVariable UUID id,
             @Valid @RequestBody UpdateRouteRequest request) {
         RouteResponse route = routeService.updateRoute(id, request);
-        return ResponseEntity.ok(route);
+        return ResponseEntity.ok(ApiResponse.success(route, "Route updated successfully"));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteRoute(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteRoute(@PathVariable UUID id) {
         routeService.deleteRoute(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Route deleted successfully"));
     }
 }

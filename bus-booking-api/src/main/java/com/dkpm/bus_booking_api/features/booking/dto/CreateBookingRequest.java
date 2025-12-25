@@ -10,15 +10,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record CreateBookingRequest(
-        @NotNull(message = "Trip ID is required") UUID tripId,
+                @NotNull(message = "Trip ID is required") UUID tripId,
 
-        @NotEmpty(message = "At least one seat must be selected") List<String> seatIds,
+                @NotEmpty(message = "At least one seat must be selected") List<String> seatIds,
 
-        @NotBlank(message = "Passenger name is required") String passengerName,
+                @NotBlank(message = "Passenger name is required") String passengerName,
 
-        @NotBlank(message = "Passenger phone is required") @Pattern(regexp = "^(0|\\+84)[0-9]{9,10}$", message = "Invalid phone number format") String passengerPhone,
+                @NotBlank(message = "Passenger phone is required") @Pattern(regexp = "^(0|\\+84)[0-9]{9,10}$", message = "Invalid phone number format") String passengerPhone,
 
-        @Email(message = "Invalid email format") String passengerEmail,
+                @Email(message = "Invalid email format") String passengerEmail,
 
-        String notes) {
+                String notes) {
 }
