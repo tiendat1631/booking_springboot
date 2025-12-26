@@ -62,16 +62,20 @@ public interface BookingRepository extends JpaRepository<Booking, UUID> {
     /**
      * Find bookings by customer
      */
-    @Query("""
-            SELECT b FROM Booking b
-            JOIN FETCH b.trip t
-            JOIN FETCH t.route r
-            JOIN FETCH r.departureStation
-            JOIN FETCH r.arrivalStation
+    @Query(value = """
+                        SELECT b FROM Booking b
+                        JOIN FETCH b.trip t
+                        JOIN FETCH t.route r
+                        JOIN FETCH r.departureStation
+                        JOIN FETCH r.arrivalStation
+                        WHERE b.customer.id = :customerId
+                        AND b.deleted = false
+                        ORDER BY b.bookingTime DESC
+            """, countQuery = """
+            SELECT COUNT(b) FROM Booking b
             WHERE b.customer.id = :customerId
             AND b.deleted = false
-            ORDER BY b.bookingTime DESC
-            """)
+                        """)
     Page<Booking> findByCustomerId(@Param("customerId") UUID customerId, Pageable pageable);
 
     /**

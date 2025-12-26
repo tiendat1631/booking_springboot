@@ -1,89 +1,135 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác thực tài khoản</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #fafafa;
+            padding: 40px 20px;
+        }
+
         .container {
-            max-width: 600px;
-            margin: 20px auto;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            background-color: #4A90E2;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 30px;
+            max-width: 480px;
+            margin: 0 auto;
             background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
         }
-        .button-container {
+
+        .header {
+            padding: 40px 32px 24px;
             text-align: center;
-            margin: 30px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .content p {
+            color: #525252;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+
         .btn {
-            background-color: #4A90E2;
-            color: white !important;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
             display: inline-block;
+            background-color: #1a1a1a;
+            color: #ffffff !important;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: opacity 0.2s;
         }
-        .footer {
-            background-color: #f9f9f9;
-            padding: 20px;
-            text-align: center;
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .link-box {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .link-box p {
+            font-size: 13px;
+            color: #737373;
+            margin-bottom: 8px;
+        }
+
+        .link-box span {
             font-size: 12px;
-            color: #777;
+            color: #525252;
+            word-break: break-all;
+            font-family: 'SF Mono', Monaco, monospace;
         }
-        .token-info {
-            background-color: #f0f7ff;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
+
+        .footer {
+            padding: 24px 32px;
             text-align: center;
-            margin-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #a3a3a3;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>CHÀO MỪNG BẠN! 👋</h1>
+            <h1>Xác thực tài khoản</h1>
         </div>
         <div class="content">
-            <p>Chào mừng bạn đã đăng ký tài khoản tại <strong th:text="${appName}">Bus Booking</strong>.</p>
-            <p>Vui lòng nhấn vào nút bên dưới để xác thực địa chỉ email của bạn và kích hoạt tài khoản:</p>
-            
-            <div class="button-container">
-                <a th:href="${verificationUrl}" class="btn">XÁC THỰC TÀI KHOẢN</a>
+            <p>Chào mừng bạn đến với <strong th:text="${appName}">Bus Booking</strong>.</p>
+            <p>Vui lòng nhấn vào nút bên dưới để xác thực email và kích hoạt tài khoản:</p>
+
+            <div class="btn-container">
+                <a th:href="${verificationUrl}" class="btn">Xác thực tài khoản</a>
             </div>
 
-            <p>Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email này.</p>
-            <p>Liên kết này sẽ hết hạn sau 24 giờ.</p>
+            <p style="font-size: 13px; color: #737373;">Liên kết này sẽ hết hạn sau 24 giờ. Nếu bạn không thực hiện đăng
+                ký này, vui lòng bỏ qua email.</p>
 
-            <div class="token-info">
-                Nếu nút trên không hoạt động, vui lòng copy liên kết này dán vào trình duyệt:<br/>
+            <div class="link-box">
+                <p>Nếu nút không hoạt động, hãy sao chép liên kết:</p>
                 <span th:text="${verificationUrl}">http://localhost:8080/api/auth/verify?token=xxx</span>
             </div>
         </div>
         <div class="footer">
-            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
-            <p>© 2024 Bus Booking Service. All rights reserved.</p>
+            <p>© 2024 <span th:text="${appName}">Bus Booking</span></p>
         </div>
     </div>
 </body>
+
 </html>

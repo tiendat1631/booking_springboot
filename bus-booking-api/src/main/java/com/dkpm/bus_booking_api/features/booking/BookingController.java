@@ -22,7 +22,7 @@ import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.domain.booking.BookingStatus;
 import com.dkpm.bus_booking_api.features.booking.dto.BookingResponse;
 import com.dkpm.bus_booking_api.features.booking.dto.CreateBookingRequest;
-import com.dkpm.bus_booking_api.infrastructure.security.AccountPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +40,9 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<ApiResponse<BookingResponse>> createBooking(
             @Valid @RequestBody CreateBookingRequest request,
-            @AuthenticationPrincipal AccountPrincipal principal) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        UUID customerId = principal != null ? principal.getId() : null;
+        UUID customerId = jwt != null ? UUID.fromString(jwt.getClaimAsString("userId")) : null;
         BookingResponse booking = bookingService.createBooking(request, customerId);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success(booking, "Booking created successfully"));
@@ -54,10 +54,11 @@ public class BookingController {
     @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Page<BookingResponse>>> getMyBookings(
-            @AuthenticationPrincipal AccountPrincipal principal,
+            @AuthenticationPrincipal Jwt jwt,
             @PageableDefault(size = 10, sort = "bookingTime", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<BookingResponse> bookings = bookingService.getCustomerBookings(principal.getId(), pageable);
+        UUID customerId = UUID.fromString(jwt.getClaimAsString("userId"));
+        Page<BookingResponse> bookings = bookingService.getCustomerBookings(customerId, pageable);
         return ResponseEntity.ok(ApiResponse.success(bookings));
     }
 
@@ -85,9 +86,9 @@ public class BookingController {
     @PostMapping("/{bookingId}/cancel")
     public ResponseEntity<ApiResponse<BookingResponse>> cancelBooking(
             @PathVariable UUID bookingId,
-            @AuthenticationPrincipal AccountPrincipal principal) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        UUID customerId = principal != null ? principal.getId() : null;
+        UUID customerId = jwt != null ? UUID.fromString(jwt.getClaimAsString("userId")) : null;
         BookingResponse booking = bookingService.cancelBooking(bookingId, customerId);
         return ResponseEntity.ok(ApiResponse.success(booking, "Booking cancelled successfully"));
     }

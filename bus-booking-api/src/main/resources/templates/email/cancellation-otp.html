@@ -1,103 +1,156 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mã xác nhận hủy vé</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #fafafa;
+            padding: 40px 20px;
+        }
+
         .container {
-            max-width: 600px;
-            margin: 20px auto;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            background-color: #E74C3C;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .content {
-            padding: 30px;
+            max-width: 480px;
+            margin: 0 auto;
             background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
         }
-        .otp-box {
-            background-color: #f8f9fa;
-            border: 2px dashed #E74C3C;
-            padding: 20px;
+
+        .header {
+            padding: 40px 32px 24px;
             text-align: center;
-            margin: 25px 0;
-            border-radius: 10px;
+            border-bottom: 1px solid #f0f0f0;
         }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .content p {
+            color: #525252;
+            font-size: 15px;
+            margin-bottom: 16px;
+        }
+
+        .otp-box {
+            background-color: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin: 24px 0;
+        }
+
         .otp-code {
             font-size: 36px;
-            font-weight: bold;
+            font-weight: 700;
             letter-spacing: 8px;
-            color: #E74C3C;
-            font-family: 'Courier New', monospace;
+            color: #1a1a1a;
+            font-family: 'SF Mono', Monaco, monospace;
         }
-        .warning {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
+
+        .notice {
+            background-color: #fef3c7;
+            border-left: 3px solid #f59e0b;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 24px 0;
         }
+
+        .notice strong {
+            font-size: 13px;
+            color: #92400e;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .notice ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .notice li {
+            font-size: 13px;
+            color: #78350f;
+            margin-bottom: 4px;
+        }
+
         .info-box {
-            background-color: #e3f2fd;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
+            background-color: #f0f9ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
         }
+
+        .info-box p {
+            font-size: 13px;
+            color: #0369a1;
+            margin: 0;
+        }
+
         .footer {
-            background-color: #f9f9f9;
-            padding: 20px;
+            padding: 24px 32px;
             text-align: center;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .footer p {
             font-size: 12px;
-            color: #777;
+            color: #a3a3a3;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 MÃ XÁC NHẬN HỦY VÉ</h1>
+            <h1>Mã xác nhận hủy vé</h1>
         </div>
         <div class="content">
             <p>Xin chào <strong th:text="${passengerName}">Quý khách</strong>,</p>
-            <p>Bạn đã yêu cầu hủy vé với mã đặt chỗ: <strong th:text="${bookingCode}">BK123456</strong></p>
-            
-            <p>Vui lòng sử dụng mã OTP dưới đây để xác nhận việc hủy vé:</p>
-            
+            <p>Bạn đã yêu cầu hủy vé <strong th:text="${bookingCode}">BK123456</strong>. Vui lòng sử dụng mã OTP dưới
+                đây:</p>
+
             <div class="otp-box">
                 <div class="otp-code" th:text="${otpCode}">123456</div>
             </div>
-            
-            <div class="warning">
-                <strong>⚠️ Lưu ý:</strong>
-                <ul style="margin: 10px 0 0 0; padding-left: 20px;">
-                    <li>Mã OTP có hiệu lực trong <strong th:text="${expiryMinutes}">10</strong> phút</li>
+
+            <div class="notice">
+                <strong>Lưu ý</strong>
+                <ul>
+                    <li>Mã có hiệu lực trong <strong th:text="${expiryMinutes}">10</strong> phút</li>
                     <li>Không chia sẻ mã này với bất kỳ ai</li>
-                    <li>Sau khi hủy vé, bạn sẽ không thể khôi phục lại</li>
+                    <li>Sau khi hủy, bạn sẽ không thể khôi phục vé</li>
                 </ul>
             </div>
-            
+
             <div class="info-box">
-                <p style="margin: 0;">Nếu bạn không yêu cầu hủy vé này, vui lòng bỏ qua email này. Vé của bạn vẫn được giữ nguyên.</p>
+                <p>Nếu bạn không yêu cầu hủy vé, vui lòng bỏ qua email này.</p>
             </div>
         </div>
         <div class="footer">
-            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
-            <p>© 2024 Bus Booking Service. All rights reserved.</p>
+            <p>© 2024 <span th:text="${appName}">Bus Booking</span></p>
         </div>
     </div>
 </body>
+
 </html>

@@ -178,6 +178,31 @@ public class EmailService implements IEmailService {
         }
     }
 
+    @Override
+    @Async
+    public void sendTripCancellationNotification(Booking booking) {
+        if (booking.getPassengerEmail() == null || booking.getPassengerEmail().isBlank()) {
+            log.warn("No email address for booking {}, skipping trip cancellation notification",
+                    booking.getBookingCode());
+            return;
+        }
+
+        try {
+            Context context = createBookingContext(booking);
+            context.setVariable("emailType", "trip_cancellation");
+            context.setVariable("cancellationReason", "Chuyến xe đã bị hủy bởi nhà xe");
+
+            String htmlContent = templateEngine.process("email/trip-cancellation", context);
+            String subject = String.format("[%s] Thông báo hủy chuyến - %s", appName, booking.getBookingCode());
+
+            sendEmail(booking.getPassengerEmail(), subject, htmlContent);
+            log.info("Sent trip cancellation notification for booking {}", booking.getBookingCode());
+        } catch (Exception e) {
+            log.error("Failed to send trip cancellation notification for {}: {}",
+                    booking.getBookingCode(), e.getMessage());
+        }
+    }
+
     /**
      * Create Thymeleaf context with booking information
      */

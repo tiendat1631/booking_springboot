@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "3c010ca2-bb7e-48ee-8393-aea0df693137",
+		"_postman_id": "47ec911a-8029-4fc3-a75a-ae30af66fec8",
 		"name": "Bus Booking API",
 		"description": "Complete API collection for the Bus Booking System",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "42926723"
 	},
 	"item": [
@@ -18,11 +18,15 @@
 							"script": {
 								"exec": [
 									"if (pm.response.code === 200) {\r",
-									"    const token = pm.response.text();\r",
-									"\r",
-									"    pm.collectionVariables.set(\"token\", token);\r",
+									"    const response = pm.response.json();\r",
 									"    \r",
-									"    console.log(\"Token has been updated successfully!\");\r",
+									"    if (response.success && response.data) {\r",
+									"        const token = response.data;\r",
+									"        pm.collectionVariables.set(\"token\", token);\r",
+									"        console.log(\"Token has been updated successfully!\");\r",
+									"    } else {\r",
+									"        console.log(\"Login failed: \" + response.message);\r",
+									"    }\r",
 									"}"
 								],
 								"type": "text/javascript",
@@ -39,24 +43,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"admin@example.com\",\r\n    \"password\": \"Admin@123\"\r\n}",
+							"raw": "{\r\n    \"username\": \"cancainick69@gmail.com\",\r\n    \"password\": \"Password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/login",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
-						}
+						"url": "{{baseUrl}}/api/auth/login"
 					},
 					"response": []
 				},
@@ -70,24 +64,14 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"0123456789\"\n}",
+							"raw": "{\n    \"email\": \"cancainick69@gmail.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"Anh Khoa\",\n    \"lastName\": \"Nguyen\",\n    \"phone\": \"0938355333\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
-						}
+						"url": "{{baseUrl}}/api/auth/register"
 					},
 					"response": []
 				},
@@ -292,16 +276,7 @@
 							"mode": "raw",
 							"raw": "{\n  \"name\": \"My Dinh Bus Station\",\n  \"code\": \"HN-MY-DINH\",\n  \"address\": \"20 Pham Hung, My Dinh\",\n  \"city\": \"Hanoi\",\n  \"province\": \"Hanoi\",\n  \"latitude\": 21.0285,\n  \"longitude\": 105.7823\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/stations",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"stations"
-							]
-						}
+						"url": "{{baseUrl}}/api/stations"
 					},
 					"response": []
 				},
@@ -483,7 +458,7 @@
 							"variable": [
 								{
 									"key": "code",
-									"value": "HN-SG-001"
+									"value": "DL-NT"
 								}
 							]
 						}
@@ -541,16 +516,7 @@
 							"mode": "raw",
 							"raw": "{\n  \"name\": \"Hanoi - Ho Chi Minh City\",\n  \"code\": \"HN-SG-001\",\n  \"departureStationId\": \"{{departureStationId}}\",\n  \"arrivalStationId\": \"{{arrivalStationId}}\",\n  \"distanceKm\": 1700,\n  \"estimatedDurationMinutes\": 1800,\n  \"basePrice\": 500000,\n  \"description\": \"Express route from Hanoi to HCMC\"\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/routes",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"routes"
-							]
-						}
+						"url": "{{baseUrl}}/api/routes"
 					},
 					"response": []
 				},
@@ -712,16 +678,7 @@
 							"mode": "raw",
 							"raw": "{\n  \"licensePlate\": \"29A-12345\",\n  \"type\": \"VIP\"\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/buses",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"buses"
-							]
-						}
+						"url": "{{baseUrl}}/api/buses"
 					},
 					"response": []
 				}
@@ -736,7 +693,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/trips/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&departureDate=2025-01-15&passengers=1&page=0&size=10",
+							"raw": "{{baseUrl}}/api/trips/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&departureDate=2025-12-25&passengers=1&page=0&size=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -756,7 +713,7 @@
 								},
 								{
 									"key": "departureDate",
-									"value": "2025-01-15",
+									"value": "2025-12-25",
 									"description": "ISO date format: YYYY-MM-DD"
 								},
 								{
@@ -870,16 +827,7 @@
 							"mode": "raw",
 							"raw": "{\n  \"routeId\": \"{{routeId}}\",\n  \"busId\": \"{{busId}}\",\n  \"departureTime\": \"2025-01-15T08:00:00\",\n  \"arrivalTime\": \"2025-01-16T14:00:00\",\n  \"price\": 550000\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/trips",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"trips"
-							]
-						}
+						"url": "{{baseUrl}}/api/trips"
 					},
 					"response": []
 				},
@@ -985,18 +933,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"seatIds\": [\"A1\", \"A2\"],\n  \"passengerName\": \"Nguyen Van A\",\n  \"passengerPhone\": \"0901234567\",\n  \"passengerEmail\": \"nguyenvana@email.com\",\n  \"notes\": \"Window seat preferred\"\n}"
+							"raw": "{\n  \"tripId\": \"{{tripId}}\",\n  \"seatIds\": [\"G05\", \"G06\"],\n  \"passengerName\": \"Nguyen Van A\",\n  \"passengerPhone\": \"0901234567\",\n  \"passengerEmail\": \"cancainick69@gmail.com\",\n  \"notes\": \"Window seat preferred\"\n}"
 						},
-						"url": {
-							"raw": "{{baseUrl}}/api/bookings",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"bookings"
-							]
-						}
+						"url": "{{baseUrl}}/api/bookings"
 					},
 					"response": []
 				},
@@ -1083,7 +1022,7 @@
 				{
 					"name": "Cancel Booking",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}/api/bookings/:bookingId/cancel",
@@ -1148,7 +1087,7 @@
 				{
 					"name": "Admin Cancel Booking",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}/api/bookings/admin/:bookingId/cancel",
@@ -1166,6 +1105,74 @@
 								{
 									"key": "bookingId",
 									"value": "{{bookingId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Cancel (OTP)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/request-cancel?bookingCode=BK-ABC123&passengerPhone=0901234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"request-cancel"
+							],
+							"query": [
+								{
+									"key": "bookingCode",
+									"value": "BK-ABC123",
+									"description": "Booking code to cancel"
+								},
+								{
+									"key": "passengerPhone",
+									"value": "0901234567",
+									"description": "Passenger phone for verification"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Cancel (OTP)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/bookings/confirm-cancel?bookingCode=BK-ABC123&otpCode=123456",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"bookings",
+								"confirm-cancel"
+							],
+							"query": [
+								{
+									"key": "bookingCode",
+									"value": "BK-ABC123",
+									"description": "Booking code to cancel"
+								},
+								{
+									"key": "otpCode",
+									"value": "123456",
+									"description": "OTP received via email"
 								}
 							]
 						}
@@ -1239,18 +1246,17 @@
 					"response": []
 				},
 				{
-					"name": "VNPay Callback",
+					"name": "VNPay CallBack",
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/payments/vnpay/callback?vnp_TxnRef=&vnp_ResponseCode=00&vnp_TransactionNo=&vnp_SecureHash=",
+							"raw": "http://localhost:8080/api/payments/vnpay/callback?vnp_Amount=&vnp_BankCode=&vnp_BankTranNo=&vnp_CardType=&vnp_OrderInfo=&vnp_PayDate=&vnp_ResponseCode=00&vnp_TmnCode=&vnp_TransactionNo=&vnp_TransactionStatus=00&vnp_TxnRef=&vnp_SecureHash=",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"api",
 								"payments",
@@ -1259,7 +1265,27 @@
 							],
 							"query": [
 								{
-									"key": "vnp_TxnRef",
+									"key": "vnp_Amount",
+									"value": ""
+								},
+								{
+									"key": "vnp_BankCode",
+									"value": ""
+								},
+								{
+									"key": "vnp_BankTranNo",
+									"value": ""
+								},
+								{
+									"key": "vnp_CardType",
+									"value": ""
+								},
+								{
+									"key": "vnp_OrderInfo",
+									"value": ""
+								},
+								{
+									"key": "vnp_PayDate",
 									"value": ""
 								},
 								{
@@ -1267,7 +1293,19 @@
 									"value": "00"
 								},
 								{
+									"key": "vnp_TmnCode",
+									"value": ""
+								},
+								{
 									"key": "vnp_TransactionNo",
+									"value": ""
+								},
+								{
+									"key": "vnp_TransactionStatus",
+									"value": "00"
+								},
+								{
+									"key": "vnp_TxnRef",
 									"value": ""
 								},
 								{
@@ -1317,13 +1355,9 @@
 	],
 	"auth": {
 		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "{{token}}",
-				"type": "string"
-			}
-		]
+		"bearer": {
+			"token": "{{token}}"
+		}
 	},
 	"variable": [
 		{

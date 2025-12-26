@@ -36,4 +36,11 @@ public interface IEmailService {
      * Send generic email
      */
     void sendEmail(String to, String subject, String htmlContent);
+
+    /**
+     * Send trip cancellation notification to booking passenger
+     * (when a trip is cancelled by admin, all affected bookings need to be
+     * notified)
+     */
+    void sendTripCancellationNotification(Booking booking);
 }

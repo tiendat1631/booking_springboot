@@ -10,6 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dkpm.bus_booking_api.domain.booking.Booking;
+import com.dkpm.bus_booking_api.domain.booking.BookingDetail;
+import com.dkpm.bus_booking_api.domain.booking.BookingRepository;
+import com.dkpm.bus_booking_api.domain.booking.BookingStatus;
 import com.dkpm.bus_booking_api.domain.bus.Bus;
 import com.dkpm.bus_booking_api.domain.bus.BusRepository;
 import com.dkpm.bus_booking_api.domain.bus.Seat;
@@ -26,18 +30,23 @@ import com.dkpm.bus_booking_api.features.trip.dto.CreateTripRequest;
 import com.dkpm.bus_booking_api.features.trip.dto.TripDetailResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.TripSearchResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.UpdateTripRequest;
+import com.dkpm.bus_booking_api.infrastructure.email.IEmailService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class TripService implements ITripService {
 
     private final TripRepository tripRepository;
     private final TripSeatRepository tripSeatRepository;
     private final RouteRepository routeRepository;
     private final BusRepository busRepository;
+    private final BookingRepository bookingRepository;
+    private final IEmailService emailService;
 
     @Override
     public Page<TripSearchResponse> searchTrips(
@@ -186,10 +195,30 @@ public class TripService implements ITripService {
             throw new IllegalStateException("Cannot cancel trip with status: " + trip.getStatus());
         }
 
+        // Handle existing bookings
+        List<Booking> activeBookings = bookingRepository.findActiveBookingsByTripId(tripId);
+
+        for (Booking booking : activeBookings) {
+            // Release seats for each booking
+            for (BookingDetail detail : booking.getDetails()) {
+                TripSeat tripSeat = detail.getTripSeat();
+                tripSeat.release();
+                tripSeatRepository.save(tripSeat);
+            }
+
+            // Update booking status to CANCELLED
+            booking.setStatus(BookingStatus.CANCELLED);
+            bookingRepository.save(booking);
+
+            // Send notification email to passenger
+            emailService.sendTripCancellationNotification(booking);
+        }
+
+        // Update trip status
         trip.setStatus(TripStatus.CANCELLED);
         tripRepository.save(trip);
 
-        // TODO: Handle existing bookings - notify customers, process refunds
+        log.info("Cancelled trip {} with {} affected bookings", tripId, activeBookings.size());
     }
 
     @Override

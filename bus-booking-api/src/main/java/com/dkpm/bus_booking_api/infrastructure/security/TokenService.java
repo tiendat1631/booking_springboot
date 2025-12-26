@@ -30,11 +30,15 @@ public class TokenService {
                 .filter(auth -> auth.startsWith("ROLE_"))
                 .collect(Collectors.joining(" "));
 
+        // Get user ID from AccountPrincipal
+        AccountPrincipal principal = (AccountPrincipal) authentication.getPrincipal();
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(jwtProperties.expiration(), ChronoUnit.MILLIS))
                 .subject(authentication.getName())
+                .claim("userId", principal.getId().toString())
                 .claim("roles", roles)
                 .build();
 

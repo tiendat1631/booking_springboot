@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,6 +38,8 @@ import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 import com.dkpm.bus_booking_api.features.trip.dto.CreateTripRequest;
 import com.dkpm.bus_booking_api.features.trip.dto.TripDetailResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.TripSearchResponse;
+import com.dkpm.bus_booking_api.domain.booking.BookingRepository;
+import com.dkpm.bus_booking_api.infrastructure.email.IEmailService;
 import com.dkpm.bus_booking_api.test.TestDataFactory;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,6 +57,12 @@ class TripServiceTest {
 
     @Mock
     private BusRepository busRepository;
+
+    @Mock
+    private BookingRepository bookingRepository;
+
+    @Mock
+    private IEmailService emailService;
 
     @InjectMocks
     private TripService tripService;
@@ -182,16 +191,23 @@ class TripServiceTest {
     @Test
     @DisplayName("cancelTrip - updates status")
     void cancelTrip_updatesStatus() {
-        // Given
+        // Given - Trip starts with SCHEDULED status
+        assertThat(testTrip.getStatus()).isEqualTo(TripStatus.SCHEDULED);
+
         when(tripRepository.findById(testTrip.getId())).thenReturn(Optional.of(testTrip));
-        when(tripRepository.save(any(Trip.class))).thenReturn(testTrip);
+        when(bookingRepository.findActiveBookingsByTripId(testTrip.getId())).thenReturn(List.of());
+        when(tripRepository.save(any(Trip.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         tripService.cancelTrip(testTrip.getId());
 
-        // Then
-        verify(tripRepository).save(any(Trip.class));
-        assertThat(testTrip.getStatus()).isEqualTo(TripStatus.CANCELLED);
+        // Then - Verify save was called and trip status changed to CANCELLED
+        ArgumentCaptor<Trip> tripCaptor = ArgumentCaptor.forClass(Trip.class);
+        verify(tripRepository).save(tripCaptor.capture());
+
+        Trip savedTrip = tripCaptor.getValue();
+        assertThat(savedTrip.getStatus()).isEqualTo(TripStatus.CANCELLED);
+        assertThat(savedTrip.getId()).isEqualTo(testTrip.getId());
     }
 
     @Test

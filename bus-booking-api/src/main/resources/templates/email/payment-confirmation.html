@@ -6,116 +6,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh toán thành công</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            color: #1a1a1a;
+            background-color: #fafafa;
+            padding: 40px 20px;
         }
 
         .container {
+            max-width: 520px;
+            margin: 0 auto;
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
         }
 
         .header {
-            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
-            color: white;
-            padding: 30px;
+            padding: 40px 32px 24px;
             text-align: center;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 24px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
         }
 
         .content {
-            padding: 30px;
+            padding: 32px;
         }
 
-        .success-icon {
+        .content>p {
+            color: #525252;
+            font-size: 15px;
+            margin-bottom: 16px;
             text-align: center;
-            font-size: 60px;
-            margin: 20px 0;
         }
 
-        .booking-code {
-            background-color: #d4edda;
-            border: 2px solid #28a745;
-            border-radius: 8px;
-            padding: 15px;
+        .payment-card {
+            background-color: #1a1a1a;
+            border-radius: 12px;
+            padding: 32px;
             text-align: center;
-            margin: 20px 0;
+            margin: 24px 0;
+            color: #ffffff;
         }
 
-        .booking-code h2 {
-            color: #28a745;
-            margin: 0;
-            font-size: 28px;
-            letter-spacing: 2px;
-        }
-
-        .info-section {
-            margin: 25px 0;
-        }
-
-        .info-section h3 {
-            color: #28a745;
-            border-bottom: 2px solid #28a745;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .info-label {
-            color: #666;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .payment-success {
-            background-color: #28a745;
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin: 20px 0;
+        .payment-card span {
+            font-size: 12px;
+            color: #a3a3a3;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .payment-amount {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0;
+            font-size: 36px;
+            font-weight: 700;
+            margin: 12px 0;
+            letter-spacing: -1px;
         }
 
-        .route-info {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
+        .payment-meta {
+            font-size: 13px;
+            color: #a3a3a3;
         }
 
-        .route-arrow {
+        .booking-code {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 24px;
             text-align: center;
-            font-size: 24px;
-            color: #28a745;
-            margin: 10px 0;
+            margin: 24px 0;
+        }
+
+        .booking-code span {
+            font-size: 12px;
+            color: #16a34a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .booking-code h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #15803d;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        .route-card {
+            background-color: #fafafa;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
         }
 
         .station {
@@ -123,31 +118,91 @@
         }
 
         .station-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            color: #333;
+            color: #1a1a1a;
         }
 
         .station-time {
-            font-size: 14px;
-            color: #666;
+            font-size: 13px;
+            color: #737373;
+            margin-top: 4px;
         }
 
-        .footer {
-            background-color: #f8f9fa;
-            padding: 20px;
+        .route-arrow {
             text-align: center;
-            font-size: 12px;
-            color: #666;
+            padding: 16px 0;
+            color: #d4d4d4;
+            font-size: 20px;
+        }
+
+        .section {
+            margin: 28px 0;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #737373;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+        }
+
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .info-label {
+            color: #737373;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #1a1a1a;
+            font-size: 14px;
         }
 
         .ticket-note {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
+            background-color: #f0fdf4;
             border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
+            padding: 16px;
             text-align: center;
+            margin: 24px 0;
+        }
+
+        .ticket-note strong {
+            font-size: 14px;
+            color: #15803d;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .ticket-note p {
+            font-size: 13px;
+            color: #166534;
+            margin: 0;
+        }
+
+        .footer {
+            padding: 24px 32px;
+            text-align: center;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #a3a3a3;
+            margin-bottom: 4px;
         }
     </style>
 </head>
@@ -155,30 +210,27 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>✅ THANH TOÁN THÀNH CÔNG</h1>
+            <h1>Thanh toán thành công</h1>
         </div>
 
         <div class="content">
-            <div class="success-icon">🎉</div>
+            <p>Xin chào <strong th:text="${passengerName}">Khách hàng</strong>,</p>
+            <p>Thanh toán của bạn đã được xử lý thành công!</p>
 
-            <p style="text-align: center;">Xin chào <strong th:text="${passengerName}">Khách hàng</strong>,</p>
-            <p style="text-align: center;">Thanh toán của bạn đã được xử lý thành công!</p>
-
-            <div class="payment-success">
-                <p style="margin: 0;">Số tiền thanh toán</p>
+            <div class="payment-card">
+                <span>Số tiền thanh toán</span>
                 <div class="payment-amount" th:text="${paymentAmount}">700.000 VND</div>
-                <p style="margin: 5px 0 0 0; font-size: 14px;">
-                    <span th:text="${paymentMethod}">VNPAY</span> •
-                    <span th:text="${paidAt}">24/12/2024 20:00</span>
-                </p>
+                <div class="payment-meta">
+                    <span th:text="${paymentMethod}">VNPAY</span> • <span th:text="${paidAt}">24/12/2024 20:00</span>
+                </div>
             </div>
 
             <div class="booking-code">
-                <p style="margin: 0 0 5px 0; color: #155724;">Mã vé điện tử</p>
+                <span>Mã vé điện tử</span>
                 <h2 th:text="${bookingCode}">BK2024122400001</h2>
             </div>
 
-            <div class="route-info">
+            <div class="route-card">
                 <div class="station">
                     <div class="station-name" th:text="${departureStation}">Bến xe Miền Đông</div>
                     <div class="station-time" th:text="${departureDate} + ' - ' + ${departureTime}">25/12/2024 - 22:00
@@ -191,35 +243,34 @@
                 </div>
             </div>
 
-            <div class="info-section">
-                <h3>🎫 Chi tiết vé</h3>
+            <div class="section">
+                <div class="section-title">Chi tiết vé</div>
                 <div class="info-row">
-                    <span class="info-label">Tuyến:</span>
+                    <span class="info-label">Tuyến</span>
                     <span class="info-value" th:text="${routeName}">Sài Gòn - Đà Lạt</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Số ghế:</span>
+                    <span class="info-label">Số ghế</span>
                     <span class="info-value" th:text="${seats}">A01, A02</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Biển số xe:</span>
+                    <span class="info-label">Biển số xe</span>
                     <span class="info-value" th:text="${busLicensePlate}">51B-12345</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Mã giao dịch:</span>
+                    <span class="info-label">Mã giao dịch</span>
                     <span class="info-value" th:text="${transactionId}">VNP123456789</span>
                 </div>
             </div>
 
             <div class="ticket-note">
-                <strong>🎫 Đây là vé điện tử của bạn</strong>
-                <p style="margin: 10px 0 0 0;">Vui lòng xuất trình mã đặt vé này khi lên xe.</p>
+                <strong>Đây là vé điện tử của bạn</strong>
+                <p>Vui lòng xuất trình mã đặt vé này khi lên xe.</p>
             </div>
         </div>
 
         <div class="footer">
-            <p>Email này được gửi tự động từ hệ thống <span th:text="${appName}">Bus Booking</span>.</p>
-            <p>Nếu bạn có thắc mắc, vui lòng liên hệ hotline: <strong>1900 xxxx</strong></p>
+            <p><span th:text="${appName}">Bus Booking</span> • Hotline: 1900 xxxx</p>
         </div>
     </div>
 </body>
