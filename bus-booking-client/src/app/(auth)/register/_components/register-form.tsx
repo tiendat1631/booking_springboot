@@ -88,24 +88,47 @@ export function RegisterForm() {
                     </div>
                 )}
 
-                {/* Name Field */}
-                <div className="space-y-2">
-                    <Label htmlFor="name">Full name</Label>
-                    <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input
-                            id="name"
-                            name="name"
-                            type="text"
-                            placeholder="John Doe"
-                            className="pl-10 h-11"
-                            disabled={isPending}
-                            aria-invalid={!!(state && !state.success && state.fieldErrors?.name)}
-                        />
+                {/* Name Fields - Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* First Name Field */}
+                    <div className="space-y-2">
+                        <Label htmlFor="firstName">First name</Label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                            <Input
+                                id="firstName"
+                                name="firstName"
+                                type="text"
+                                placeholder="John"
+                                className="pl-10 h-11"
+                                disabled={isPending}
+                                aria-invalid={!!(state && !state.success && state.fieldErrors?.firstName)}
+                            />
+                        </div>
+                        {state && !state.success && state.fieldErrors?.firstName && (
+                            <p className="text-sm text-destructive">{state.fieldErrors.firstName[0]}</p>
+                        )}
                     </div>
-                    {state && !state.success && state.fieldErrors?.name && (
-                        <p className="text-sm text-destructive">{state.fieldErrors.name[0]}</p>
-                    )}
+
+                    {/* Last Name Field */}
+                    <div className="space-y-2">
+                        <Label htmlFor="lastName">Last name</Label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                            <Input
+                                id="lastName"
+                                name="lastName"
+                                type="text"
+                                placeholder="Doe"
+                                className="pl-10 h-11"
+                                disabled={isPending}
+                                aria-invalid={!!(state && !state.success && state.fieldErrors?.lastName)}
+                            />
+                        </div>
+                        {state && !state.success && state.fieldErrors?.lastName && (
+                            <p className="text-sm text-destructive">{state.fieldErrors.lastName[0]}</p>
+                        )}
+                    </div>
                 </div>
 
                 {/* Email Field */}
@@ -137,7 +160,7 @@ export function RegisterForm() {
                             id="phone"
                             name="phone"
                             type="tel"
-                            placeholder="+1 (555) 123-4567"
+                            placeholder="0912345678"
                             className="pl-10 h-11"
                             disabled={isPending}
                             aria-invalid={!!(state && !state.success && state.fieldErrors?.phone)}
@@ -157,7 +180,7 @@ export function RegisterForm() {
                             id="password"
                             name="password"
                             type={showPassword ? "text" : "password"}
-                            placeholder="At least 8 characters"
+                            placeholder="At least 6 characters"
                             className="pl-10 pr-10 h-11"
                             disabled={isPending}
                             aria-invalid={!!(state && !state.success && state.fieldErrors?.password)}
@@ -175,7 +198,7 @@ export function RegisterForm() {
                         <p className="text-sm text-destructive">{state.fieldErrors.password[0]}</p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                        Password must be at least 8 characters with uppercase, lowercase, and numbers
+                        Password must be at least 6 characters
                     </p>
                 </div>
 

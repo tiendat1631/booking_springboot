@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.dkpm.bus_booking_api.config.JwtProperties;
+import com.dkpm.bus_booking_api.domain.security.Account;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +40,23 @@ public class TokenService {
                 .expiresAt(now.plus(jwtProperties.expiration(), ChronoUnit.MILLIS))
                 .subject(authentication.getName())
                 .claim("userId", principal.getId().toString())
+                .claim("roles", roles)
+                .build();
+
+        return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateTokenForAccount(Account account) {
+        Instant now = Instant.now();
+
+        String roles = "ROLE_" + account.getRole().name();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(jwtProperties.expiration(), ChronoUnit.MILLIS))
+                .subject(account.getId().toString())
+                .claim("userId", account.getId().toString())
                 .claim("roles", roles)
                 .build();
 

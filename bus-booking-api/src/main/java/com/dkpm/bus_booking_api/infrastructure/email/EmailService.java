@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.dkpm.bus_booking_api.config.AppProperties;
 import com.dkpm.bus_booking_api.domain.booking.Booking;
 import com.dkpm.bus_booking_api.domain.security.Account;
 
@@ -29,8 +30,7 @@ public class EmailService implements IEmailService {
     @Value("${spring.mail.username:noreply@busbooking.com}")
     private String fromEmail;
 
-    @Value("${app.name:Bus Booking}")
-    private String appName;
+    private final AppProperties appProperties;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
@@ -49,7 +49,7 @@ public class EmailService implements IEmailService {
             context.setVariable("emailType", "confirmation");
 
             String htmlContent = templateEngine.process("email/booking-confirmation", context);
-            String subject = String.format("[%s] Xác nhận đặt vé - %s", appName, booking.getBookingCode());
+            String subject = String.format("[%s] Xác nhận đặt vé - %s", appProperties.name(), booking.getBookingCode());
 
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent booking confirmation email for {}", booking.getBookingCode());
@@ -72,7 +72,7 @@ public class EmailService implements IEmailService {
             context.setVariable("emailType", "cancellation");
 
             String htmlContent = templateEngine.process("email/booking-cancellation", context);
-            String subject = String.format("[%s] Hủy vé - %s", appName, booking.getBookingCode());
+            String subject = String.format("[%s] Hủy vé - %s", appProperties.name(), booking.getBookingCode());
 
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent booking cancellation email for {}", booking.getBookingCode());
@@ -103,7 +103,8 @@ public class EmailService implements IEmailService {
             }
 
             String htmlContent = templateEngine.process("email/payment-confirmation", context);
-            String subject = String.format("[%s] Thanh toán thành công - %s", appName, booking.getBookingCode());
+            String subject = String.format("[%s] Thanh toán thành công - %s", appProperties.name(),
+                    booking.getBookingCode());
 
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent payment confirmation email for {}", booking.getBookingCode());
@@ -121,12 +122,12 @@ public class EmailService implements IEmailService {
             Context context = new Context();
             context.setVariable("email", account.getEmail());
             context.setVariable("token", token);
-            context.setVariable("appName", appName);
-            // In a real app, this would be your frontend URL
-            context.setVariable("verificationUrl", "http://localhost:8080/api/auth/verify?token=" + token);
+            context.setVariable("appName", appProperties.name());
+            // Use configured frontend URL for verification link
+            context.setVariable("verificationUrl", appProperties.frontendUrl() + "/verify?token=" + token);
 
             String htmlContent = templateEngine.process("email/verification-email", context);
-            sendEmail(account.getEmail(), "Xác thực tài khoản - " + appName, htmlContent);
+            sendEmail(account.getEmail(), "Xác thực tài khoản - " + appProperties.name(), htmlContent);
         } catch (Exception e) {
             log.error("Failed to send verification email to {}: {}", account.getEmail(), e.getMessage());
         }
@@ -145,11 +146,12 @@ public class EmailService implements IEmailService {
             context.setVariable("bookingCode", booking.getBookingCode());
             context.setVariable("passengerName", booking.getPassengerName());
             context.setVariable("otpCode", otpCode);
-            context.setVariable("appName", appName);
+            context.setVariable("appName", appProperties.name());
             context.setVariable("expiryMinutes", 10);
 
             String htmlContent = templateEngine.process("email/cancellation-otp", context);
-            String subject = String.format("[%s] Mã xác nhận hủy vé - %s", appName, booking.getBookingCode());
+            String subject = String.format("[%s] Mã xác nhận hủy vé - %s", appProperties.name(),
+                    booking.getBookingCode());
 
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent cancellation OTP email for {}", booking.getBookingCode());
@@ -193,7 +195,8 @@ public class EmailService implements IEmailService {
             context.setVariable("cancellationReason", "Chuyến xe đã bị hủy bởi nhà xe");
 
             String htmlContent = templateEngine.process("email/trip-cancellation", context);
-            String subject = String.format("[%s] Thông báo hủy chuyến - %s", appName, booking.getBookingCode());
+            String subject = String.format("[%s] Thông báo hủy chuyến - %s", appProperties.name(),
+                    booking.getBookingCode());
 
             sendEmail(booking.getPassengerEmail(), subject, htmlContent);
             log.info("Sent trip cancellation notification for booking {}", booking.getBookingCode());
@@ -247,7 +250,7 @@ public class EmailService implements IEmailService {
         context.setVariable("finalAmount", formatCurrency(booking.getFinalAmount().longValue()));
 
         // App info
-        context.setVariable("appName", appName);
+        context.setVariable("appName", appProperties.name());
 
         return context;
     }

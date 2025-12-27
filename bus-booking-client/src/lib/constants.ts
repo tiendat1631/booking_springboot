@@ -6,7 +6,7 @@ export const API_ENDPOINTS = {
         REGISTER: "/auth/register",
         LOGOUT: "/auth/logout",
         REFRESH: "/auth/refresh",
-        VERIFY_EMAIL: "/auth/verify-email",
+        VERIFY: (token: string) => `/auth/verify?token=${token}`,
     },
     // Bookings
     BOOKINGS: {
@@ -48,6 +48,7 @@ export const ROUTES = {
     HOME: "/",
     LOGIN: "/login",
     REGISTER: "/register",
+    VERIFY_EMAIL: "/verify-email",
     FORGOT_PASSWORD: "/forgot-password",
     SEARCH: "/search",
     BOOKING: (tripId: string) => `/booking/${tripId}`,

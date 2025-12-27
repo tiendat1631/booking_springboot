@@ -3,18 +3,29 @@ export type UserRole = "CUSTOMER" | "ADMIN";
 export interface User {
     id: string;
     email: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     phone: string;
     role: UserRole;
     emailVerified: boolean;
     createdAt: string;
 }
 
-export interface AuthResponse {
+// Token data from login API
+export interface AuthTokenData {
     accessToken: string;
     refreshToken: string;
-    expiresIn: number;
-    user: User;
+    expiresIn: number; // in milliseconds
+}
+
+// Decoded JWT payload
+export interface JwtPayload {
+    iss: string;
+    sub: string; // email
+    exp: number;
+    iat: number;
+    userId: string;
+    roles: string;
 }
 
 export interface LoginRequest {
@@ -23,14 +34,17 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
     phone: string;
 }
 
 export interface Session {
-    user: User;
+    userId: string;
+    email: string;
+    roles: string;
     accessToken: string;
-    expiresAt: number;
+    expiresAt: number; // timestamp in ms
 }

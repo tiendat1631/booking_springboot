@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Bus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { getSession } from "@/lib/auth";
 import { ROUTES } from "@/lib/constants";
+import { HeaderAuth } from "./header-auth";
 
 const NAV_LINKS = [
     { label: "Search Trips", href: ROUTES.SEARCH },
@@ -10,7 +12,9 @@ const NAV_LINKS = [
     { label: "Contact", href: "#contact" },
 ] as const;
 
-export function Header() {
+export async function Header() {
+    const session = await getSession();
+
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,19 +40,8 @@ export function Header() {
                         ))}
                     </nav>
 
-                    {/* Auth Buttons */}
-                    <div className="flex items-center gap-3">
-                        <Link href={ROUTES.LOGIN}>
-                            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                                Sign in
-                            </Button>
-                        </Link>
-                        <Link href={ROUTES.REGISTER}>
-                            <Button size="sm">
-                                Get Started
-                            </Button>
-                        </Link>
-                    </div>
+                    {/* Auth Buttons / User Dropdown */}
+                    <HeaderAuth session={session} />
                 </div>
             </div>
         </header>

@@ -12,7 +12,8 @@ spring.jpa.show-sql=false
 
 # JWT Configuration
 jwt.secret=your-secret-key-here-make-it-long-and-random
-jwt.expiration=86400000
+jwt.expiration=900000
+jwt.refresh-expiration=604800000
 
 # VNPay Configuration
 vnpay.tmn-code=YOUR_TMN_CODE
@@ -31,6 +32,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 
 # App Configuration
 app.name=Bus Booking
+app.frontend-url=http://localhost:3000
 
 # Thymeleaf Configuration (for email templates)
 spring.thymeleaf.check-template-location=true

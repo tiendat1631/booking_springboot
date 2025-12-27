@@ -2,42 +2,54 @@ import { z } from "zod";
 
 // Common validation patterns
 const phoneRegex = /^0\d{9}$/;
-const vietnameseNameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
+const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
 
 // Reusable field validators
 export const validators = {
-    email: z.string().email("Email không hợp lệ"),
+    email: z.string().email("Invalid email address"),
 
     password: z
         .string()
-        .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
-        .max(100, "Mật khẩu không được quá 100 ký tự"),
+        .min(6, "Password must be at least 6 characters")
+        .max(100, "Password must not exceed 100 characters"),
 
     phone: z
         .string()
-        .regex(phoneRegex, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0"),
+        .regex(phoneRegex, "Phone number must have 10 digits and start with 0"),
+
+    firstName: z
+        .string()
+        .min(1, "First name is required")
+        .max(50, "First name must not exceed 50 characters")
+        .regex(nameRegex, "First name can only contain letters"),
+
+    lastName: z
+        .string()
+        .min(1, "Last name is required")
+        .max(50, "Last name must not exceed 50 characters")
+        .regex(nameRegex, "Last name can only contain letters"),
 
     name: z
         .string()
-        .min(2, "Tên phải có ít nhất 2 ký tự")
-        .max(100, "Tên không được quá 100 ký tự")
-        .regex(vietnameseNameRegex, "Tên chỉ được chứa chữ cái"),
+        .min(2, "Name must be at least 2 characters")
+        .max(100, "Name must not exceed 100 characters")
+        .regex(nameRegex, "Name can only contain letters"),
 
-    uuid: z.string().uuid("ID không hợp lệ"),
+    uuid: z.string().uuid("Invalid ID"),
 
     otp: z
         .string()
-        .length(6, "OTP phải có 6 chữ số")
-        .regex(/^\d+$/, "OTP chỉ được chứa số"),
+        .length(6, "OTP must be 6 digits")
+        .regex(/^\d+$/, "OTP can only contain numbers"),
 
     seatNumbers: z
         .array(z.string())
-        .min(1, "Vui lòng chọn ít nhất 1 ghế"),
+        .min(1, "Please select at least 1 seat"),
 
     date: z.string().refine((val) => {
         const date = new Date(val);
         return !isNaN(date.getTime()) && date >= new Date(new Date().setHours(0, 0, 0, 0));
-    }, "Ngày không hợp lệ hoặc đã qua"),
+    }, "Invalid date or date has passed"),
 };
 
 // Form schemas
@@ -47,7 +59,8 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
-    name: validators.name,
+    firstName: validators.firstName,
+    lastName: validators.lastName,
     email: validators.email,
     password: validators.password,
     phone: validators.phone,

@@ -2,10 +2,90 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { apiPost } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 import { API_ENDPOINTS, ROUTES } from "@/lib/constants";
 import { loginSchema, registerSchema } from "@/lib/validators";
-import type { ActionResult, AuthResponse } from "@/types";
+import type { ActionResult, ApiResponse } from "@/types";
+import type { AuthTokenData, JwtPayload, Session } from "@/types/auth.types";
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Decode JWT token to extract payload (without verification)
+ */
+function decodeJwt(token: string): JwtPayload | null {
+    try {
+        const base64Payload = token.split(".")[1];
+        const payload = Buffer.from(base64Payload, "base64").toString("utf-8");
+        return JSON.parse(payload) as JwtPayload;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Save auth tokens to cookies and create session
+ */
+async function saveSession(tokenData: AuthTokenData): Promise<Session | null> {
+    const { accessToken, refreshToken, expiresIn } = tokenData;
+
+    // Decode JWT to get user info
+    const payload = decodeJwt(accessToken);
+    if (!payload) {
+        return null;
+    }
+
+    // Calculate expiry timestamp
+    const expiresAt = Date.now() + expiresIn;
+
+    // Create session object
+    const session: Session = {
+        userId: payload.userId,
+        email: payload.sub,
+        roles: payload.roles,
+        accessToken,
+        expiresAt,
+    };
+
+    // Set cookies
+    const cookieStore = await cookies();
+    const isProduction = process.env.NODE_ENV === "production";
+
+    // Access token - httpOnly for security
+    cookieStore.set("accessToken", accessToken, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "lax",
+        maxAge: Math.floor(expiresIn / 1000),
+        path: "/",
+    });
+
+    // Refresh token - httpOnly for security
+    cookieStore.set("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+        path: "/",
+    });
+
+    // Session info - readable by client for UI
+    cookieStore.set("session", JSON.stringify(session), {
+        httpOnly: false,
+        secure: isProduction,
+        sameSite: "lax",
+        maxAge: Math.floor(expiresIn / 1000),
+        path: "/",
+    });
+
+    return session;
+}
+
+// ============================================================================
+// Auth Actions
+// ============================================================================
 
 /**
  * Login user with email and password
@@ -30,49 +110,91 @@ export async function login(
             });
             return {
                 success: false,
-                error: validated.error.issues[0]?.message || "Dữ liệu không hợp lệ",
+                error: validated.error.issues[0]?.message || "Invalid data",
                 fieldErrors,
             };
         }
 
-        const response = await apiPost<AuthResponse>(
+        // Call login API
+        const response = await apiPost<ApiResponse<AuthTokenData>>(
             API_ENDPOINTS.AUTH.LOGIN,
             validated.data
         );
 
-        // Set cookies
-        const cookieStore = await cookies();
-        const isProduction = process.env.NODE_ENV === "production";
+        // Check API response
+        if (!response.success) {
+            return {
+                success: false,
+                error: response.message || "Login failed",
+            };
+        }
 
-        cookieStore.set("accessToken", response.accessToken, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24, // 1 day
-            path: "/",
-        });
-
-        cookieStore.set("refreshToken", response.refreshToken, {
-            httpOnly: true,
-            secure: isProduction,
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24 * 7, // 7 days
-            path: "/",
-        });
-
-        cookieStore.set("user", JSON.stringify(response.user), {
-            httpOnly: false, // Accessible from client for UI
-            secure: isProduction,
-            sameSite: "lax",
-            maxAge: 60 * 60 * 24,
-            path: "/",
-        });
+        // Save session
+        const session = await saveSession(response.data);
+        if (!session) {
+            return {
+                success: false,
+                error: "Invalid token received from server",
+            };
+        }
 
         return { success: true, data: undefined };
     } catch (error) {
         return {
             success: false,
-            error: error instanceof Error ? error.message : "Đăng nhập thất bại",
+            error: error instanceof Error ? error.message : "Login failed",
+        };
+    }
+}
+
+/**
+ * Refresh access token using refresh token
+ */
+export async function refreshToken(): Promise<ActionResult<Session>> {
+    try {
+        const cookieStore = await cookies();
+        const currentRefreshToken = cookieStore.get("refreshToken")?.value;
+
+        if (!currentRefreshToken) {
+            return {
+                success: false,
+                error: "No refresh token available",
+            };
+        }
+
+        // Call refresh API
+        const response = await apiPost<ApiResponse<AuthTokenData>>(
+            API_ENDPOINTS.AUTH.REFRESH,
+            { refreshToken: currentRefreshToken }
+        );
+
+        // Check API response
+        if (!response.success) {
+            // Clear cookies on refresh failure
+            cookieStore.delete("accessToken");
+            cookieStore.delete("refreshToken");
+            cookieStore.delete("session");
+
+            return {
+                success: false,
+                error: response.message || "Token refresh failed",
+            };
+        }
+
+        // Save new session
+        const session = await saveSession(response.data);
+        if (!session) {
+            return {
+                success: false,
+                error: "Invalid token received from server",
+            };
+        }
+
+        return { success: true, data: session };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Token refresh failed",
         };
     }
 }
@@ -86,7 +208,8 @@ export async function register(
 ): Promise<ActionResult<void>> {
     try {
         const rawData = {
-            name: formData.get("name") as string,
+            firstName: formData.get("firstName") as string,
+            lastName: formData.get("lastName") as string,
             email: formData.get("email") as string,
             password: formData.get("password") as string,
             phone: formData.get("phone") as string,
@@ -102,7 +225,7 @@ export async function register(
             });
             return {
                 success: false,
-                error: validated.error.issues[0]?.message || "Dữ liệu không hợp lệ",
+                error: validated.error.issues[0]?.message || "Invalid data",
                 fieldErrors,
             };
         }
@@ -113,7 +236,7 @@ export async function register(
     } catch (error) {
         return {
             success: false,
-            error: error instanceof Error ? error.message : "Đăng ký thất bại",
+            error: error instanceof Error ? error.message : "Registration failed",
         };
     }
 }
@@ -123,11 +246,76 @@ export async function register(
  */
 export async function logout(): Promise<void> {
     const cookieStore = await cookies();
+    const refreshTokenValue = cookieStore.get("refreshToken")?.value;
 
+    // Call logout API to invalidate tokens server-side
+    if (refreshTokenValue) {
+        try {
+            await apiPost(API_ENDPOINTS.AUTH.LOGOUT, {
+                refreshToken: refreshTokenValue,
+            });
+        } catch {
+            // Ignore errors - still clear cookies
+        }
+    }
+
+    // Clear all auth cookies
     cookieStore.delete("accessToken");
     cookieStore.delete("refreshToken");
-    cookieStore.delete("user");
-    cookieStore.delete("expiresAt");
+    cookieStore.delete("session");
 
     redirect(ROUTES.LOGIN);
+}
+
+/**
+ * Verify email with token from email link
+ */
+export async function verifyEmail(token: string): Promise<ActionResult<void>> {
+    try {
+        await apiGet(API_ENDPOINTS.AUTH.VERIFY(token));
+        return { success: true, data: undefined };
+    } catch (error) {
+        return {
+            success: false,
+            error: error instanceof Error ? error.message : "Email verification failed",
+        };
+    }
+}
+
+/**
+ * Get current session from cookies (server-side)
+ * Automatically refreshes expired tokens
+ */
+export async function getSession(): Promise<Session | null> {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session")?.value;
+
+    if (!sessionCookie) return null;
+
+    try {
+        const session = JSON.parse(sessionCookie) as Session;
+
+        // Check if session is expired (with 1 minute buffer)
+        const bufferMs = 60 * 1000; // 1 minute
+        if (session.expiresAt < Date.now() + bufferMs) {
+            // Try to refresh token
+            const refreshResult = await refreshToken();
+            if (refreshResult.success) {
+                return refreshResult.data;
+            }
+            return null;
+        }
+
+        return session;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Check if user is authenticated (server-side)
+ */
+export async function isAuthenticated(): Promise<boolean> {
+    const session = await getSession();
+    return session !== null;
 }
