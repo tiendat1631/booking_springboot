@@ -27,21 +27,40 @@ public interface TripRepository extends JpaRepository<Trip, UUID> {
             """)
     Optional<Trip> findByIdWithDetails(@Param("id") UUID id);
 
+    /**
+     * Admin search trips with flexible filters
+     */
     @Query("""
             SELECT t FROM Trip t
             JOIN FETCH t.route r
             JOIN FETCH r.departureStation ds
-            JOIN FETCH r.arrivalStation as
+            JOIN FETCH r.arrivalStation ars
             JOIN FETCH t.bus b
             WHERE t.deleted = false
-            AND t.status = :status
+            AND (:status IS NULL OR t.status = :status)
             AND (:routeId IS NULL OR r.id = :routeId)
             AND (:busId IS NULL OR b.id = :busId)
+            AND (:fromDate IS NULL OR t.departureTime >= :fromDate)
+            AND (:toDate IS NULL OR t.departureTime < :toDate)
+
+            AND (:route IS NULL OR (
+                LOWER(r.name) LIKE LOWER(CONCAT('%', :route, '%')) OR
+                LOWER(r.code) LIKE LOWER(CONCAT('%', :route, '%')) OR
+                LOWER(ds.name) LIKE LOWER(CONCAT('%', :route, '%')) OR
+                LOWER(ars.name) LIKE LOWER(CONCAT('%', :route, '%'))
+            ))
+
+
+            AND (:busLicensePlate IS NULL OR LOWER(b.licensePlate) LIKE LOWER(CONCAT('%', :busLicensePlate, '%')))
             """)
-    Page<Trip> findByStatusAndFilters(
+    Page<Trip> adminSearchTrips(
             @Param("status") TripStatus status,
             @Param("routeId") UUID routeId,
             @Param("busId") UUID busId,
+            @Param("fromDate") LocalDateTime fromDate,
+            @Param("toDate") LocalDateTime toDate,
+            @Param("route") String route,
+            @Param("busLicensePlate") String busLicensePlate,
             Pageable pageable);
 
     /**

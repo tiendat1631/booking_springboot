@@ -21,22 +21,23 @@ public record RouteResponse(
     public record StationSummary(
             UUID id,
             String name,
-            String code,
-            String city) {
+            String provinceName) {
     }
 
     public static RouteResponse from(Route route) {
         StationSummary departure = new StationSummary(
                 route.getDepartureStation().getId(),
                 route.getDepartureStation().getName(),
-                route.getDepartureStation().getCode(),
-                route.getDepartureStation().getCity());
+                route.getDepartureStation().getProvince() != null
+                        ? route.getDepartureStation().getProvince().getName()
+                        : null);
 
         StationSummary arrival = new StationSummary(
                 route.getArrivalStation().getId(),
                 route.getArrivalStation().getName(),
-                route.getArrivalStation().getCode(),
-                route.getArrivalStation().getCity());
+                route.getArrivalStation().getProvince() != null
+                        ? route.getArrivalStation().getProvince().getName()
+                        : null);
 
         String formattedDuration = formatDuration(route.getEstimatedDurationMinutes());
 

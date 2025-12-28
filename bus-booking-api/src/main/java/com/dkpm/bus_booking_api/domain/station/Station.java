@@ -3,6 +3,7 @@ package com.dkpm.bus_booking_api.domain.station;
 import com.dkpm.bus_booking_api.domain.common.BaseEntity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,17 +24,11 @@ public class Station extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false, length = 10)
-    private String code;
-
     @Column(columnDefinition = "TEXT")
     private String address;
 
-    @Column(length = 100)
-    private String city;
-
-    @Column(length = 100)
-    private String province;
+    @Embedded
+    private Province province;
 
     private Double latitude;
 

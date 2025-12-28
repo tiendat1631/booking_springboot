@@ -49,6 +49,25 @@ public class TripService implements ITripService {
     private final IEmailService emailService;
 
     @Override
+    public Page<TripSearchResponse> adminSearchTrips(
+            TripStatus status,
+            UUID routeId,
+            UUID busId,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String routeCode,
+            String busLicensePlate,
+            Pageable pageable) {
+
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.plusDays(1).atStartOfDay() : null;
+
+        return tripRepository.adminSearchTrips(
+                status, routeId, busId, fromDateTime, toDateTime, routeCode, busLicensePlate, pageable)
+                .map(TripSearchResponse::from);
+    }
+
+    @Override
     public Page<TripSearchResponse> searchTrips(
             UUID departureStationId,
             UUID arrivalStationId,

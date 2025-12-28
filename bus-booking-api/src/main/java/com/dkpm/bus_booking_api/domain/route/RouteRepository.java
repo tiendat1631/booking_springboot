@@ -14,44 +14,34 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RouteRepository extends JpaRepository<Route, UUID> {
 
-        Optional<Route> findByCode(String code);
-
         boolean existsByCode(String code);
 
-        Page<Route> findByActiveTrueAndDeletedFalse(Pageable pageable);
-
         @Query("""
                         SELECT r FROM Route r
                         JOIN FETCH r.departureStation ds
-                        JOIN FETCH r.arrivalStation as
-                        WHERE r.active = true
-                        AND r.deleted = false
-                        AND (:keyword IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-                            OR LOWER(r.code) LIKE LOWER(CONCAT('%', :keyword, '%')))
+                        JOIN FETCH r.arrivalStation ars
+                        WHERE r.deleted = false
+                        AND (:isActive IS NULL OR r.active = :isActive)
+                        AND (:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')))
+                        AND (:code IS NULL OR LOWER(r.code) LIKE LOWER(CONCAT('%', :code, '%')))
+                        AND (:departureStationId IS NULL OR ds.id = :departureStationId)
+                        AND (:arrivalStationId IS NULL OR ars.id = :arrivalStationId)
                         """)
-        Page<Route> searchRoutes(@Param("keyword") String keyword, Pageable pageable);
-
-        @Query("""
-                        SELECT r FROM Route r
-                        JOIN FETCH r.departureStation ds
-                        JOIN FETCH r.arrivalStation as
-                        WHERE r.active = true
-                        AND r.deleted = false
-                        AND ds.id = :departureStationId
-                        AND as.id = :arrivalStationId
-                        """)
-        Page<Route> findByStations(
+        Page<Route> searchRoutes(
+                        @Param("name") String name,
+                        @Param("code") String code,
                         @Param("departureStationId") UUID departureStationId,
                         @Param("arrivalStationId") UUID arrivalStationId,
+                        @Param("isActive") Boolean isActive,
                         Pageable pageable);
 
         @Query("""
                         SELECT r FROM Route r
                         JOIN FETCH r.departureStation ds
-                        JOIN FETCH r.arrivalStation as
+                        JOIN FETCH r.arrivalStation ars
                         WHERE r.active = true
                         AND r.deleted = false
-                        AND (ds.id = :stationId OR as.id = :stationId)
+                        AND (ds.id = :stationId OR ars.id = :stationId)
                         """)
         List<Route> findRoutesConnectingStation(@Param("stationId") UUID stationId);
 

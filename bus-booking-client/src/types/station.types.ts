@@ -1,18 +1,21 @@
+export interface Province {
+    code: number;
+    name: string;
+    codename: string;
+}
+
 export interface Station {
     id: string;
     name: string;
     address: string;
-    city: string;
-    province: string;
+    province: Province;
     latitude?: number;
     longitude?: number;
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
+    active: boolean;
 }
 
 export interface StationOption {
     value: string;
     label: string;
-    city: string;
+    province: string;
 }

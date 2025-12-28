@@ -6,7 +6,7 @@ const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/;
 
 // Reusable field validators
 export const validators = {
-    email: z.string().email("Invalid email address"),
+    email: z.email("Invalid email address"),
 
     password: z
         .string()

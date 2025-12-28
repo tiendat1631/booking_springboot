@@ -8,24 +8,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dkpm.bus_booking_api.domain.exception.ResourceNotFoundException;
+import com.dkpm.bus_booking_api.domain.station.Province;
 import com.dkpm.bus_booking_api.domain.station.Station;
 import com.dkpm.bus_booking_api.domain.station.StationRepository;
 import com.dkpm.bus_booking_api.features.station.dto.CreateStationRequest;
 import com.dkpm.bus_booking_api.features.station.dto.StationResponse;
 import com.dkpm.bus_booking_api.features.station.dto.UpdateStationRequest;
+import com.dkpm.bus_booking_api.infrastructure.geocoding.IGeocodingService;
+import com.dkpm.bus_booking_api.infrastructure.geocoding.dto.GeoCoordinates;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class StationService implements IStationService {
 
     private final StationRepository stationRepository;
+    private final IGeocodingService geocodingService;
 
     @Override
-    public Page<StationResponse> searchStations(String keyword, Pageable pageable) {
-        return stationRepository.searchStations(keyword, pageable)
+    public Page<StationResponse> searchStations(String name, String province, Boolean active,
+            Pageable pageable) {
+        return stationRepository.searchStations(name, province, active, pageable)
                 .map(StationResponse::from);
     }
 
@@ -37,39 +44,23 @@ public class StationService implements IStationService {
     }
 
     @Override
-    public StationResponse getStationByCode(String code) {
-        Station station = stationRepository.findByCode(code)
-                .orElseThrow(() -> new ResourceNotFoundException("Station not found with code: " + code));
-        return StationResponse.from(station);
-    }
-
-    @Override
-    public Page<StationResponse> getStationsByCity(String city, Pageable pageable) {
-        return stationRepository.findByCity(city, pageable)
-                .map(StationResponse::from);
-    }
-
-    @Override
-    public Page<StationResponse> getAllActiveStations(Pageable pageable) {
-        return stationRepository.findByActiveTrueAndDeletedFalse(pageable)
-                .map(StationResponse::from);
-    }
-
-    @Override
     @Transactional
     public StationResponse createStation(CreateStationRequest request) {
-        if (stationRepository.existsByCode(request.code())) {
-            throw new IllegalArgumentException("Station code already exists: " + request.code());
-        }
+        Province province = Province.builder()
+                .code(request.province().code())
+                .name(request.province().name())
+                .codename(request.province().codename())
+                .build();
+
+        String fullAddressForSearch = request.address() + ", " + request.province().name();
+        GeoCoordinates coords = geocodingService.getCoordinates(fullAddressForSearch);
 
         Station station = Station.builder()
                 .name(request.name())
-                .code(request.code().toUpperCase())
                 .address(request.address())
-                .city(request.city())
-                .province(request.province())
-                .latitude(request.latitude())
-                .longitude(request.longitude())
+                .province(province)
+                .latitude(coords.latitude())
+                .longitude(coords.longitude())
                 .active(true)
                 .build();
 
@@ -83,30 +74,41 @@ public class StationService implements IStationService {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Station not found with id: " + id));
 
+        boolean needToRecalculateCoordinates = false;
+
         if (request.name() != null) {
             station.setName(request.name());
-        }
-        if (request.code() != null) {
-            if (!station.getCode().equals(request.code()) && stationRepository.existsByCode(request.code())) {
-                throw new IllegalArgumentException("Station code already exists: " + request.code());
-            }
-            station.setCode(request.code().toUpperCase());
         }
         if (request.address() != null) {
             station.setAddress(request.address());
         }
-        if (request.city() != null) {
-            station.setCity(request.city());
-        }
+
         if (request.province() != null) {
-            station.setProvince(request.province());
+            Province currentProvince = station.getProvince();
+
+            if (currentProvince == null)
+                currentProvince = new Province();
+
+            if (request.province().code() != null)
+                currentProvince.setCode(request.province().code());
+            if (request.province().name() != null)
+                currentProvince.setName(request.province().name());
+            if (request.province().codename() != null)
+                currentProvince.setCodename(request.province().codename());
+
+            station.setProvince(currentProvince);
+            needToRecalculateCoordinates = true;
         }
-        if (request.latitude() != null) {
-            station.setLatitude(request.latitude());
+
+        if (needToRecalculateCoordinates) {
+            String fullAddress = station.getAddress() + ", " + station.getProvince().getName();
+            log.info("Address changed. Recalculating coordinates via OSM for: {}", fullAddress);
+
+            GeoCoordinates coords = geocodingService.getCoordinates(fullAddress);
+            station.setLatitude(coords.latitude());
+            station.setLongitude(coords.longitude());
         }
-        if (request.longitude() != null) {
-            station.setLongitude(request.longitude());
-        }
+
         if (request.active() != null) {
             station.setActive(request.active());
         }

@@ -36,38 +36,21 @@ public class RouteController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<RouteResponse>>> getRoutes(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) UUID departureStationId,
+            @RequestParam(required = false) UUID arrivalStationId,
+            @RequestParam(required = false) Boolean isActive,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<RouteResponse> result = routeService.searchRoutes(keyword, pageable);
+        Page<RouteResponse> result = routeService.searchRoutes(
+                name, code, departureStationId, arrivalStationId, isActive, pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<Page<RouteResponse>>> getAllActiveRoutes(
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<RouteResponse> routes = routeService.getAllActiveRoutes(pageable);
-        return ResponseEntity.ok(ApiResponse.success(routes));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<RouteResponse>> getRouteById(@PathVariable UUID id) {
         RouteResponse route = routeService.getRouteById(id);
         return ResponseEntity.ok(ApiResponse.success(route));
-    }
-
-    @GetMapping("/code/{code}")
-    public ResponseEntity<ApiResponse<RouteResponse>> getRouteByCode(@PathVariable String code) {
-        RouteResponse route = routeService.getRouteByCode(code);
-        return ResponseEntity.ok(ApiResponse.success(route));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<RouteResponse>>> searchRoutes(
-            @RequestParam UUID departureStationId,
-            @RequestParam UUID arrivalStationId,
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<RouteResponse> routes = routeService.findRoutesByStations(departureStationId, arrivalStationId, pageable);
-        return ResponseEntity.ok(ApiResponse.success(routes));
     }
 
     @PostMapping

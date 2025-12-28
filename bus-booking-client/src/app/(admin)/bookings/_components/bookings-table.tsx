@@ -19,10 +19,10 @@ export function BookingsTable({ data }: BookingsTableProps) {
     const { table } = useDataTable({
         data: data.content,
         columns,
-        pageCount: data.totalPages,
+        pageCount: data.page.totalPages,
         initialState: {
             sorting: [{ id: "bookedAt", desc: true }],
-            pagination: { pageIndex: 0, pageSize: data.size },
+            pagination: { pageIndex: 0, pageSize: data.page.size },
         },
         getRowId: (row) => row.id,
     });

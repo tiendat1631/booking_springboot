@@ -11,15 +11,25 @@ import com.dkpm.bus_booking_api.features.route.dto.UpdateRouteRequest;
 
 public interface IRouteService {
 
-    Page<RouteResponse> searchRoutes(String keyword, Pageable pageable);
+    /**
+     * Unified search method for routes with flexible filtering
+     * 
+     * @param name               Search by route name
+     * @param code               Search by route code
+     * @param departureStationId Filter by departure station
+     * @param arrivalStationId   Filter by arrival station
+     * @param isActive           Filter by active status (null = all)
+     * @param pageable           Pagination info
+     */
+    Page<RouteResponse> searchRoutes(
+            String name,
+            String code,
+            UUID departureStationId,
+            UUID arrivalStationId,
+            Boolean isActive,
+            Pageable pageable);
 
     RouteResponse getRouteById(UUID id);
-
-    RouteResponse getRouteByCode(String code);
-
-    Page<RouteResponse> findRoutesByStations(UUID departureStationId, UUID arrivalStationId, Pageable pageable);
-
-    Page<RouteResponse> getAllActiveRoutes(Pageable pageable);
 
     RouteResponse createRoute(CreateRouteRequest request);
 

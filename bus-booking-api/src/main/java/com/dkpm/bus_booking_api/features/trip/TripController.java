@@ -27,6 +27,8 @@ import com.dkpm.bus_booking_api.features.trip.dto.TripDetailResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.TripSearchResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.UpdateTripRequest;
 
+import com.dkpm.bus_booking_api.domain.trip.TripStatus;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -37,11 +39,29 @@ public class TripController {
 
     private final ITripService tripService;
 
-    /**
-     * Search for available trips
-     * GET
-     * /api/trips/search?departureStationId=...&arrivalStationId=...&departureDate=...&passengers=...
-     */
+    @GetMapping("/statuses")
+    public ResponseEntity<ApiResponse<TripStatus[]>> getTripStatuses() {
+        return ResponseEntity.ok(ApiResponse.success(TripStatus.values()));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> getTrips(
+            @RequestParam(required = false) TripStatus status,
+            @RequestParam(required = false) UUID routeId,
+            @RequestParam(required = false) UUID busId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(required = false) String route,
+            @RequestParam(required = false) String busLicensePlate,
+            @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<TripSearchResponse> result = tripService.adminSearchTrips(
+                status, routeId, busId, fromDate, toDate, route, busLicensePlate, pageable);
+
+        return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> searchTrips(
             @RequestParam UUID departureStationId,
@@ -60,9 +80,6 @@ public class TripController {
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
-    /**
-     * Get upcoming trips (Dashboard)
-     */
     @GetMapping("/upcoming")
     public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> getUpcomingTrips(
             @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -70,27 +87,18 @@ public class TripController {
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
-    /**
-     * Get trip details with seat availability
-     */
     @GetMapping("/{tripId}")
     public ResponseEntity<ApiResponse<TripDetailResponse>> getTripDetail(@PathVariable UUID tripId) {
         TripDetailResponse trip = tripService.getTripDetail(tripId);
         return ResponseEntity.ok(ApiResponse.success(trip));
     }
 
-    /**
-     * Get seat availability for a trip (same as trip detail)
-     */
     @GetMapping("/{tripId}/seats")
     public ResponseEntity<ApiResponse<TripDetailResponse>> getTripSeats(@PathVariable UUID tripId) {
         TripDetailResponse trip = tripService.getTripDetail(tripId);
         return ResponseEntity.ok(ApiResponse.success(trip));
     }
 
-    /**
-     * Create a new trip (Admin only)
-     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<TripDetailResponse>> createTrip(@Valid @RequestBody CreateTripRequest request) {
@@ -98,9 +106,6 @@ public class TripController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(trip, "Trip created successfully"));
     }
 
-    /**
-     * Update a trip (Admin only)
-     */
     @PutMapping("/{tripId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<TripDetailResponse>> updateTrip(
@@ -110,9 +115,6 @@ public class TripController {
         return ResponseEntity.ok(ApiResponse.success(trip, "Trip updated successfully"));
     }
 
-    /**
-     * Cancel a trip (Admin only)
-     */
     @PostMapping("/{tripId}/cancel")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> cancelTrip(@PathVariable UUID tripId) {
@@ -120,9 +122,6 @@ public class TripController {
         return ResponseEntity.ok(ApiResponse.success("Trip cancelled successfully"));
     }
 
-    /**
-     * Delete a trip (Admin only - soft delete)
-     */
     @DeleteMapping("/{tripId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteTrip(@PathVariable UUID tripId) {

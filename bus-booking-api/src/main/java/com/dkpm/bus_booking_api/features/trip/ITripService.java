@@ -11,45 +11,60 @@ import com.dkpm.bus_booking_api.features.trip.dto.TripDetailResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.TripSearchResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.UpdateTripRequest;
 
+import com.dkpm.bus_booking_api.domain.trip.TripStatus;
+
 public interface ITripService {
 
-    /**
-     * Search for available trips
-     */
-    Page<TripSearchResponse> searchTrips(
-            UUID departureStationId,
-            UUID arrivalStationId,
-            LocalDate departureDate,
-            int passengers,
-            Pageable pageable);
+        /**
+         * Admin search trips with flexible filters
+         */
+        Page<TripSearchResponse> adminSearchTrips(
+                        TripStatus status,
+                        UUID routeId,
+                        UUID busId,
+                        LocalDate fromDate,
+                        LocalDate toDate,
+                        String routeCode,
+                        String busLicensePlate,
+                        Pageable pageable);
 
-    /**
-     * Get trip details with seat availability
-     */
-    TripDetailResponse getTripDetail(UUID tripId);
+        /**
+         * Search for available trips
+         */
+        Page<TripSearchResponse> searchTrips(
+                        UUID departureStationId,
+                        UUID arrivalStationId,
+                        LocalDate departureDate,
+                        int passengers,
+                        Pageable pageable);
 
-    /**
-     * Get upcoming trips (admin dashboard)
-     */
-    Page<TripSearchResponse> getUpcomingTrips(Pageable pageable);
+        /**
+         * Get trip details with seat availability
+         */
+        TripDetailResponse getTripDetail(UUID tripId);
 
-    /**
-     * Create a new trip
-     */
-    TripDetailResponse createTrip(CreateTripRequest request);
+        /**
+         * Get upcoming trips (admin dashboard)
+         */
+        Page<TripSearchResponse> getUpcomingTrips(Pageable pageable);
 
-    /**
-     * Update trip details
-     */
-    TripDetailResponse updateTrip(UUID tripId, UpdateTripRequest request);
+        /**
+         * Create a new trip
+         */
+        TripDetailResponse createTrip(CreateTripRequest request);
 
-    /**
-     * Cancel a trip
-     */
-    void cancelTrip(UUID tripId);
+        /**
+         * Update trip details
+         */
+        TripDetailResponse updateTrip(UUID tripId, UpdateTripRequest request);
 
-    /**
-     * Delete a trip (soft delete)
-     */
-    void deleteTrip(UUID tripId);
+        /**
+         * Cancel a trip
+         */
+        void cancelTrip(UUID tripId);
+
+        /**
+         * Delete a trip (soft delete)
+         */
+        void deleteTrip(UUID tripId);
 }

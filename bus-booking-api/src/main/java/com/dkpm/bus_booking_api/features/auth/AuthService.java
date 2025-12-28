@@ -110,14 +110,14 @@ public class AuthService implements IAuthService {
     public TokenResponse login(LoginRequest request) {
         Authentication authenticationRequest = UsernamePasswordAuthenticationToken
                 .unauthenticated(request.email(), request.password());
-        Authentication authenticationResponse = authenticationManager.authenticate(authenticationRequest);
+        // Authenticate to verify credentials
+        authenticationManager.authenticate(authenticationRequest);
 
-        // Generate access token
-        String accessToken = tokenService.generateToken(authenticationResponse);
-
-        // Get account and generate refresh token
+        // Get account and generate tokens
         Account account = accountRepository.findByEmail(request.email())
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+
+        String accessToken = tokenService.generateToken(account);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(account);
 
         log.info("User logged in: {}", request.email());
@@ -136,7 +136,7 @@ public class AuthService implements IAuthService {
         Account account = refreshToken.getAccount();
 
         // Generate new access token
-        String accessToken = tokenService.generateTokenForAccount(account);
+        String accessToken = tokenService.generateToken(account);
 
         // Generate new refresh token (token rotation)
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(account);

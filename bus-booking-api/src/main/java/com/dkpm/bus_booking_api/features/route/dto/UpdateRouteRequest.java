@@ -4,24 +4,21 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 public record UpdateRouteRequest(
-        String name,
+                String name,
 
-        @Size(max = 20, message = "Route code must be at most 20 characters") String code,
+                UUID departureStationId,
 
-        UUID departureStationId,
+                UUID arrivalStationId,
 
-        UUID arrivalStationId,
+                @Positive(message = "Distance must be positive") Integer distanceKm,
 
-        @Positive(message = "Distance must be positive") Integer distanceKm,
+                @Positive(message = "Duration must be positive") Integer estimatedDurationMinutes,
 
-        @Positive(message = "Duration must be positive") Integer estimatedDurationMinutes,
+                @Positive(message = "Base price must be positive") BigDecimal basePrice,
 
-        @Positive(message = "Base price must be positive") BigDecimal basePrice,
+                String description,
 
-        String description,
-
-        Boolean active) {
+                Boolean active) {
 }

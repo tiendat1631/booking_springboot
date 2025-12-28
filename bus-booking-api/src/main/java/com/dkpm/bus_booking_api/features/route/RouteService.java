@@ -27,8 +27,14 @@ public class RouteService implements IRouteService {
     private final StationRepository stationRepository;
 
     @Override
-    public Page<RouteResponse> searchRoutes(String keyword, Pageable pageable) {
-        return routeRepository.searchRoutes(keyword, pageable)
+    public Page<RouteResponse> searchRoutes(
+            String name,
+            String code,
+            UUID departureStationId,
+            UUID arrivalStationId,
+            Boolean isActive,
+            Pageable pageable) {
+        return routeRepository.searchRoutes(name, code, departureStationId, arrivalStationId, isActive, pageable)
                 .map(RouteResponse::from);
     }
 
@@ -40,31 +46,8 @@ public class RouteService implements IRouteService {
     }
 
     @Override
-    public RouteResponse getRouteByCode(String code) {
-        Route route = routeRepository.findByCode(code)
-                .orElseThrow(() -> new ResourceNotFoundException("Route not found with code: " + code));
-        return RouteResponse.from(route);
-    }
-
-    @Override
-    public Page<RouteResponse> findRoutesByStations(UUID departureStationId, UUID arrivalStationId, Pageable pageable) {
-        return routeRepository.findByStations(departureStationId, arrivalStationId, pageable)
-                .map(RouteResponse::from);
-    }
-
-    @Override
-    public Page<RouteResponse> getAllActiveRoutes(Pageable pageable) {
-        return routeRepository.findByActiveTrueAndDeletedFalse(pageable)
-                .map(RouteResponse::from);
-    }
-
-    @Override
     @Transactional
     public RouteResponse createRoute(CreateRouteRequest request) {
-        if (routeRepository.existsByCode(request.code())) {
-            throw new IllegalArgumentException("Route code already exists: " + request.code());
-        }
-
         if (request.departureStationId().equals(request.arrivalStationId())) {
             throw new IllegalArgumentException("Departure and arrival stations must be different");
         }
@@ -77,9 +60,11 @@ public class RouteService implements IRouteService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Arrival station not found with id: " + request.arrivalStationId()));
 
+        String routeCode = generateRouteCode(departureStation, arrivalStation);
+
         Route route = Route.builder()
                 .name(request.name())
-                .code(request.code().toUpperCase())
+                .code(routeCode)
                 .departureStation(departureStation)
                 .arrivalStation(arrivalStation)
                 .distanceKm(request.distanceKm())
@@ -101,12 +86,6 @@ public class RouteService implements IRouteService {
 
         if (request.name() != null) {
             route.setName(request.name());
-        }
-        if (request.code() != null) {
-            if (!route.getCode().equals(request.code()) && routeRepository.existsByCode(request.code())) {
-                throw new IllegalArgumentException("Route code already exists: " + request.code());
-            }
-            route.setCode(request.code().toUpperCase());
         }
         if (request.departureStationId() != null) {
             Station departureStation = stationRepository.findById(request.departureStationId())
@@ -156,4 +135,57 @@ public class RouteService implements IRouteService {
         route.setActive(false);
         routeRepository.save(route);
     }
+
+    private String generateRouteCode(Station departureStation, Station arrivalStation) {
+        String departureAbbr = getProvinceAbbreviation(departureStation.getProvince().getCodename());
+        String arrivalAbbr = getProvinceAbbreviation(arrivalStation.getProvince().getCodename());
+        String prefix = departureAbbr + "-" + arrivalAbbr + "-";
+
+        // Generate 4-digit suffix
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String suffix = timestamp.substring(timestamp.length() - 4);
+        String code = prefix + suffix;
+
+        // Ensure uniqueness
+        while (routeRepository.existsByCode(code)) {
+            timestamp = String.valueOf(System.currentTimeMillis());
+            suffix = timestamp.substring(timestamp.length() - 4);
+            code = prefix + suffix;
+        }
+        return code;
+    }
+
+    /**
+     * Extract abbreviation from province codename.
+     * "thanh_pho_ho_chi_minh" -> "HCM"
+     * "tinh_ba_ria_vung_tau" -> "VT"
+     * "tinh_khanh_hoa" -> "KH"
+     */
+    private String getProvinceAbbreviation(String codename) {
+        if (codename == null || codename.isBlank()) {
+            return "XX";
+        }
+
+        // Remove prefix "tinh_", "thanh_pho_"
+        String name = codename
+                .replaceFirst("^tinh_", "")
+                .replaceFirst("^thanh_pho_", "");
+
+        // Handle special cases like "ba_ria_vung_tau" -> take last part "vung_tau"
+        if (name.contains("_vung_tau")) {
+            name = "vung_tau";
+        }
+
+        // Get first letter of each word (split by underscore)
+        String[] words = name.split("_");
+        StringBuilder abbr = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                abbr.append(Character.toUpperCase(word.charAt(0)));
+            }
+        }
+
+        return abbr.length() > 0 ? abbr.toString() : "XX";
+    }
+
 }

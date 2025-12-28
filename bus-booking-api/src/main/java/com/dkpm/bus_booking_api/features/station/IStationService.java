@@ -11,15 +11,10 @@ import com.dkpm.bus_booking_api.features.station.dto.UpdateStationRequest;
 
 public interface IStationService {
 
-    Page<StationResponse> searchStations(String keyword, Pageable pageable);
+    Page<StationResponse> searchStations(String name, String provinceName, Boolean active,
+            Pageable pageable);
 
     StationResponse getStationById(UUID id);
-
-    StationResponse getStationByCode(String code);
-
-    Page<StationResponse> getStationsByCity(String city, Pageable pageable);
-
-    Page<StationResponse> getAllActiveStations(Pageable pageable);
 
     StationResponse createStation(CreateStationRequest request);
 

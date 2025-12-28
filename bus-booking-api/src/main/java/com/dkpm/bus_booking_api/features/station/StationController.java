@@ -36,37 +36,18 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<StationResponse>>> getStations(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) Boolean active,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<StationResponse> result = stationService.searchStations(keyword, pageable);
+        Page<StationResponse> result = stationService.searchStations(name, province, active, pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<ApiResponse<Page<StationResponse>>> getAllActiveStations(
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<StationResponse> stations = stationService.getAllActiveStations(pageable);
-        return ResponseEntity.ok(ApiResponse.success(stations));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StationResponse>> getStationById(@PathVariable UUID id) {
         StationResponse station = stationService.getStationById(id);
         return ResponseEntity.ok(ApiResponse.success(station));
-    }
-
-    @GetMapping("/code/{code}")
-    public ResponseEntity<ApiResponse<StationResponse>> getStationByCode(@PathVariable String code) {
-        StationResponse station = stationService.getStationByCode(code);
-        return ResponseEntity.ok(ApiResponse.success(station));
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<StationResponse>>> getStationsByCity(
-            @RequestParam String city,
-            @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<StationResponse> stations = stationService.getStationsByCity(city, pageable);
-        return ResponseEntity.ok(ApiResponse.success(stations));
     }
 
     @PostMapping

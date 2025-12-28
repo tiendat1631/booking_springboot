@@ -5,7 +5,6 @@ import type { Booking, BookingDetails, PaginatedResponse } from "@/types";
 
 /**
  * Get current user's bookings
- * No cache - always fresh data for user's bookings
  */
 export const getMyBookings = cache(
     async (params?: {

@@ -1,20 +1,18 @@
 package com.dkpm.bus_booking_api.features.station.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 public record CreateStationRequest(
-        @NotBlank(message = "Station name is required") String name,
+                @NotBlank(message = "Station name is required") String name,
+                @NotBlank(message = "Address is required") String address,
+                @Valid @NotNull(message = "Province is required") ProvinceRequest province) {
+        public record ProvinceRequest(
+                        @NotNull(message = "Province code is required") Integer code,
 
-        @NotBlank(message = "Station code is required") @Size(max = 10, message = "Station code must be at most 10 characters") String code,
+                        @NotBlank(message = "Province name is required") String name,
 
-        String address,
-
-        @Size(max = 100, message = "City must be at most 100 characters") String city,
-
-        @Size(max = 100, message = "Province must be at most 100 characters") String province,
-
-        Double latitude,
-
-        Double longitude) {
+                        String codename) {
+        }
 }

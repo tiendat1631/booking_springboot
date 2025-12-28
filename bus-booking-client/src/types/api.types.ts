@@ -17,13 +17,12 @@ export type ApiResponse<T> =
 // Paginated response from backend
 export interface PaginatedResponse<T> {
     content: T[];
-    page: number;
-    size: number;
-    totalElements: number;
-    totalPages: number;
-    last: boolean;
-    first: boolean;
-    empty: boolean;
+    page: {
+        size: number;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+    };
 }
 
 // Server Action result - discriminated union

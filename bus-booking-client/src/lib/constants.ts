@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
     TRIPS: {
         BASE: "/trips",
         SEARCH: "/trips/search",
+        STATUSES: "/trips/statuses",
         BY_ID: (id: string) => `/trips/${id}`,
         SEATS: (id: string) => `/trips/${id}/seats`,
     },
@@ -28,13 +29,18 @@ export const API_ENDPOINTS = {
     STATIONS: {
         BASE: "/stations",
         BY_ID: (id: string) => `/stations/${id}`,
-        BY_CITY: (city: string) => `/stations/city/${city}`,
-        ACTIVE: "/stations/active",
     },
     // Routes
     ROUTES: {
         BASE: "/routes",
         BY_ID: (id: string) => `/routes/${id}`,
+    },
+    // Buses
+    BUSES: {
+        BASE: "/buses",
+        TYPES: "/buses/types",
+        STATUSES: "/buses/statuses",
+        BY_ID: (id: string) => `/buses/${id}`,
     },
     // Payment
     PAYMENT: {
@@ -57,12 +63,12 @@ export const ROUTES = {
     PROFILE: "/profile",
     // Admin routes
     ADMIN: {
-        DASHBOARD: "/admin/dashboard",
-        TRIPS: "/admin/trips",
-        TRIP_DETAILS: (id: string) => `/admin/trips/${id}`,
-        BOOKINGS: "/admin/bookings",
-        CUSTOMERS: "/admin/customers",
-        ROUTES: "/admin/routes",
-        STATIONS: "/admin/stations",
+        DASHBOARD: "/dashboard",
+        STATIONS: "/stations",
+        ROUTES: "/routes",
+        BUSES: "/buses",
+        TRIPS: "/trips",
+        BOOKINGS: "/bookings",
+        PAYMENTS: "/payments",
     },
 } as const;

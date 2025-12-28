@@ -1,40 +1,86 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { Trip, TripDetails, SeatInfo, TripSearchParams, PaginatedResponse } from "@/types";
+import type { Trip, TripSummary, TripDetails, SeatInfo, TripSearchParams, PaginatedResponse, ApiResponse } from "@/types";
+import type { GetTripsSchema } from "@/app/(admin)/trips/_lib/validations";
 
 /**
- * Get all trips with pagination
- * Cached and revalidated every 60 seconds
+ * Get all trips with filtering and sorting (admin)
+
  */
 export const getTrips = cache(
-    async (params?: { page?: number; size?: number }): Promise<PaginatedResponse<Trip>> => {
+    async (params: GetTripsSchema): Promise<PaginatedResponse<TripSummary>> => {
         const searchParams = new URLSearchParams();
-        if (params?.page !== undefined) searchParams.set("page", String(params.page));
-        if (params?.size !== undefined) searchParams.set("size", String(params.size));
+
+        // Pagination (API is 0-indexed)
+        searchParams.set("page", String(params.page - 1));
+        searchParams.set("size", String(params.perPage));
+        
+        if (params.status) {
+            searchParams.set("status", params.status);
+        }
+
+        if (params.route) {
+            searchParams.set("route", params.route);
+        }
+
+        // Date Filters
+        if (params.fromDate) {
+            searchParams.set("fromDate", params.fromDate);
+        }
+        if (params.toDate) {
+            searchParams.set("toDate", params.toDate);
+        }
+
 
         const query = searchParams.toString();
-        return apiGet(`${API_ENDPOINTS.TRIPS.BASE}${query ? `?${query}` : ""}`, {
-            revalidate: 60,
-            tags: ["trips"],
-        });
+        console.log("Query: ", query);
+        const response = await apiGet<ApiResponse<PaginatedResponse<TripSummary>>>(
+            `${API_ENDPOINTS.TRIPS.BASE}?${query}`,
+            {
+                revalidate: 60,
+                tags: ["trips"],
+            }
+        );
+
+        // Handle ApiResponse wrapper
+        if (response.success && response.data) {
+            return response.data;
+        }
+
+        // Return empty paginated response on error
+        return {
+            content: [],
+            page: {
+                size: 10,
+                number: 0,
+                totalElements: 0,
+                totalPages: 0,
+            },
+        };
     }
 );
 
 /**
  * Get trip by ID
- * Cached with tag for on-demand revalidation
  */
-export const getTripById = cache(async (id: string): Promise<TripDetails> => {
-    return apiGet(API_ENDPOINTS.TRIPS.BY_ID(id), {
-        revalidate: 60,
-        tags: ["trips", `trip-${id}`],
-    });
+export const getTripById = cache(async (id: string): Promise<TripDetails | null> => {
+    try {
+        const response = await apiGet<ApiResponse<TripDetails>>(
+            API_ENDPOINTS.TRIPS.BY_ID(id),
+            {
+                revalidate: 60,
+                tags: ["trips", `trip-${id}`],
+            }
+        );
+        return response.success ? response.data : null;
+    } catch {
+        return null;
+    }
 });
 
 /**
- * Search trips with filters
- * Cached for 30 seconds (more dynamic data)
+ * Search trips with filters (public)
  */
 export const searchTrips = cache(
     async (params: TripSearchParams): Promise<PaginatedResponse<Trip>> => {
@@ -56,20 +102,62 @@ export const searchTrips = cache(
         }
 
         const query = searchParams.toString();
-        return apiGet(`${API_ENDPOINTS.TRIPS.SEARCH}${query ? `?${query}` : ""}`, {
-            revalidate: 30,
-            tags: ["trips", "trip-search"],
-        });
+        const response = await apiGet<ApiResponse<PaginatedResponse<Trip>>>(
+            `${API_ENDPOINTS.TRIPS.SEARCH}?${query}`,
+            {
+                revalidate: 30,
+                tags: ["trips", "trip-search"],
+            }
+        );
+
+        if (response.success && response.data) {
+            return response.data;
+        }
+
+        return {
+            content: [],
+            page: {
+                size: 10,
+                number: 0,
+                totalElements: 0,
+                totalPages: 0,
+            },
+        };
     }
 );
 
 /**
  * Get available seats for a trip
- * Cached for 10 seconds (seats change frequently)
  */
 export const getTripSeats = cache(async (tripId: string): Promise<SeatInfo[]> => {
-    return apiGet(API_ENDPOINTS.TRIPS.SEATS(tripId), {
-        revalidate: 10,
-        tags: [`trip-${tripId}`, `trip-${tripId}-seats`],
-    });
+    try {
+        const response = await apiGet<ApiResponse<SeatInfo[]>>(
+            API_ENDPOINTS.TRIPS.SEATS(tripId),
+            {
+                revalidate: 10,
+                tags: [`trip-${tripId}`, `trip-${tripId}-seats`],
+            }
+        );
+        return response.success ? response.data : [];
+    } catch {
+        return [];
+    }
+});
+
+/**
+ * Get available trip statuses
+ */
+export const getTripStatuses = cache(async (): Promise<string[]> => {
+    try {
+        const response = await apiGet<ApiResponse<string[]>>(
+            API_ENDPOINTS.TRIPS.STATUSES,
+            {
+                revalidate: 3600,
+                tags: ["trip-statuses"],
+            }
+        );
+        return response.success ? response.data : [];
+    } catch {
+        return [];
+    }
 });

@@ -29,10 +29,10 @@ public class BusService implements IBusService {
      * SEARCH BUSES WITH FILTERS
      */
     @Override
-    public Page<BusSummaryResponse> searchBuses(String keyword, BusType type, BusStatus status,
+    public Page<BusSummaryResponse> searchBuses(String licensePlate, BusType type, BusStatus status,
             Integer minSeats, Integer maxSeats, Pageable pageable) {
 
-        return busRepository.searchBusSummaries(keyword, type, status, minSeats, maxSeats, pageable);
+        return busRepository.searchBusSummaries(licensePlate, type, status, minSeats, maxSeats, pageable);
     }
 
     /**

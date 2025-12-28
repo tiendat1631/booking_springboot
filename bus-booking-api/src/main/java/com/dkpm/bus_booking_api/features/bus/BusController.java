@@ -34,15 +34,26 @@ public class BusController {
 
     private final IBusService busService;
 
+    @GetMapping("/types")
+    public ResponseEntity<ApiResponse<BusType[]>> getBusTypes() {
+        return ResponseEntity.ok(ApiResponse.success(BusType.values()));
+    }
+
+    @GetMapping("/statuses")
+    public ResponseEntity<ApiResponse<BusStatus[]>> getBusStatuses() {
+        return ResponseEntity.ok(ApiResponse.success(BusStatus.values()));
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<Page<BusSummaryResponse>>> getBuses(
-            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String licensePlate,
             @RequestParam(required = false) BusType type,
             @RequestParam(required = false) BusStatus status,
             @RequestParam(required = false) Integer minSeats,
             @RequestParam(required = false) Integer maxSeats,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<BusSummaryResponse> result = busService.searchBuses(keyword, type, status, minSeats, maxSeats, pageable);
+        Page<BusSummaryResponse> result = busService.searchBuses(licensePlate, type, status, minSeats, maxSeats,
+                pageable);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }

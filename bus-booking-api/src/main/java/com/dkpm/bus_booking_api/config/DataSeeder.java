@@ -18,6 +18,7 @@ import com.dkpm.bus_booking_api.domain.bus.Seat;
 import com.dkpm.bus_booking_api.domain.bus.SeatLayout;
 import com.dkpm.bus_booking_api.domain.route.Route;
 import com.dkpm.bus_booking_api.domain.route.RouteRepository;
+import com.dkpm.bus_booking_api.domain.station.Province;
 import com.dkpm.bus_booking_api.domain.station.Station;
 import com.dkpm.bus_booking_api.domain.station.StationRepository;
 import com.dkpm.bus_booking_api.domain.trip.SeatStatus;
@@ -56,23 +57,23 @@ public class DataSeeder {
                         log.info("Seeding sample data...");
 
                         // ========== STATIONS ==========
-                        Station saigonStation = createStation("Bến xe Miền Đông Mới", "MDMOI",
-                                        "292 Đinh Bộ Lĩnh, P.26", "Hồ Chí Minh", "Hồ Chí Minh",
+                        Station saigonStation = createStation("Bến xe Miền Đông Mới",
+                                        "292 Đinh Bộ Lĩnh, P.26", 79, "Thành phố Hồ Chí Minh", "thanh_pho_ho_chi_minh",
                                         10.8231, 106.6297);
-                        Station dalatStation = createStation("Bến xe Đà Lạt", "DALAT",
-                                        "01 Tô Hiến Thành", "Đà Lạt", "Lâm Đồng",
+                        Station dalatStation = createStation("Bến xe Đà Lạt",
+                                        "01 Tô Hiến Thành", 68, "Tỉnh Lâm Đồng", "tinh_lam_dong",
                                         11.9404, 108.4583);
-                        Station nhatrangStation = createStation("Bến xe phía Bắc Nha Trang", "NTBAC",
-                                        "58 đường 23/10", "Nha Trang", "Khánh Hòa",
+                        Station nhatrangStation = createStation("Bến xe phía Bắc Nha Trang",
+                                        "58 đường 23/10", 56, "Tỉnh Khánh Hòa", "tinh_khanh_hoa",
                                         12.2388, 109.1967);
-                        Station vungtauStation = createStation("Bến xe Vũng Tàu", "VTAU",
-                                        "192 Nam Kỳ Khởi Nghĩa", "Vũng Tàu", "Bà Rịa - Vũng Tàu",
+                        Station vungtauStation = createStation("Bến xe Vũng Tàu",
+                                        "192 Nam Kỳ Khởi Nghĩa", 77, "Tỉnh Bà Rịa - Vũng Tàu", "tinh_ba_ria_vung_tau",
                                         10.3460, 107.0843);
-                        Station canthoStation = createStation("Bến xe Cần Thơ", "CTHO",
-                                        "91B Nguyễn Văn Linh", "Ninh Kiều", "Cần Thơ",
+                        Station canthoStation = createStation("Bến xe Cần Thơ",
+                                        "91B Nguyễn Văn Linh", 92, "Thành phố Cần Thơ", "thanh_pho_can_tho",
                                         10.0452, 105.7469);
-                        Station hanoiStation = createStation("Bến xe Nước Ngầm", "NNGAM",
-                                        "Giáp Bát", "Hà Nội", "Hà Nội",
+                        Station hanoiStation = createStation("Bến xe Nước Ngầm",
+                                        "Giáp Bát", 1, "Thành phố Hà Nội", "thanh_pho_ha_noi",
                                         20.9802, 105.8401);
 
                         List<Station> stations = stationRepository.saveAll(List.of(
@@ -81,15 +82,15 @@ public class DataSeeder {
                         log.info("Created {} stations", stations.size());
 
                         // ========== ROUTES ==========
-                        Route sgDalatRoute = createRoute("Sài Gòn - Đà Lạt", "SG-DL",
+                        Route sgDalatRoute = createRoute("Sài Gòn - Đà Lạt",
                                         saigonStation, dalatStation, 305, 420, new BigDecimal("280000"));
-                        Route sgNhatrangRoute = createRoute("Sài Gòn - Nha Trang", "SG-NT",
+                        Route sgNhatrangRoute = createRoute("Sài Gòn - Nha Trang",
                                         saigonStation, nhatrangStation, 450, 540, new BigDecimal("350000"));
-                        Route sgVungtauRoute = createRoute("Sài Gòn - Vũng Tàu", "SG-VT",
+                        Route sgVungtauRoute = createRoute("Sài Gòn - Vũng Tàu",
                                         saigonStation, vungtauStation, 125, 150, new BigDecimal("120000"));
-                        Route sgCanthoRoute = createRoute("Sài Gòn - Cần Thơ", "SG-CT",
+                        Route sgCanthoRoute = createRoute("Sài Gòn - Cần Thơ",
                                         saigonStation, canthoStation, 170, 210, new BigDecimal("150000"));
-                        Route dalatNhatrangRoute = createRoute("Đà Lạt - Nha Trang", "DL-NT",
+                        Route dalatNhatrangRoute = createRoute("Đà Lạt - Nha Trang",
                                         dalatStation, nhatrangStation, 140, 180, new BigDecimal("150000"));
 
                         List<Route> routes = routeRepository.saveAll(List.of(
@@ -151,14 +152,17 @@ public class DataSeeder {
                 };
         }
 
-        private Station createStation(String name, String code, String address,
-                        String city, String province, double lat, double lon) {
+        private Station createStation(String name, String address,
+                        Integer provinceCode, String provinceName, String provinceCodename,
+                        double lat, double lon) {
                 Station station = new Station();
                 station.setName(name);
-                station.setCode(code);
                 station.setAddress(address);
-                station.setCity(city);
-                station.setProvince(province);
+                station.setProvince(Province.builder()
+                                .code(provinceCode)
+                                .name(provinceName)
+                                .codename(provinceCodename)
+                                .build());
                 station.setLatitude(lat);
                 station.setLongitude(lon);
                 station.setActive(true);
@@ -166,11 +170,11 @@ public class DataSeeder {
                 return station;
         }
 
-        private Route createRoute(String name, String code, Station departure,
+        private Route createRoute(String name, Station departure,
                         Station arrival, int distance, int duration, BigDecimal price) {
                 Route route = new Route();
                 route.setName(name);
-                route.setCode(code);
+                route.setCode(generateRouteCode(departure, arrival));
                 route.setDepartureStation(departure);
                 route.setArrivalStation(arrival);
                 route.setDistanceKm(distance);
@@ -179,6 +183,57 @@ public class DataSeeder {
                 route.setActive(true);
                 route.setDeleted(false);
                 return route;
+        }
+
+        private String generateRouteCode(Station departure, Station arrival) {
+                String departureAbbr = getProvinceAbbreviation(departure.getProvince().getCodename());
+                String arrivalAbbr = getProvinceAbbreviation(arrival.getProvince().getCodename());
+                String prefix = departureAbbr + "-" + arrivalAbbr + "-";
+
+                String timestamp = String.valueOf(System.currentTimeMillis());
+                String suffix = timestamp.substring(timestamp.length() - 4);
+                String code = prefix + suffix;
+
+                // Add small delay to ensure unique timestamps for each route
+                try {
+                        Thread.sleep(1);
+                } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                }
+                return code;
+        }
+
+        /**
+         * Extract abbreviation from province codename.
+         * E.g., "thanh_pho_ho_chi_minh" -> "HCM"
+         * "tinh_ba_ria_vung_tau" -> "VT"
+         * "tinh_khanh_hoa" -> "KH"
+         */
+        private String getProvinceAbbreviation(String codename) {
+                if (codename == null || codename.isBlank()) {
+                        return "XX";
+                }
+
+                // Remove prefix "tinh_", "thanh_pho_"
+                String name = codename
+                                .replaceFirst("^tinh_", "")
+                                .replaceFirst("^thanh_pho_", "");
+
+                // Handle special cases like "ba_ria_vung_tau" -> take last part "vung_tau"
+                if (name.contains("_vung_tau")) {
+                        name = "vung_tau";
+                }
+
+                // Get first letter of each word (split by underscore)
+                String[] words = name.split("_");
+                StringBuilder abbr = new StringBuilder();
+                for (String word : words) {
+                        if (!word.isEmpty()) {
+                                abbr.append(Character.toUpperCase(word.charAt(0)));
+                        }
+                }
+
+                return abbr.length() > 0 ? abbr.toString() : "XX";
         }
 
         private Bus createBus(String licensePlate, BusType type, int totalSeats) {

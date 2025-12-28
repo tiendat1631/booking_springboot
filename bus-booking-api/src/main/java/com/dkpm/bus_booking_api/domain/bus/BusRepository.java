@@ -24,14 +24,14 @@ public interface BusRepository extends JpaRepository<Bus, UUID> {
               b.updatedAt
           )
           FROM Bus b
-          WHERE (:keyword IS NULL OR LOWER(b.licensePlate) LIKE LOWER(CONCAT('%', :keyword, '%')))
+          WHERE (:licensePlate IS NULL OR LOWER(b.licensePlate) LIKE LOWER(CONCAT('%', :licensePlate, '%')))
             AND (:type IS NULL OR b.type = :type)
             AND (:status IS NULL OR b.status = :status)
             AND (:minSeats IS NULL OR b.totalSeats >= :minSeats)
             AND (:maxSeats IS NULL OR b.totalSeats <= :maxSeats)
       """)
   Page<BusSummaryResponse> searchBusSummaries(
-      @Param("keyword") String keyword,
+      @Param("licensePlate") String licensePlate,
       @Param("type") BusType type,
       @Param("status") BusStatus status,
       @Param("minSeats") Integer minSeats,

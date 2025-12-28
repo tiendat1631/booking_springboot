@@ -16,7 +16,7 @@ public interface IBusService {
     /**
      * SEARCH BUSES WITH FILTERS AND PAGINATION
      */
-    Page<BusSummaryResponse> searchBuses(String keyword, BusType type, BusStatus status,
+    Page<BusSummaryResponse> searchBuses(String licensePlate, BusType type, BusStatus status,
             Integer minSeats, Integer maxSeats, Pageable pageable);
 
     /**
