@@ -84,6 +84,22 @@ public class TripService implements ITripService {
     }
 
     @Override
+    public Page<TripSearchResponse> searchTripsByProvince(
+            String departureProvince,
+            String arrivalProvince,
+            LocalDate departureDate,
+            int passengers,
+            Pageable pageable) {
+
+        return tripRepository.searchTripsByProvince(
+                departureProvince,
+                arrivalProvince,
+                departureDate,
+                passengers,
+                pageable).map(TripSearchResponse::from);
+    }
+
+    @Override
     public TripDetailResponse getTripDetail(UUID tripId) {
         Trip trip = tripRepository.findByIdWithDetails(tripId)
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + tripId));

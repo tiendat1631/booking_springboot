@@ -137,8 +137,214 @@ public class DataSeeder {
                                         now.plusDays(3).withHour(9).withMinute(30),
                                         new BigDecimal("160000"));
 
+                        // ========== TRIPS FOR JANUARY 25, 2026 ==========
+                        LocalDateTime jan25 = LocalDateTime.of(2026, 1, 25, 0, 0);
+
+                        // Morning trips - Sài Gòn -> Đà Lạt
+                        Trip trip6 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan25.withHour(6).withMinute(0),
+                                        jan25.withHour(13).withMinute(0),
+                                        new BigDecimal("290000"));
+                        Trip trip7 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan25.withHour(7).withMinute(30),
+                                        jan25.withHour(14).withMinute(30),
+                                        new BigDecimal("285000"));
+                        Trip trip8 = createTrip(sgDalatRoute, limousineBus,
+                                        jan25.withHour(8).withMinute(0),
+                                        jan25.withHour(15).withMinute(0),
+                                        new BigDecimal("450000"));
+
+                        // More Sài Gòn -> Đà Lạt trips on Jan 25
+                        Trip tripSgDl1 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan25.withHour(5).withMinute(0),
+                                        jan25.withHour(12).withMinute(0),
+                                        new BigDecimal("240000"));
+                        Trip tripSgDl2 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan25.withHour(9).withMinute(0),
+                                        jan25.withHour(16).withMinute(0),
+                                        new BigDecimal("295000"));
+                        Trip tripSgDl3 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan25.withHour(10).withMinute(0),
+                                        jan25.withHour(17).withMinute(0),
+                                        new BigDecimal("290000"));
+                        Trip tripSgDl4 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan25.withHour(11).withMinute(0),
+                                        jan25.withHour(18).withMinute(0),
+                                        new BigDecimal("250000"));
+                        Trip tripSgDl5 = createTrip(sgDalatRoute, limousineBus,
+                                        jan25.withHour(12).withMinute(0),
+                                        jan25.withHour(19).withMinute(0),
+                                        new BigDecimal("460000"));
+                        Trip tripSgDl6 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan25.withHour(13).withMinute(30),
+                                        jan25.withHour(20).withMinute(30),
+                                        new BigDecimal("285000"));
+                        Trip tripSgDl7 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan25.withHour(14).withMinute(0),
+                                        jan25.withHour(21).withMinute(0),
+                                        new BigDecimal("280000"));
+                        Trip tripSgDl8 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan25.withHour(15).withMinute(0),
+                                        jan25.withHour(22).withMinute(0),
+                                        new BigDecimal("255000"));
+                        Trip tripSgDl9 = createTrip(sgDalatRoute, limousineBus,
+                                        jan25.withHour(16).withMinute(0),
+                                        jan25.withHour(23).withMinute(0),
+                                        new BigDecimal("470000"));
+                        Trip tripSgDl10 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan25.withHour(18).withMinute(0),
+                                        jan25.plusDays(1).withHour(1).withMinute(0),
+                                        new BigDecimal("275000"));
+                        Trip tripSgDl11 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan25.withHour(19).withMinute(0),
+                                        jan25.plusDays(1).withHour(2).withMinute(0),
+                                        new BigDecimal("270000"));
+                        Trip tripSgDl12 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan25.withHour(20).withMinute(0),
+                                        jan25.plusDays(1).withHour(3).withMinute(0),
+                                        new BigDecimal("245000"));
+
+                        // Morning trips - Sài Gòn -> Nha Trang
+                        Trip trip9 = createTrip(sgNhatrangRoute, seaterBus1,
+                                        jan25.withHour(6).withMinute(30),
+                                        jan25.withHour(15).withMinute(30),
+                                        new BigDecimal("360000"));
+                        Trip trip10 = createTrip(sgNhatrangRoute, sleeperBus1,
+                                        jan25.withHour(9).withMinute(0),
+                                        jan25.withHour(18).withMinute(0),
+                                        new BigDecimal("380000"));
+
+                        // Morning trips - Sài Gòn -> Vũng Tàu
+                        Trip trip11 = createTrip(sgVungtauRoute, limousineBus,
+                                        jan25.withHour(7).withMinute(0),
+                                        jan25.withHour(9).withMinute(30),
+                                        new BigDecimal("150000"));
+                        Trip trip12 = createTrip(sgVungtauRoute, seaterBus1,
+                                        jan25.withHour(8).withMinute(30),
+                                        jan25.withHour(11).withMinute(0),
+                                        new BigDecimal("100000"));
+
+                        // Afternoon trips - Sài Gòn -> Cần Thơ
+                        Trip trip13 = createTrip(sgCanthoRoute, sleeperBus2,
+                                        jan25.withHour(13).withMinute(0),
+                                        jan25.withHour(16).withMinute(30),
+                                        new BigDecimal("155000"));
+                        Trip trip14 = createTrip(sgCanthoRoute, seaterBus1,
+                                        jan25.withHour(14).withMinute(0),
+                                        jan25.withHour(17).withMinute(30),
+                                        new BigDecimal("140000"));
+
+                        // Evening trips - Đà Lạt -> Nha Trang
+                        Trip trip15 = createTrip(dalatNhatrangRoute, sleeperBus1,
+                                        jan25.withHour(18).withMinute(0),
+                                        jan25.withHour(21).withMinute(0),
+                                        new BigDecimal("160000"));
+
+                        // ========== MORE SÀI GÒN -> ĐÀ LẠT TRIPS ==========
+                        // Jan 25 - Night trips
+                        Trip trip16 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan25.withHour(21).withMinute(0),
+                                        jan25.plusDays(1).withHour(4).withMinute(0),
+                                        new BigDecimal("280000"));
+                        Trip trip17 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan25.withHour(22).withMinute(0),
+                                        jan25.plusDays(1).withHour(5).withMinute(0),
+                                        new BigDecimal("275000"));
+                        Trip trip18 = createTrip(sgDalatRoute, limousineBus,
+                                        jan25.withHour(23).withMinute(0),
+                                        jan25.plusDays(1).withHour(6).withMinute(0),
+                                        new BigDecimal("480000"));
+
+                        // Jan 26 - Morning trips
+                        LocalDateTime jan26 = jan25.plusDays(1);
+                        Trip trip19 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan26.withHour(5).withMinute(0),
+                                        jan26.withHour(12).withMinute(0),
+                                        new BigDecimal("295000"));
+                        Trip trip20 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan26.withHour(6).withMinute(0),
+                                        jan26.withHour(13).withMinute(0),
+                                        new BigDecimal("250000"));
+                        Trip trip21 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan26.withHour(7).withMinute(0),
+                                        jan26.withHour(14).withMinute(0),
+                                        new BigDecimal("290000"));
+                        Trip trip22 = createTrip(sgDalatRoute, limousineBus,
+                                        jan26.withHour(8).withMinute(0),
+                                        jan26.withHour(15).withMinute(0),
+                                        new BigDecimal("450000"));
+                        Trip trip23 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan26.withHour(9).withMinute(30),
+                                        jan26.withHour(16).withMinute(30),
+                                        new BigDecimal("285000"));
+
+                        // Jan 26 - Afternoon/Evening trips
+                        Trip trip24 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan26.withHour(13).withMinute(0),
+                                        jan26.withHour(20).withMinute(0),
+                                        new BigDecimal("260000"));
+                        Trip trip25 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan26.withHour(14).withMinute(0),
+                                        jan26.withHour(21).withMinute(0),
+                                        new BigDecimal("280000"));
+                        Trip trip26 = createTrip(sgDalatRoute, limousineBus,
+                                        jan26.withHour(15).withMinute(0),
+                                        jan26.withHour(22).withMinute(0),
+                                        new BigDecimal("460000"));
+                        Trip trip27 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan26.withHour(20).withMinute(0),
+                                        jan26.plusDays(1).withHour(3).withMinute(0),
+                                        new BigDecimal("275000"));
+
+                        // Jan 27 - Various trips
+                        LocalDateTime jan27 = jan26.plusDays(1);
+                        Trip trip28 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan27.withHour(6).withMinute(0),
+                                        jan27.withHour(13).withMinute(0),
+                                        new BigDecimal("290000"));
+                        Trip trip29 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan27.withHour(8).withMinute(0),
+                                        jan27.withHour(15).withMinute(0),
+                                        new BigDecimal("285000"));
+                        Trip trip30 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan27.withHour(10).withMinute(0),
+                                        jan27.withHour(17).withMinute(0),
+                                        new BigDecimal("255000"));
+                        Trip trip31 = createTrip(sgDalatRoute, limousineBus,
+                                        jan27.withHour(14).withMinute(0),
+                                        jan27.withHour(21).withMinute(0),
+                                        new BigDecimal("470000"));
+                        Trip trip32 = createTrip(sgDalatRoute, sleeperBus1,
+                                        jan27.withHour(19).withMinute(0),
+                                        jan27.plusDays(1).withHour(2).withMinute(0),
+                                        new BigDecimal("280000"));
+
+                        // Jan 28 - Morning trips
+                        LocalDateTime jan28 = jan27.plusDays(1);
+                        Trip trip33 = createTrip(sgDalatRoute, sleeperBus2,
+                                        jan28.withHour(6).withMinute(0),
+                                        jan28.withHour(13).withMinute(0),
+                                        new BigDecimal("295000"));
+                        Trip trip34 = createTrip(sgDalatRoute, seaterBus1,
+                                        jan28.withHour(7).withMinute(30),
+                                        jan28.withHour(14).withMinute(30),
+                                        new BigDecimal("260000"));
+                        Trip trip35 = createTrip(sgDalatRoute, limousineBus,
+                                        jan28.withHour(9).withMinute(0),
+                                        jan28.withHour(16).withMinute(0),
+                                        new BigDecimal("455000"));
+
                         List<Trip> trips = tripRepository.saveAll(List.of(
-                                        trip1, trip2, trip3, trip4, trip5));
+                                        trip1, trip2, trip3, trip4, trip5,
+                                        trip6, trip7, trip8, trip9, trip10,
+                                        trip11, trip12, trip13, trip14, trip15,
+                                        trip16, trip17, trip18, trip19, trip20,
+                                        trip21, trip22, trip23, trip24, trip25,
+                                        trip26, trip27, trip28, trip29, trip30,
+                                        trip31, trip32, trip33, trip34, trip35,
+                                        tripSgDl1, tripSgDl2, tripSgDl3, tripSgDl4,
+                                        tripSgDl5, tripSgDl6, tripSgDl7, tripSgDl8,
+                                        tripSgDl9, tripSgDl10, tripSgDl11, tripSgDl12));
                         log.info("Created {} trips", trips.size());
 
                         // ========== TRIP SEATS ==========

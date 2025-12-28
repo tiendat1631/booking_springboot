@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { apiGet, apiPost } from "@/lib/api";
 import { API_ENDPOINTS, ROUTES } from "@/lib/constants";
-import { loginSchema, registerSchema } from "@/lib/validators";
+import type { LoginInput, RegisterInput } from "@/lib/validators";
 import type { ActionResult, ApiResponse } from "@/types";
 import type { AuthTokenData, JwtPayload, Session } from "@/types/auth.types";
 
@@ -91,34 +91,13 @@ async function saveSession(tokenData: AuthTokenData): Promise<Session | null> {
  * Login user with email and password
  */
 export async function login(
-    _prevState: ActionResult<void> | null,
-    formData: FormData
+    data: LoginInput
 ): Promise<ActionResult<void>> {
     try {
-        const rawData = {
-            email: formData.get("email") as string,
-            password: formData.get("password") as string,
-        };
-
-        const validated = loginSchema.safeParse(rawData);
-        if (!validated.success) {
-            const fieldErrors: Record<string, string[]> = {};
-            validated.error.issues.forEach((issue) => {
-                const field = issue.path[0] as string;
-                if (!fieldErrors[field]) fieldErrors[field] = [];
-                fieldErrors[field].push(issue.message);
-            });
-            return {
-                success: false,
-                error: validated.error.issues[0]?.message || "Invalid data",
-                fieldErrors,
-            };
-        }
-
         // Call login API
         const response = await apiPost<ApiResponse<AuthTokenData>>(
             API_ENDPOINTS.AUTH.LOGIN,
-            validated.data
+            data
         );
 
         // Check API response
@@ -203,34 +182,10 @@ export async function refreshToken(): Promise<ActionResult<Session>> {
  * Register new user
  */
 export async function register(
-    _prevState: ActionResult<void> | null,
-    formData: FormData
+    data: RegisterInput
 ): Promise<ActionResult<void>> {
     try {
-        const rawData = {
-            firstName: formData.get("firstName") as string,
-            lastName: formData.get("lastName") as string,
-            email: formData.get("email") as string,
-            password: formData.get("password") as string,
-            phone: formData.get("phone") as string,
-        };
-
-        const validated = registerSchema.safeParse(rawData);
-        if (!validated.success) {
-            const fieldErrors: Record<string, string[]> = {};
-            validated.error.issues.forEach((issue) => {
-                const field = issue.path[0] as string;
-                if (!fieldErrors[field]) fieldErrors[field] = [];
-                fieldErrors[field].push(issue.message);
-            });
-            return {
-                success: false,
-                error: validated.error.issues[0]?.message || "Invalid data",
-                fieldErrors,
-            };
-        }
-
-        await apiPost(API_ENDPOINTS.AUTH.REGISTER, validated.data);
+        await apiPost(API_ENDPOINTS.AUTH.REGISTER, data);
 
         return { success: true, data: undefined };
     } catch (error) {

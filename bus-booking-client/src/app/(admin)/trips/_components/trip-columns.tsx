@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import type { TripSummary } from "@/types/trip.types";
-import type { Route } from "@/types/route.types";
 
 // Format price in VND
 function formatPrice(price: number): string {

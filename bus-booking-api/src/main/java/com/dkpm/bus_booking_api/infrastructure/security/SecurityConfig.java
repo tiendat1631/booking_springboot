@@ -43,7 +43,16 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
+                        // Auth endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/verify").permitAll()
+                        // Public trip search endpoints
+                        .requestMatchers("/api/trips/search", "/api/trips/upcoming",
+                                "/api/trips/statuses")
+                        .permitAll()
+                        .requestMatchers("/api/trips/{tripId}").permitAll()
+                        // Bus and route enum endpoints
+                        .requestMatchers("/api/buses/types", "/api/buses/statuses").permitAll()
+                        .requestMatchers("/api/routes/search").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt

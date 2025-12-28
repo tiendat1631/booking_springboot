@@ -39,6 +39,16 @@ public interface ITripService {
                         Pageable pageable);
 
         /**
+         * Search trips by province codename
+         */
+        Page<TripSearchResponse> searchTripsByProvince(
+                        String departureProvince,
+                        String arrivalProvince,
+                        LocalDate departureDate,
+                        int passengers,
+                        Pageable pageable);
+
+        /**
          * Get trip details with seat availability
          */
         TripDetailResponse getTripDetail(UUID tripId);

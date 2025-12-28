@@ -161,3 +161,59 @@ export const getTripStatuses = cache(async (): Promise<string[]> => {
         return [];
     }
 });
+
+/**
+ * Search params for trip search by province
+ */
+export interface TripSearchByProvinceParams {
+    departureProvince: string;
+    arrivalProvince: string;
+    departureDate: string;
+    passengers?: number;
+    page?: number;
+    size?: number;
+}
+
+/**
+ * Search trips by province (public)
+ */
+export const searchTripsByProvince = cache(
+    async (params: TripSearchByProvinceParams): Promise<PaginatedResponse<TripSummary>> => {
+        const searchParams = new URLSearchParams();
+        searchParams.set("departureProvince", params.departureProvince);
+        searchParams.set("arrivalProvince", params.arrivalProvince);
+        searchParams.set("departureDate", params.departureDate);
+        if (params.passengers) {
+            searchParams.set("passengers", String(params.passengers));
+        }
+        if (params.page !== undefined) {
+            searchParams.set("page", String(params.page));
+        }
+        if (params.size !== undefined) {
+            searchParams.set("size", String(params.size));
+        }
+
+        const query = searchParams.toString();
+        const response = await apiGet<ApiResponse<PaginatedResponse<TripSummary>>>(
+            `${API_ENDPOINTS.TRIPS.SEARCH}?${query}`,
+            {
+                revalidate: 30,
+                tags: ["trips", "trip-search"],
+            }
+        );
+
+        if (response.success && response.data) {
+            return response.data;
+        }
+
+        return {
+            content: [],
+            page: {
+                size: 10,
+                number: 0,
+                totalElements: 0,
+                totalPages: 0,
+            },
+        };
+    }
+);

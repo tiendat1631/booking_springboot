@@ -6,7 +6,7 @@ import type { SearchParams } from "nuqs/server";
 import { AdminHeader } from "../_components/admin-header";
 import { Button } from "@/components/ui/button";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getTrips, getRoutes, getTripStatuses, getBusTypes } from "@/data";
+import { getTrips, getTripStatuses, getBusTypes } from "@/data";
 import { TripsTable } from "./_components/trips-table";
 import { searchTripsParamsCache } from "./_lib/validations";
 

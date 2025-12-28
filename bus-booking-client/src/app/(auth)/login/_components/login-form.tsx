@@ -1,34 +1,64 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 import { login } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { PasswordInput } from "@/components/ui/password-input";
 import { GoogleIcon } from "@/components/shared";
 import { ROUTES } from "@/lib/constants";
+import { loginSchema, type LoginInput } from "@/lib/validators";
 
 export function LoginForm() {
     const router = useRouter();
-    const [showPassword, setShowPassword] = useState(false);
-    const [state, formAction, isPending] = useActionState(login, null);
 
-    useEffect(() => {
-        if (state?.success) {
-            toast.success("Welcome back!", {
-                description: "You have successfully signed in.",
-            });
-            router.push(ROUTES.HOME);
-            router.refresh();
-        } else if (state && !state.success && state.error && !state.fieldErrors) {
-            toast.error(state.error);
+    const form = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
+
+    async function onSubmit(data: LoginInput) {
+        try {
+            const result = await login(data);
+
+            if (result?.success) {
+                toast.success("Welcome back!", {
+                    description: "You have successfully signed in.",
+                });
+                router.push(ROUTES.HOME);
+                router.refresh();
+            } else if (result?.error) {
+                // Handle field-specific errors
+                if (result.fieldErrors) {
+                    Object.entries(result.fieldErrors).forEach(([field, messages]) => {
+                        form.setError(field as keyof LoginInput, {
+                            type: "server",
+                            message: messages[0],
+                        });
+                    });
+                } else {
+                    form.setError("root", { message: result.error });
+                    toast.error(result.error);
+                }
+            }
+        } catch {
+            form.setError("root", { message: "An unexpected error occurred" });
+            toast.error("An unexpected error occurred");
         }
-    }, [state, router]);
+    }
+
+
 
     return (
         <div className="space-y-8 animate-fade-in">
@@ -43,77 +73,77 @@ export function LoginForm() {
             </div>
 
             {/* Form */}
-            <form action={formAction} className="space-y-5">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 {/* Global Error */}
-                {state && !state.success && state.error && !state.fieldErrors && (
+                {form.formState.errors.root && (
                     <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                        {state.error}
+                        {form.formState.errors.root.message}
                     </div>
                 )}
 
-                {/* Email Field */}
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="email@example.com"
-                            className="pl-10 h-11"
-                            disabled={isPending}
-                            aria-invalid={!!(state && !state.success && state.fieldErrors?.email)}
-                        />
-                    </div>
-                    {state && !state.success && state.fieldErrors?.email && (
-                        <p className="text-sm text-destructive">{state.fieldErrors.email[0]}</p>
-                    )}
-                </div>
+                <FieldGroup>
+                    {/* Email Field */}
+                    <Controller
+                        name="email"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor="login-email">Email</FieldLabel>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                                    <Input
+                                        {...field}
+                                        id="login-email"
+                                        type="email"
+                                        placeholder="email@example.com"
+                                        className="pl-10 h-11"
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                </div>
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
 
-                {/* Password Field */}
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label htmlFor="password">Password</Label>
-                        <Link
-                            href={ROUTES.FORGOT_PASSWORD}
-                            className="text-sm text-primary hover:text-primary/80 transition-colors"
-                        >
-                            Forgot password?
-                        </Link>
-                    </div>
-                    <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input
-                            id="password"
-                            name="password"
-                            type={showPassword ? "text" : "password"}
-                            placeholder="••••••••"
-                            className="pl-10 pr-10 h-11"
-                            disabled={isPending}
-                            aria-invalid={!!(state && !state.success && state.fieldErrors?.password)}
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                            tabIndex={-1}
-                        >
-                            {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                        </button>
-                    </div>
-                    {state && !state.success && state.fieldErrors?.password && (
-                        <p className="text-sm text-destructive">{state.fieldErrors.password[0]}</p>
-                    )}
-                </div>
+                    {/* Password Field */}
+                    <Controller
+                        name="password"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                                <div className="flex items-center justify-between">
+                                    <FieldLabel htmlFor="login-password">Password</FieldLabel>
+                                    <Link
+                                        href={ROUTES.FORGOT_PASSWORD}
+                                        className="text-sm text-primary hover:text-primary/80 transition-colors"
+                                    >
+                                        Forgot password?
+                                    </Link>
+                                </div>
+                                <PasswordInput
+                                    {...field}
+                                    id="login-password"
+                                    placeholder="••••••••"
+                                    className="h-11"
+                                    aria-invalid={fieldState.invalid}
+                                />
+                                {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                )}
+                            </Field>
+                        )}
+                    />
+                </FieldGroup>
 
                 {/* Submit Button */}
                 <Button
                     type="submit"
                     className="w-full h-11 text-base font-medium"
-                    disabled={isPending}
+                    disabled={form.formState.isSubmitting}
                 >
-                    {isPending ? (
+                    {form.formState.isSubmitting ? (
                         <>
                             <Loader2 className="size-4 animate-spin" />
                             Signing in...

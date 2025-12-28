@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/constants";
 import { HeroSearchForm } from "./hero-search-form";
+import type { Province } from "@/types/station.types";
 
 // ============================================================================
 // Hero Section with Stats
@@ -17,7 +18,11 @@ const STATS = [
     { value: "4.8★", label: "Average Rating" },
 ] as const;
 
-export function HeroSection() {
+interface HeroSectionProps {
+    provinces: Province[];
+}
+
+export function HeroSection({ provinces }: HeroSectionProps) {
     return (
         <section className="relative min-h-screen flex flex-col pt-20 pb-8 overflow-hidden">
             {/* Background gradient */}
@@ -54,7 +59,7 @@ export function HeroSection() {
 
                         {/* Search Form */}
                         <div className="pt-2">
-                            <HeroSearchForm />
+                            <HeroSearchForm provinces={provinces} />
                         </div>
 
                         {/* Trust indicators */}

@@ -63,16 +63,16 @@ public class TripController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> searchTrips(
-            @RequestParam UUID departureStationId,
-            @RequestParam UUID arrivalStationId,
+    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> searchTripsByProvince(
+            @RequestParam String departureProvince,
+            @RequestParam String arrivalProvince,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             @RequestParam(defaultValue = "1") int passengers,
             @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<TripSearchResponse> result = tripService.searchTrips(
-                departureStationId,
-                arrivalStationId,
+        Page<TripSearchResponse> result = tripService.searchTripsByProvince(
+                departureProvince,
+                arrivalProvince,
                 departureDate,
                 passengers,
                 pageable);
