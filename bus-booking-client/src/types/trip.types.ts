@@ -1,5 +1,6 @@
 // Trip types based on API response
 export type TripStatus = "SCHEDULED" | "BOARDING" | "IN_TRANSIT" | "COMPLETED" | "CANCELLED";
+export type SeatStatus = "AVAILABLE" | "BOOKED" | "HELD" | "RESERVED";
 
 import type { BusType } from "./bus.types";
 export type { BusType };
@@ -36,45 +37,71 @@ export interface TripSummary {
     status: TripStatus;
 }
 
-// Legacy types for backward compatibility
-export interface Trip {
+// ============================================================================
+// Trip Detail Response (for booking page)
+// ============================================================================
+
+export interface StationDetail {
     id: string;
-    routeId: string;
-    busId: string;
-    departureStationId: string;
-    arrivalStationId: string;
-    departureStationName: string;
-    arrivalStationName: string;
+    name: string;
+    address: string;
+    provinceName: string | null;
+}
+
+export interface RouteDetail {
+    id: string;
+    name: string;
+    code: string;
+    departureStation: StationDetail;
+    arrivalStation: StationDetail;
+    distanceKm: number | null;
+}
+
+export interface BusDetail {
+    id: string;
+    licensePlate: string;
+    type: string;
+    totalSeats: number;
+}
+
+export interface SeatLayoutInfo {
+    totalRows: number;
+    totalColumns: number;
+}
+
+export interface SeatInfo {
+    seatId: string;
+    row: number;
+    col: number;
+    status: SeatStatus;
+    price: number;
+}
+
+export interface TripDetailResponse {
+    tripId: string;
+    route: RouteDetail;
+    bus: BusDetail;
     departureTime: string;
     arrivalTime: string;
+    formattedDuration: string;
+    durationMinutes: number;
     price: number;
     availableSeats: number;
     totalSeats: number;
     status: TripStatus;
-    busNumber: string;
-    busType: string;
-}
-
-export interface TripDetails extends Trip {
-    route: {
-        id: string;
-        name: string;
-        distance: number;
-        estimatedDuration: number;
-    };
+    seatLayout: SeatLayoutInfo | null;
     seats: SeatInfo[];
 }
 
-export interface SeatInfo {
-    seatNumber: string;
-    isAvailable: boolean;
-    price: number;
-}
+// ============================================================================
+// Search params
+// ============================================================================
 
-export interface TripSearchParams {
-    departureStationId?: string;
-    arrivalStationId?: string;
-    departureDate?: string;
+export interface TripSearchByProvinceParams {
+    departureProvince: string;
+    arrivalProvince: string;
+    departureDate: string;
+    passengers?: number;
     page?: number;
     size?: number;
 }

@@ -53,6 +53,14 @@ public class SecurityConfig {
                         // Bus and route enum endpoints
                         .requestMatchers("/api/buses/types", "/api/buses/statuses").permitAll()
                         .requestMatchers("/api/routes/search").permitAll()
+                        // Guest booking endpoints
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/bookings").permitAll()
+                        .requestMatchers("/api/bookings/code/{bookingCode}").permitAll()
+                        .requestMatchers("/api/bookings/{bookingId}").permitAll()
+                        .requestMatchers("/api/bookings/request-cancel", "/api/bookings/confirm-cancel").permitAll()
+                        // Guest payment endpoints
+                        .requestMatchers("/api/payments/booking/{bookingId}").permitAll()
+                        .requestMatchers("/api/payments/vnpay/callback").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt

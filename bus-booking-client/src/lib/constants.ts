@@ -23,7 +23,6 @@ export const API_ENDPOINTS = {
         SEARCH: "/trips/search",
         STATUSES: "/trips/statuses",
         BY_ID: (id: string) => `/trips/${id}`,
-        SEATS: (id: string) => `/trips/${id}/seats`,
     },
     // Stations
     STATIONS: {

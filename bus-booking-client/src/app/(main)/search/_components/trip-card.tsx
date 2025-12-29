@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Clock, Users, Bus, Armchair, BedDouble, ArrowRight, MapPin } from "lucide-react";
+import { Clock, Users, Bus, Armchair, BedDouble, MapPin } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import type { TripSummary } from "@/types/trip.types";
 
 interface TripCardProps {
@@ -41,9 +42,9 @@ export function TripCard({ trip, passengers }: TripCardProps) {
     const totalPrice = trip.price * passengers;
 
     return (
-        <div className="bg-card border rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+        <Card className="overflow-hidden hover:shadow-md transition-shadow py-0 gap-0">
             {/* Header Bar */}
-            <div className="bg-muted/50 px-4 py-2 flex items-center justify-between border-b">
+            <div className="px-3 py-2 flex items-center justify-between border-b">
                 <div className="flex items-center gap-3">
                     <Badge variant="secondary" className="gap-1.5">
                         {getBusTypeIcon(trip.bus.type)}
@@ -60,7 +61,7 @@ export function TripCard({ trip, passengers }: TripCardProps) {
             </div>
 
             {/* Main Content */}
-            <div className="p-5">
+            <CardContent className="p-5">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-6">
                     {/* Journey Info */}
                     <div className="flex-1">
@@ -148,7 +149,7 @@ export function TripCard({ trip, passengers }: TripCardProps) {
                         </Button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }

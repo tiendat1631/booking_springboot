@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { Trip, TripSummary, TripDetails, SeatInfo, TripSearchParams, PaginatedResponse, ApiResponse } from "@/types";
+import type { TripSummary, TripDetailResponse, TripSearchByProvinceParams, PaginatedResponse, ApiResponse } from "@/types";
 import type { GetTripsSchema } from "@/app/(admin)/trips/_lib/validations";
 
 /**
@@ -62,15 +62,15 @@ export const getTrips = cache(
 );
 
 /**
- * Get trip by ID
+ * Get trip details for booking page
  */
-export const getTripById = cache(async (id: string): Promise<TripDetails | null> => {
+export const getTripDetails = cache(async (tripId: string): Promise<TripDetailResponse | null> => {
     try {
-        const response = await apiGet<ApiResponse<TripDetails>>(
-            API_ENDPOINTS.TRIPS.BY_ID(id),
+        const response = await apiGet<ApiResponse<TripDetailResponse>>(
+            API_ENDPOINTS.TRIPS.BY_ID(tripId),
             {
-                revalidate: 60,
-                tags: ["trips", `trip-${id}`],
+                revalidate: 30,
+                tags: ["trips", `trip-${tripId}`],
             }
         );
         return response.success ? response.data : null;
@@ -80,72 +80,7 @@ export const getTripById = cache(async (id: string): Promise<TripDetails | null>
 });
 
 /**
- * Search trips with filters (public)
- */
-export const searchTrips = cache(
-    async (params: TripSearchParams): Promise<PaginatedResponse<Trip>> => {
-        const searchParams = new URLSearchParams();
-        if (params.departureStationId) {
-            searchParams.set("departureStationId", params.departureStationId);
-        }
-        if (params.arrivalStationId) {
-            searchParams.set("arrivalStationId", params.arrivalStationId);
-        }
-        if (params.departureDate) {
-            searchParams.set("departureDate", params.departureDate);
-        }
-        if (params.page !== undefined) {
-            searchParams.set("page", String(params.page));
-        }
-        if (params.size !== undefined) {
-            searchParams.set("size", String(params.size));
-        }
-
-        const query = searchParams.toString();
-        const response = await apiGet<ApiResponse<PaginatedResponse<Trip>>>(
-            `${API_ENDPOINTS.TRIPS.SEARCH}?${query}`,
-            {
-                revalidate: 30,
-                tags: ["trips", "trip-search"],
-            }
-        );
-
-        if (response.success && response.data) {
-            return response.data;
-        }
-
-        return {
-            content: [],
-            page: {
-                size: 10,
-                number: 0,
-                totalElements: 0,
-                totalPages: 0,
-            },
-        };
-    }
-);
-
-/**
- * Get available seats for a trip
- */
-export const getTripSeats = cache(async (tripId: string): Promise<SeatInfo[]> => {
-    try {
-        const response = await apiGet<ApiResponse<SeatInfo[]>>(
-            API_ENDPOINTS.TRIPS.SEATS(tripId),
-            {
-                revalidate: 10,
-                tags: [`trip-${tripId}`, `trip-${tripId}-seats`],
-            }
-        );
-        return response.success ? response.data : [];
-    } catch {
-        return [];
-    }
-});
-
-/**
- * Get available trip statuses
+ * Get trip statuses
  */
 export const getTripStatuses = cache(async (): Promise<string[]> => {
     try {
@@ -161,18 +96,6 @@ export const getTripStatuses = cache(async (): Promise<string[]> => {
         return [];
     }
 });
-
-/**
- * Search params for trip search by province
- */
-export interface TripSearchByProvinceParams {
-    departureProvince: string;
-    arrivalProvince: string;
-    departureDate: string;
-    passengers?: number;
-    page?: number;
-    size?: number;
-}
 
 /**
  * Search trips by province (public)

@@ -93,12 +93,6 @@ public class TripController {
         return ResponseEntity.ok(ApiResponse.success(trip));
     }
 
-    @GetMapping("/{tripId}/seats")
-    public ResponseEntity<ApiResponse<TripDetailResponse>> getTripSeats(@PathVariable UUID tripId) {
-        TripDetailResponse trip = tripService.getTripDetail(tripId);
-        return ResponseEntity.ok(ApiResponse.success(trip));
-    }
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<TripDetailResponse>> createTrip(@Valid @RequestBody CreateTripRequest request) {

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Bus, Armchair, BedDouble, Clock, RotateCcw } from "lucide-react";
 
-import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";

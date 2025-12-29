@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { apiGet } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { Booking, BookingDetails, PaginatedResponse } from "@/types";
+import type { Booking, BookingDetails, BookingResponse, PaginatedResponse, ApiResponse } from "@/types";
 
 /**
  * Get current user's bookings
@@ -34,6 +34,25 @@ export const getBookingById = cache(async (id: string): Promise<BookingDetails> 
         revalidate: 0,
         tags: ["my-bookings", `booking-${id}`],
     });
+});
+
+/**
+ * Get booking for payment page
+ */
+export const getBookingForPayment = cache(async (bookingId: string): Promise<BookingResponse | null> => {
+    try {
+        const response = await apiGet<ApiResponse<BookingResponse>>(
+            API_ENDPOINTS.BOOKINGS.BY_ID(bookingId),
+            {
+                revalidate: 0,
+                tags: [`booking-${bookingId}`],
+            }
+        );
+        return response.success ? response.data : null;
+    } catch (error) {
+        console.error("Failed to get booking:", error);
+        return null;
+    }
 });
 
 /**
