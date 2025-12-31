@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User, LogOut, Ticket, Settings } from "lucide-react";
 
-import { logout } from "@/actions/auth.actions";
+import { logout } from "@/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ROUTES } from "@/lib/constants";
-import type { Session } from "@/types";
+import type { Session } from "@/type";
 
 interface HeaderAuthProps {
     session: Session | null;

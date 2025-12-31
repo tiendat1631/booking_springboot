@@ -4,10 +4,10 @@ import type { SearchParams } from "nuqs/server";
 
 import { AdminHeader } from "../_components/admin-header";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getRoutes, getActiveStations } from "@/data";
+import { getRoutes, getVNProvinces } from "@/queries";
 import { RoutesTable } from "./_components/routes-table";
 import { CreateRouteDialog } from "./_components/create-route-dialog";
-import { searchRoutesParamsCache } from "./_lib/validations";
+import { searchRoutesParamsCache } from "@/lib/validations";
 
 export const metadata: Metadata = {
     title: "Routes",
@@ -34,7 +34,10 @@ async function RoutesTableContent({ searchParams }: RoutesPageProps) {
 export default async function RoutesPage({ searchParams }: RoutesPageProps) {
     const params = await searchParams;
     const search = searchRoutesParamsCache.parse(params);
-    const stations = await getActiveStations();
+
+    const promises = Promise.all([
+        getVNProvinces(),
+    ]);
 
     return (
         <>
@@ -48,12 +51,11 @@ export default async function RoutesPage({ searchParams }: RoutesPageProps) {
                             Manage bus routes and pricing
                         </p>
                     </div>
-                    <CreateRouteDialog stations={stations} />
+                    <CreateRouteDialog promises={promises} />
                 </div>
 
                 {/* Data Table */}
                 <Suspense
-                    key={JSON.stringify(search)}
                     fallback={
                         <DataTableSkeleton
                             columnCount={8}

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Container, PageHeader } from "@/components/ui/layout";
-import { getAllBookings } from "@/data";
+import { getAllBookings } from "@/queries";
 import { BookingsTable, BookingsTableSkeleton } from "./_components/bookings-table";
 
 interface BookingsPageProps {

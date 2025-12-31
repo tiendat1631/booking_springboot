@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,39 +17,24 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { createRouteSchema, type CreateRouteInput } from "../_lib/validations";
-import { createRoute } from "../_lib/actions";
-import type { Station } from "@/types/station.types";
+import { Switch } from "@/components/ui/switch";
+import { ProvinceCombobox } from "@/components/shared/province-combobox";
+import { CreateRouteInput, createRouteSchema } from "@/lib/validations";
+import { createRoute } from "@/actions";
+import { getVNProvinces } from "@/queries";
+
 
 interface CreateRouteDialogProps {
-    stations: Station[];
+    promises: Promise<[
+        Awaited<ReturnType<typeof getVNProvinces>>,
+    ]>;
 }
 
-export function CreateRouteDialog({ stations }: CreateRouteDialogProps) {
+export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
+    const [provinces] = React.use(promises);
+
     const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const [isPending, startTransition] = React.useTransition();
@@ -57,13 +42,10 @@ export function CreateRouteDialog({ stations }: CreateRouteDialogProps) {
     const form = useForm<CreateRouteInput>({
         resolver: zodResolver(createRouteSchema),
         defaultValues: {
-            name: "",
-            departureStationId: "",
-            arrivalStationId: "",
             distanceKm: 0,
             estimatedDurationMinutes: 0,
             basePrice: 0,
-            description: "",
+            active: true,
         },
     });
 
@@ -94,226 +76,148 @@ export function CreateRouteDialog({ stations }: CreateRouteDialogProps) {
                 <DialogHeader>
                     <DialogTitle>Add New Route</DialogTitle>
                     <DialogDescription>
-                        Create a new bus route between stations.
+                        Create a new bus route between provinces.
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Route Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g. Sài Gòn - Đà Lạt"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FieldGroup>
                         <div className="grid grid-cols-2 gap-4">
-                            <FormField
+                            <Controller
+                                name="departureProvince"
                                 control={form.control}
-                                name="departureStationId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Departure Station</FormLabel>
-                                        <StationCombobox
-                                            stations={stations}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Departure Province</FieldLabel>
+                                        <ProvinceCombobox
+                                            provinces={provinces}
                                             value={field.value}
                                             onChange={field.onChange}
                                             placeholder="Select departure..."
                                         />
-                                        <FormMessage />
-                                    </FormItem>
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
                                 )}
                             />
-                            <FormField
+                            <Controller
+                                name="destinationProvince"
                                 control={form.control}
-                                name="arrivalStationId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Arrival Station</FormLabel>
-                                        <StationCombobox
-                                            stations={stations}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel>Destination Province</FieldLabel>
+                                        <ProvinceCombobox
+                                            provinces={provinces}
                                             value={field.value}
                                             onChange={field.onChange}
-                                            placeholder="Select arrival..."
+                                            placeholder="Select destination..."
                                         />
-                                        <FormMessage />
-                                    </FormItem>
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
                                 )}
                             />
                         </div>
 
                         <div className="grid grid-cols-3 gap-4">
-                            <FormField
-                                control={form.control}
+                            <Controller
                                 name="distanceKm"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Distance (km)</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                placeholder="0"
-                                                {...field}
-                                                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="route-distance">Distance (km)</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="route-distance"
+                                            type="number"
+                                            placeholder="0"
+                                            onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
+                            <Controller
                                 name="estimatedDurationMinutes"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Duration (min)</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                placeholder="0"
-                                                {...field}
-                                                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="route-duration">Duration (min)</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="route-duration"
+                                            type="number"
+                                            placeholder="0"
+                                            onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
                                 )}
                             />
-                            <FormField
-                                control={form.control}
+                            <Controller
                                 name="basePrice"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Base Price (₫)</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                placeholder="0"
-                                                {...field}
-                                                onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="route-price">Base Price (₫)</FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="route-price"
+                                            type="number"
+                                            placeholder="0"
+                                            onChange={(e) => field.onChange(e.target.valueAsNumber || 0)}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        {fieldState.invalid && (
+                                            <FieldError errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
                                 )}
                             />
                         </div>
 
-                        <FormField
+                        <Controller
+                            name="active"
                             control={form.control}
-                            name="description"
                             render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Description (Optional)</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="Route description..."
-                                            className="resize-none"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                                <Field orientation="horizontal" className="flex items-center justify-between rounded-lg border p-3">
+                                    <div className="space-y-0.5">
+                                        <FieldLabel>Active</FieldLabel>
+                                        <FieldDescription>
+                                            Enable this route for booking
+                                        </FieldDescription>
+                                    </div>
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                </Field>
                             )}
                         />
+                    </FieldGroup>
 
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={isPending}>
-                                {isPending && <Loader2 className="animate-spin" />}
-                                Create Route
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={isPending}>
+                            {isPending && <Loader2 className="animate-spin" />}
+                            Create Route
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    );
-}
-
-interface StationComboboxProps {
-    stations: Station[];
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-}
-
-function StationCombobox({ stations, value, onChange, placeholder }: StationComboboxProps) {
-    const [open, setOpen] = React.useState(false);
-
-    const selectedStation = stations.find((s) => s.id === value);
-
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className={cn(
-                        "w-full justify-between",
-                        !selectedStation && "text-muted-foreground"
-                    )}
-                >
-                    <span className="truncate">
-                        {selectedStation?.name ?? placeholder ?? "Select station..."}
-                    </span>
-                    <ChevronsUpDown className="opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent 
-                className="w-[var(--radix-popover-trigger-width)] p-0"
-                align="start"
-                onWheel={(e) => e.stopPropagation()}
-            >
-                <Command>
-                    <CommandInput placeholder="Search station..." />
-                    <CommandList className="max-h-60 overflow-y-auto">
-                        <CommandEmpty>No station found.</CommandEmpty>
-                        <CommandGroup>
-                            {stations.map((station) => (
-                                <CommandItem
-                                    key={station.id}
-                                    value={station.name}
-                                    onSelect={() => {
-                                        onChange(station.id);
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            value === station.id
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                        )}
-                                    />
-                                    <div className="flex flex-col">
-                                        <span>{station.name}</span>
-                                        <span className="text-xs text-muted-foreground">
-                                            {station.province.name}
-                                        </span>
-                                    </div>
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
     );
 }

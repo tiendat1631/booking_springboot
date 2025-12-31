@@ -1,6 +1,7 @@
 package com.dkpm.bus_booking_api.features.trip;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -24,9 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.CreateTripRequest;
 import com.dkpm.bus_booking_api.features.trip.dto.TripDetailResponse;
-import com.dkpm.bus_booking_api.features.trip.dto.TripSearchResponse;
+import com.dkpm.bus_booking_api.features.trip.dto.TripResponse;
 import com.dkpm.bus_booking_api.features.trip.dto.UpdateTripRequest;
 
+import com.dkpm.bus_booking_api.domain.bus.BusType;
 import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 
 import jakarta.validation.Valid;
@@ -46,31 +48,33 @@ public class TripController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> getTrips(
-            @RequestParam(required = false) TripStatus status,
-            @RequestParam(required = false) UUID routeId,
-            @RequestParam(required = false) UUID busId,
+    public ResponseEntity<ApiResponse<Page<TripResponse>>> getTrips(
+            @RequestParam(required = false) List<TripStatus> status,
+            @RequestParam(required = false) List<BusType> busType,
+            @RequestParam(required = false) String routeCode,
+            @RequestParam(required = false) String busLicensePlate,
+            @RequestParam(required = false) String departureStation,
+            @RequestParam(required = false) String arrivalStation,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-            @RequestParam(required = false) String route,
-            @RequestParam(required = false) String busLicensePlate,
             @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<TripSearchResponse> result = tripService.adminSearchTrips(
-                status, routeId, busId, fromDate, toDate, route, busLicensePlate, pageable);
+        Page<TripResponse> result = tripService.adminSearchTrips(
+                status, busType, routeCode, busLicensePlate, departureStation, arrivalStation, fromDate, toDate,
+                pageable);
 
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> searchTripsByProvince(
+    public ResponseEntity<ApiResponse<Page<TripResponse>>> searchTripsByProvince(
             @RequestParam String departureProvince,
             @RequestParam String arrivalProvince,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             @RequestParam(defaultValue = "1") int passengers,
             @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<TripSearchResponse> result = tripService.searchTripsByProvince(
+        Page<TripResponse> result = tripService.searchTripsByProvince(
                 departureProvince,
                 arrivalProvince,
                 departureDate,
@@ -81,9 +85,9 @@ public class TripController {
     }
 
     @GetMapping("/upcoming")
-    public ResponseEntity<ApiResponse<Page<TripSearchResponse>>> getUpcomingTrips(
+    public ResponseEntity<ApiResponse<Page<TripResponse>>> getUpcomingTrips(
             @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<TripSearchResponse> result = tripService.getUpcomingTrips(pageable);
+        Page<TripResponse> result = tripService.getUpcomingTrips(pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 

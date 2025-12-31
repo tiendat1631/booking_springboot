@@ -14,7 +14,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import type { Station, Province } from "@/types/station.types";
+import { Station, Province } from "@/schemas";
+
 
 export function getStationColumns(provinces: Province[] = []): ColumnDef<Station>[] {
     const provinceOptions = provinces.map((p) => ({
@@ -52,7 +53,7 @@ export function getStationColumns(provinces: Province[] = []): ColumnDef<Station
             ),
             meta: {
                 label: "Province",
-                variant: "select",
+                variant: "multiSelect",
                 options: provinceOptions,
             },
             enableSorting: true,

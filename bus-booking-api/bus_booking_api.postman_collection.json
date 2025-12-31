@@ -21,9 +21,11 @@
 									"    const response = pm.response.json();\r",
 									"    \r",
 									"    if (response.success && response.data) {\r",
-									"        const token = response.data;\r",
+									"        const token = response.data.accessToken;\r",
+									"        const refreshToken = response.data.refreshToken;\r",
 									"        pm.collectionVariables.set(\"token\", token);\r",
-									"        console.log(\"Token has been updated successfully!\");\r",
+									"        pm.collectionVariables.set(\"refreshToken\", refreshToken);\r",
+									"        console.log(\"Tokens have been updated successfully!\");\r",
 									"    } else {\r",
 									"        console.log(\"Login failed: \" + response.message);\r",
 									"    }\r",
@@ -102,6 +104,83 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    const response = pm.response.json();\r",
+									"    \r",
+									"    if (response.success && response.data) {\r",
+									"        const token = response.data.accessToken;\r",
+									"        const refreshToken = response.data.refreshToken;\r",
+									"        pm.collectionVariables.set(\"token\", token);\r",
+									"        pm.collectionVariables.set(\"refreshToken\", refreshToken);\r",
+									"        console.log(\"Tokens have been refreshed successfully!\");\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/api/auth/refresh"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/api/auth/logout"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profile",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/profile/me"
+					},
+					"response": []
 				}
 			]
 		},
@@ -109,12 +188,12 @@
 			"name": "Stations",
 			"item": [
 				{
-					"name": "Get Stations (Search)",
+					"name": "Get Stations",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/stations?keyword=&page=0&size=10&sort=name,asc",
+							"raw": "{{baseUrl}}/api/stations?name=&province=&active=true&page=0&size=10&sort=name,asc",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -124,43 +203,20 @@
 							],
 							"query": [
 								{
-									"key": "keyword",
+									"key": "name",
 									"value": "",
-									"description": "Optional search keyword"
+									"description": "Optional search by name"
 								},
 								{
-									"key": "page",
-									"value": "0"
+									"key": "province",
+									"value": "",
+									"description": "Optional filter by province"
 								},
 								{
-									"key": "size",
-									"value": "10"
+									"key": "active",
+									"value": "true",
+									"description": "Optional filter by active status (true/false)"
 								},
-								{
-									"key": "sort",
-									"value": "name,asc"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Active Stations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/stations/all?page=0&size=10&sort=name,asc",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"stations",
-								"all"
-							],
-							"query": [
 								{
 									"key": "page",
 									"value": "0"
@@ -204,65 +260,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Station By Code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/stations/code/:code",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"stations",
-								"code",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "HN-MY-DINH"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search Stations By City",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/stations/search?city=Hanoi&page=0&size=10",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"stations",
-								"search"
-							],
-							"query": [
-								{
-									"key": "city",
-									"value": "Hanoi"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Create Station (Admin)",
 					"request": {
 						"method": "POST",
@@ -274,7 +271,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"My Dinh Bus Station\",\n  \"code\": \"HN-MY-DINH\",\n  \"address\": \"20 Pham Hung, My Dinh\",\n  \"city\": \"Hanoi\",\n  \"province\": \"Hanoi\",\n  \"latitude\": 21.0285,\n  \"longitude\": 105.7823\n}"
+							"raw": "{\n  \"name\": \"My Dinh Bus Station\",\n  \"address\": \"20 Pham Hung, My Dinh\",\n  \"provinceCode\": \"thanh_pho_ha_noi\",\n  \"latitude\": 21.0285,\n  \"longitude\": 105.7823\n}"
 						},
 						"url": "{{baseUrl}}/api/stations"
 					},
@@ -292,7 +289,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"My Dinh Bus Station - Updated\",\n  \"address\": \"20 Pham Hung, My Dinh, Cau Giay\",\n  \"city\": \"Hanoi\"\n}"
+							"raw": "{\n  \"name\": \"My Dinh Bus Station - Updated\",\n  \"address\": \"20 Pham Hung, My Dinh, Cau Giay\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/stations/:id",
@@ -345,12 +342,12 @@
 			"name": "Routes",
 			"item": [
 				{
-					"name": "Get Routes (Search)",
+					"name": "Get Routes",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/routes?keyword=&page=0&size=10&sort=name,asc",
+							"raw": "{{baseUrl}}/api/routes?name=&code=&departureStationId=&arrivalStationId=&isActive=true&page=0&size=10&sort=name,asc",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -360,43 +357,30 @@
 							],
 							"query": [
 								{
-									"key": "keyword",
+									"key": "name",
 									"value": "",
-									"description": "Optional search keyword"
+									"description": "Optional filter by name"
 								},
 								{
-									"key": "page",
-									"value": "0"
+									"key": "code",
+									"value": "",
+									"description": "Optional filter by code"
 								},
 								{
-									"key": "size",
-									"value": "10"
+									"key": "departureStationId",
+									"value": "",
+									"description": "Optional filter by departure station ID"
 								},
 								{
-									"key": "sort",
-									"value": "name,asc"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Active Routes",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/routes/all?page=0&size=10&sort=name,asc",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"routes",
-								"all"
-							],
-							"query": [
+									"key": "arrivalStationId",
+									"value": "",
+									"description": "Optional filter by arrival station ID"
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"description": "Optional filter by active status (true/false)"
+								},
 								{
 									"key": "page",
 									"value": "0"
@@ -433,69 +417,6 @@
 								{
 									"key": "id",
 									"value": "{{routeId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Route By Code",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/routes/code/:code",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"routes",
-								"code",
-								":code"
-							],
-							"variable": [
-								{
-									"key": "code",
-									"value": "DL-NT"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Search Routes By Stations",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/routes/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&page=0&size=10",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"routes",
-								"search"
-							],
-							"query": [
-								{
-									"key": "departureStationId",
-									"value": "{{departureStationId}}"
-								},
-								{
-									"key": "arrivalStationId",
-									"value": "{{arrivalStationId}}"
-								},
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
 								}
 							]
 						}
@@ -585,12 +506,30 @@
 			"name": "Buses",
 			"item": [
 				{
-					"name": "Get Buses (Search)",
+					"name": "Get Bus Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/buses/types"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bus Statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/buses/statuses"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Buses",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/buses?keyword=&type=&status=&minSeats=&maxSeats=&page=0&size=10&sort=createdAt,desc",
+							"raw": "{{baseUrl}}/api/buses?licensePlate=&type=&status=&minSeats=&maxSeats=&page=0&size=10&sort=createdAt,desc",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -600,7 +539,7 @@
 							],
 							"query": [
 								{
-									"key": "keyword",
+									"key": "licensePlate",
 									"value": "",
 									"description": "Search by license plate"
 								},
@@ -688,12 +627,88 @@
 			"name": "Trips",
 			"item": [
 				{
+					"name": "Get Trip Statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/trips/statuses"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trips (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/trips?status=&routeId=&busId=&fromDate=&toDate=&route=&busLicensePlate=&page=0&size=10&sort=departureTime,desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"trips"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "",
+									"description": "SCHEDULED, ONGOING, COMPLETED, CANCELLED"
+								},
+								{
+									"key": "routeId",
+									"value": "",
+									"description": "Optional filter by route ID"
+								},
+								{
+									"key": "busId",
+									"value": "",
+									"description": "Optional filter by bus ID"
+								},
+								{
+									"key": "fromDate",
+									"value": "",
+									"description": "Optional filter from date (YYYY-MM-DD)"
+								},
+								{
+									"key": "toDate",
+									"value": "",
+									"description": "Optional filter to date (YYYY-MM-DD)"
+								},
+								{
+									"key": "route",
+									"value": "",
+									"description": "Optional search by route name"
+								},
+								{
+									"key": "busLicensePlate",
+									"value": "",
+									"description": "Optional search by bus license plate"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "departureTime,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Search Available Trips",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/trips/search?departureStationId={{departureStationId}}&arrivalStationId={{arrivalStationId}}&departureDate=2025-12-25&passengers=1&page=0&size=10",
+							"raw": "{{baseUrl}}/api/trips/search?departureProvince=thanh_pho_ha_noi&arrivalProvince=thanh_pho_ho_chi_minh&departureDate=2025-12-30&passengers=1&page=0&size=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -704,21 +719,24 @@
 							],
 							"query": [
 								{
-									"key": "departureStationId",
-									"value": "{{departureStationId}}"
+									"key": "departureProvince",
+									"value": "thanh_pho_ha_noi",
+									"description": "Province codename for departure"
 								},
 								{
-									"key": "arrivalStationId",
-									"value": "{{arrivalStationId}}"
+									"key": "arrivalProvince",
+									"value": "thanh_pho_ho_chi_minh",
+									"description": "Province codename for arrival"
 								},
 								{
 									"key": "departureDate",
-									"value": "2025-12-25",
+									"value": "2025-12-30",
 									"description": "ISO date format: YYYY-MM-DD"
 								},
 								{
 									"key": "passengers",
-									"value": "1"
+									"value": "1",
+									"description": "Number of passengers (default: 1)"
 								},
 								{
 									"key": "page",
@@ -788,32 +806,6 @@
 					"response": []
 				},
 				{
-					"name": "Get Trip Seats",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/trips/:tripId/seats",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"trips",
-								":tripId",
-								"seats"
-							],
-							"variable": [
-								{
-									"key": "tripId",
-									"value": "{{tripId}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Create Trip (Admin)",
 					"request": {
 						"method": "POST",
@@ -868,7 +860,7 @@
 				{
 					"name": "Cancel Trip (Admin)",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}/api/trips/:tripId/cancel",
@@ -1248,15 +1240,16 @@
 				{
 					"name": "VNPay CallBack",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/payments/vnpay/callback?vnp_Amount=&vnp_BankCode=&vnp_BankTranNo=&vnp_CardType=&vnp_OrderInfo=&vnp_PayDate=&vnp_ResponseCode=00&vnp_TmnCode=&vnp_TransactionNo=&vnp_TransactionStatus=00&vnp_TxnRef=&vnp_SecureHash=",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/api/payments/vnpay/callback?vnp_Amount=&vnp_BankCode=&vnp_BankTranNo=&vnp_CardType=&vnp_OrderInfo=&vnp_PayDate=&vnp_ResponseCode=00&vnp_TmnCode=&vnp_TransactionNo=&vnp_TransactionStatus=00&vnp_TxnRef=&vnp_SecureHash=",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "8080",
 							"path": [
 								"api",
 								"payments",
@@ -1367,6 +1360,11 @@
 		},
 		{
 			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
 			"value": "",
 			"type": "string"
 		}

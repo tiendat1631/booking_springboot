@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, formatCurrency } from "@/lib/format";
-import type { Booking, BookingStatus, PaymentStatus } from "@/types";
+import type { Booking, BookingStatus, PaymentStatus } from "@/type";
 
 // Status options for filtering
 export const bookingStatusOptions = [

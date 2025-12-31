@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.station;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -30,9 +31,9 @@ public class StationService implements IStationService {
     private final IGeocodingService geocodingService;
 
     @Override
-    public Page<StationResponse> searchStations(String name, String province, Boolean active,
+    public Page<StationResponse> searchStations(String name, List<String> provinces, Boolean active,
             Pageable pageable) {
-        return stationRepository.searchStations(name, province, active, pageable)
+        return stationRepository.searchStations(name, provinces, active, pageable)
                 .map(StationResponse::from);
     }
 

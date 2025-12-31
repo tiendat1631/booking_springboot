@@ -4,10 +4,10 @@ import type { SearchParams } from "nuqs/server";
 
 import { AdminHeader } from "../_components/admin-header";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getStations, getVNProvinces } from "@/data";
+import { getStations, getVNProvinces } from "@/queries";
 import { StationsTable } from "./_components/stations-table";
 import { CreateStationDialog } from "./_components/create-station-dialog";
-import { searchStationsParamsCache } from "./_lib/validations";
+import { searchStationsParamsCache } from "@/lib/validations";
 
 export const metadata: Metadata = {
     title: "Stations",
@@ -35,7 +35,10 @@ async function StationsTableContent({ searchParams }: StationsPageProps) {
 export default async function StationsPage({ searchParams }: StationsPageProps) {
     const params = await searchParams;
     const search = searchStationsParamsCache.parse(params);
-    const provinces = await getVNProvinces();
+
+    const promises = Promise.all([
+        getVNProvinces(),
+    ]);
 
     return (
         <>
@@ -49,12 +52,11 @@ export default async function StationsPage({ searchParams }: StationsPageProps) 
                             Manage bus stations and terminals
                         </p>
                     </div>
-                    <CreateStationDialog provinces={provinces} />
+                    <CreateStationDialog promises={promises} />
                 </div>
 
                 {/* Data Table */}
                 <Suspense
-                    key={JSON.stringify(search)}
                     fallback={
                         <DataTableSkeleton
                             columnCount={6}

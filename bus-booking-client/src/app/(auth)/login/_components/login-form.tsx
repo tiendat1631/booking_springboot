@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Loader2, Mail } from "lucide-react";
 import { toast } from "sonner";
 
-import { login } from "@/actions/auth.actions";
+import { login } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";

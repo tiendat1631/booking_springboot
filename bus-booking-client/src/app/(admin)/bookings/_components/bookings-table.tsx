@@ -7,7 +7,7 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { useDataTable } from "@/hooks/use-data-table";
 import { getBookingsColumns } from "./bookings-table-columns";
-import type { Booking, PaginatedResponse } from "@/types";
+import type { Booking, PaginatedResponse } from "@/type";
 
 interface BookingsTableProps {
     data: PaginatedResponse<Booking>;

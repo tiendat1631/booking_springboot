@@ -44,4 +44,8 @@ public class Bus extends BaseEntity {
             this.totalSeats = this.seatLayout.getSeats().size();
         }
     }
+
+    public boolean isActive() {
+        return this.status == BusStatus.ACTIVE;
+    }
 }

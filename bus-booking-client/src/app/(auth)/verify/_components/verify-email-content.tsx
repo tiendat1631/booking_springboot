@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, XCircle, Loader2, Mail } from "lucide-react";
 
-import { verifyEmail } from "@/actions/auth.actions";
+import { verifyEmail } from "@/actions/auth.action";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/constants";
 

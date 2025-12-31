@@ -14,27 +14,25 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import type { TripSummary } from "@/types/trip.types";
+import { RouteSummary, Trip, busTypeEnum, tripStatusEnum } from "@/schemas";
+import { formatPrice, formatDateTime, formatDuration } from "@/lib/format";
 
-// Format price in VND
-function formatPrice(price: number): string {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(price);
-}
 
-// Format date/time
-function formatDateTime(dateString: string): { date: string; time: string } {
-    const date = new Date(dateString);
-    return {
-        date: date.toLocaleDateString("vi-VN"),
-        time: date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-    };
-}
+const busTypeLabels: Record<typeof busTypeEnum.options[number], string> = {
+    SEATER: "Seater",
+    SLEEPER: "Sleeper",
+    LIMOUSINE: "Limousine",
+};
 
-// Get bus type icon
-function getBusTypeIcon(type: string) {
+const tripStatusLabels: Record<typeof tripStatusEnum.options[number], string> = {
+    SCHEDULED: "Scheduled",
+    BOARDING: "Boarding",
+    IN_TRANSIT: "In Transit",
+    COMPLETED: "Completed",
+    CANCELLED: "Cancelled",
+};
+
+function getBusTypeIcon(type: typeof busTypeEnum.options[number]) {
     switch (type) {
         case "SEATER":
             return <Armchair className="size-3" />;
@@ -42,44 +40,39 @@ function getBusTypeIcon(type: string) {
             return <BedDouble className="size-3" />;
         case "LIMOUSINE":
             return <Bus className="size-3" />;
-        default:
-            return <Bus className="size-3" />;
     }
 }
 
-// Get status badge variant
-function getStatusVariant(status: string): "default" | "secondary" | "destructive" | "outline" {
+function getStatusVariant(status: typeof tripStatusEnum.options[number]): "default" | "secondary" | "destructive" | "outline" {
     switch (status) {
         case "SCHEDULED":
             return "default";
-        case "DEPARTED":
+        case "BOARDING":
+            return "outline";
+        case "IN_TRANSIT":
             return "outline";
         case "COMPLETED":
             return "secondary";
         case "CANCELLED":
             return "destructive";
-        default:
-            return "secondary";
     }
 }
 
+const busTypeOptions = busTypeEnum.options.map((value) => ({
+    label: busTypeLabels[value],
+    value,
+}));
 
-interface GetTripColumnsOptions {
-    statuses?: string[];
-    busTypes?: string[];
-}
+const tripStatusOptions = tripStatusEnum.options.map((value) => ({
+    label: tripStatusLabels[value],
+    value,
+}));
 
-export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripSummary>[] {
-
-    const statusOptions = options?.statuses?.map((s) => ({
-        label: s.charAt(0) + s.slice(1).toLowerCase().replace(/_/g, " "),
-        value: s,
-    })) ?? [];
-
-    const busTypeOptions = options?.busTypes?.map((t) => ({
-        label: t.charAt(0) + t.slice(1).toLowerCase(),
-        value: t,
-    })) ?? [];
+export function getTripColumns(routes: RouteSummary[]): ColumnDef<Trip>[] {
+    const routeOptions = routes.map((route) => ({
+        label: route.name,
+        value: route.code,
+    }));
 
     return [
         {
@@ -88,21 +81,24 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
             header: "Route",
             cell: ({ row }) => {
                 const route = row.original.route;
+                const departure = row.original.departureStation;
+                const arrival = row.original.destinationStation;
                 return (
                     <div className="flex flex-col gap-0.5">
-                        <div className="font-medium">{route.name}</div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <span>{route.departureStation}</span>
+                        <div className="flex items-center gap-1 font-medium ">
+                            <span>{departure.name}</span>
                             <ArrowRight className="size-3" />
-                            <span>{route.arrivalStation}</span>
+                            <span>{arrival.name}</span>
                         </div>
+                        <div className="text-xs text-muted-foreground">{route.name}</div>
+
                     </div>
                 );
             },
             meta: {
                 label: "Route",
-                variant: "text",
-                placeholder: "Search route...",
+                variant: "multiSelect",
+                options: routeOptions,
             },
             enableColumnFilter: true,
             enableSorting: false,
@@ -115,12 +111,35 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
             ),
             cell: ({ row }) => {
                 const departure = formatDateTime(row.original.departureTime);
-                const arrival = formatDateTime(row.original.arrivalTime);
                 return (
                     <div className="flex flex-col gap-0.5">
                         <div className="font-medium">{departure.date}</div>
                         <div className="text-sm text-muted-foreground">
-                            {departure.time} → {arrival.time}
+                            {departure.time}
+                        </div>
+                    </div>
+                );
+            },
+            meta: {
+                label: "Departure Time",
+                variant: "dateRange",
+            },
+            enableColumnFilter: true,
+            enableSorting: true,
+        },
+        {
+            id: "arrivalTime",
+            accessorKey: "arrivalTime",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} label="Arrival" />
+            ),
+            cell: ({ row }) => {
+                const arrival = formatDateTime(row.original.arrivalTime);
+                return (
+                    <div className="flex flex-col gap-0.5">
+                        <div className="font-medium">{arrival.date}</div>
+                        <div className="text-sm text-muted-foreground">
+                            {arrival.time}
                         </div>
                     </div>
                 );
@@ -128,17 +147,17 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
             enableSorting: true,
         },
         {
-            id: "formattedDuration",
-            accessorKey: "formattedDuration",
+            id: "durationMinutes",
+            accessorKey: "durationMinutes",
             header: "Duration",
             cell: ({ row }) => (
-                <Badge variant="outline">{row.original.formattedDuration}</Badge>
+                <Badge variant="outline">{formatDuration(row.original.durationMinutes)}</Badge>
             ),
             enableSorting: false,
         },
         {
-            id: "bus",
-            accessorKey: "bus",
+            id: "busType",
+            accessorKey: "busType",
             header: "Bus",
             cell: ({ row }) => {
                 const bus = row.original.bus;
@@ -147,18 +166,16 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
                         <div className="font-mono text-sm">{bus.licensePlate}</div>
                         <Badge variant="outline" className="gap-1 w-fit text-xs">
                             {getBusTypeIcon(bus.type)}
-                            {bus.type}
+                            {busTypeLabels[bus.type]}
                         </Badge>
                     </div>
                 );
             },
             meta: {
                 label: "Bus Type",
-                variant: "select",
+                variant: "multiSelect",
                 options: busTypeOptions,
-            },
-            filterFn: (row, id, value) => {
-                return row.original.bus.type === value;
+                
             },
             enableColumnFilter: true,
             enableSorting: false,
@@ -203,14 +220,14 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
                 const status = row.original.status;
                 return (
                     <Badge variant={getStatusVariant(status)}>
-                        {status}
+                        {tripStatusLabels[status]}
                     </Badge>
                 );
             },
             meta: {
                 label: "Status",
-                variant: "select",
-                options: statusOptions,
+                variant: "multiSelect",
+                options: tripStatusOptions,
             },
             enableColumnFilter: true,
             enableSorting: false,
@@ -231,7 +248,7 @@ export function getTripColumns(options?: GetTripColumnsOptions): ColumnDef<TripS
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(trip.tripId)}
+                                onClick={() => navigator.clipboard.writeText(trip.id)}
                             >
                                 Copy ID
                             </DropdownMenuItem>

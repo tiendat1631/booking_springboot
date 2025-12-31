@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -17,14 +17,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -33,14 +26,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { createBusSchema, type CreateBusInput } from "../_lib/validations";
-import { createBus } from "../_lib/actions";
+import { CreateBusInput, createBusSchema } from "@/lib/validations";
+import { createBus } from "@/actions";
+import { busTypeEnum } from "@/schemas";
 
-const busTypeOptions = [
-    { label: "Seater (Ghế ngồi)", value: "SEATER" },
-    { label: "Sleeper (Giường nằm)", value: "SLEEPER" },
-    { label: "Limousine (VIP)", value: "LIMOUSINE" },
-] as const;
+const busTypeLabels: Record<typeof busTypeEnum.options[number], string> = {
+    SEATER: "Seater (Ghế ngồi)",
+    SLEEPER: "Sleeper (Giường nằm)",
+    LIMOUSINE: "Limousine (VIP)",
+};
+
+const busTypeOptions = busTypeEnum.options.map((value) => ({
+    label: busTypeLabels[value],
+    value,
+}));
 
 export function CreateBusDialog() {
     const router = useRouter();
@@ -85,41 +84,41 @@ export function CreateBusDialog() {
                         Register a new bus to the fleet.
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FieldGroup>
+                        <Controller
                             name="licensePlate"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>License Plate</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="e.g. 51B-12345"
-                                            className="font-mono uppercase"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="bus-license-plate">License Plate</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="bus-license-plate"
+                                        placeholder="e.g. 51B-12345"
+                                        className="font-mono uppercase"
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
+                        <Controller
                             name="type"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Bus Type</FormLabel>
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="bus-type">Bus Type</FieldLabel>
                                     <Select
+                                        value={field.value}
                                         onValueChange={field.onChange}
-                                        defaultValue={field.value}
                                     >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select bus type" />
-                                            </SelectTrigger>
-                                        </FormControl>
+                                        <SelectTrigger id="bus-type" aria-invalid={fieldState.invalid}>
+                                            <SelectValue placeholder="Select bus type" />
+                                        </SelectTrigger>
                                         <SelectContent>
                                             {busTypeOptions.map((option) => (
                                                 <SelectItem key={option.value} value={option.value}>
@@ -128,26 +127,28 @@ export function CreateBusDialog() {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
-                                </FormItem>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
                             )}
                         />
+                    </FieldGroup>
 
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={isPending}>
-                                {isPending && <Loader2 className="animate-spin" />}
-                                Create Bus
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={isPending}>
+                            {isPending && <Loader2 className="animate-spin" />}
+                            Create Bus
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     );

@@ -18,39 +18,32 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
 
         @Query("""
                         SELECT r FROM Route r
-                        JOIN FETCH r.departureStation ds
-                        JOIN FETCH r.arrivalStation ars
                         WHERE r.deleted = false
                         AND (:isActive IS NULL OR r.active = :isActive)
                         AND (:name IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :name, '%')))
                         AND (:code IS NULL OR LOWER(r.code) LIKE LOWER(CONCAT('%', :code, '%')))
-                        AND (:departureStationId IS NULL OR ds.id = :departureStationId)
-                        AND (:arrivalStationId IS NULL OR ars.id = :arrivalStationId)
+                        AND (:departureProvince IS NULL OR LOWER(r.departureProvince.codename) = LOWER(:departureProvince))
+                        AND (:destinationProvince IS NULL OR LOWER(r.destinationProvince.codename) = LOWER(:destinationProvince))
                         """)
         Page<Route> searchRoutes(
                         @Param("name") String name,
                         @Param("code") String code,
-                        @Param("departureStationId") UUID departureStationId,
-                        @Param("arrivalStationId") UUID arrivalStationId,
+                        @Param("departureProvince") String departureProvince,
+                        @Param("destinationProvince") String destinationProvince,
                         @Param("isActive") Boolean isActive,
                         Pageable pageable);
 
-        @Query("""
-                        SELECT r FROM Route r
-                        JOIN FETCH r.departureStation ds
-                        JOIN FETCH r.arrivalStation ars
-                        WHERE r.active = true
-                        AND r.deleted = false
-                        AND (ds.id = :stationId OR ars.id = :stationId)
-                        """)
-        List<Route> findRoutesConnectingStation(@Param("stationId") UUID stationId);
+        @Query("SELECT r FROM Route r WHERE r.active = true AND r.deleted = false ORDER BY r.name")
+        List<Route> findAllActive();
 
         @Query("""
                         SELECT r FROM Route r
-                        JOIN FETCH r.departureStation
-                        JOIN FETCH r.arrivalStation
-                        WHERE r.id = :id
-                        AND r.deleted = false
+                        WHERE r.deleted = false
+                        AND r.active = true
+                        AND r.departureProvince.codename = :departureProvinceCodename
+                        AND r.destinationProvince.codename = :destinationProvinceCodename
                         """)
-        Optional<Route> findByIdWithStations(@Param("id") UUID id);
+        Optional<Route> findByProvinces(
+                        @Param("departureProvinceCodename") String departureProvinceCodename,
+                        @Param("destinationProvinceCodename") String destinationProvinceCodename);
 }

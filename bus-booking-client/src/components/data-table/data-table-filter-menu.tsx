@@ -38,11 +38,11 @@ import {
 } from "@/components/ui/select";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatToISODate, parseISODate } from "@/lib/format";
 import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn } from "@/lib/utils";
-import type { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
+import type { ExtendedColumnFilter, FilterOperator } from "@/type/data-table";
 
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
@@ -556,7 +556,7 @@ function FilterValueSelector<TData>({
           captionLayout="dropdown"
           mode="single"
           selected={value ? new Date(value) : undefined}
-          onSelect={(date) => onSelect(date?.getTime().toString() ?? "")}
+          onSelect={(date) => onSelect(date ? formatToISODate(date) : "")}
         />
       );
 
@@ -790,10 +790,8 @@ function onFilterInputRender<TData>({
         ? filter.value.filter(Boolean)
         : [filter.value, filter.value].filter(Boolean);
 
-      const startDate = dateValue[0]
-        ? new Date(Number(dateValue[0]))
-        : undefined;
-      const endDate = dateValue[1] ? new Date(Number(dateValue[1])) : undefined;
+      const startDate = parseISODate(dateValue[0]);
+      const endDate = parseISODate(dateValue[1]);
 
       const isSameDate =
         startDate &&
@@ -830,15 +828,15 @@ function onFilterInputRender<TData>({
             className="w-auto p-0"
           >
             {filter.operator === "isBetween" ? (
-              <Calendar
+                <Calendar
                 autoFocus
                 captionLayout="dropdown"
                 mode="range"
                 selected={
-                  dateValue.length === 2
+                  dateValue.length === 2 && startDate && endDate
                     ? {
-                        from: new Date(Number(dateValue[0])),
-                        to: new Date(Number(dateValue[1])),
+                        from: startDate,
+                        to: endDate,
                       }
                     : {
                         from: new Date(),
@@ -849,8 +847,8 @@ function onFilterInputRender<TData>({
                   onFilterUpdate(filter.filterId, {
                     value: date
                       ? [
-                          (date.from?.getTime() ?? "").toString(),
-                          (date.to?.getTime() ?? "").toString(),
+                          date.from ? formatToISODate(date.from) : "",
+                          date.to ? formatToISODate(date.to) : "",
                         ]
                       : [],
                   });
@@ -861,12 +859,10 @@ function onFilterInputRender<TData>({
                 autoFocus
                 captionLayout="dropdown"
                 mode="single"
-                selected={
-                  dateValue[0] ? new Date(Number(dateValue[0])) : undefined
-                }
+                selected={startDate}
                 onSelect={(date) => {
                   onFilterUpdate(filter.filterId, {
-                    value: (date?.getTime() ?? "").toString(),
+                    value: date ? formatToISODate(date) : "",
                   });
                 }}
               />

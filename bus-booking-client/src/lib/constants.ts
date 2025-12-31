@@ -33,12 +33,11 @@ export const API_ENDPOINTS = {
     ROUTES: {
         BASE: "/routes",
         BY_ID: (id: string) => `/routes/${id}`,
+        ACTIVE: "/routes/active",
     },
     // Buses
     BUSES: {
         BASE: "/buses",
-        TYPES: "/buses/types",
-        STATUSES: "/buses/statuses",
         BY_ID: (id: string) => `/buses/${id}`,
     },
     // Payment

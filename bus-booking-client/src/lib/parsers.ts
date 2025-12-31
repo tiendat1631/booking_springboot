@@ -6,7 +6,7 @@ import { dataTableConfig } from "@/config/data-table";
 import type {
   ExtendedColumnFilter,
   ExtendedColumnSort,
-} from "@/types/data-table";
+} from "@/type/data-table";
 
 const sortingItemSchema = z.object({
   id: z.string(),

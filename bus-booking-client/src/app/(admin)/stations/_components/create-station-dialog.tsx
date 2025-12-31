@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -16,38 +16,21 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { createStationSchema, type CreateStationInput } from "../_lib/validations";
-import { createStation } from "../_lib/actions";
-import type { Province } from "@/types/station.types";
+import { ProvinceCombobox } from "@/components/shared/province-combobox";
+import { CreateStationInput, createStationSchema } from "@/lib/validations";
+import { createStation } from "@/actions";
+import { getVNProvinces } from "@/queries";
 
 interface CreateStationDialogProps {
-    provinces: Province[];
+    promises: Promise<[
+        Awaited<ReturnType<typeof getVNProvinces>>,
+    ]>;
 }
 
-export function CreateStationDialog({ provinces }: CreateStationDialogProps) {
+export function CreateStationDialog({ promises }: CreateStationDialogProps) {
+    const [provinces] = React.use(promises);
     const [open, setOpen] = React.useState(false);
     const [isPending, startTransition] = React.useTransition();
 
@@ -56,11 +39,6 @@ export function CreateStationDialog({ provinces }: CreateStationDialogProps) {
         defaultValues: {
             name: "",
             address: "",
-            province: {
-                code: 0,
-                name: "",
-                codename: "",
-            },
         },
     });
 
@@ -93,140 +71,80 @@ export function CreateStationDialog({ provinces }: CreateStationDialogProps) {
                         Create a new bus station. Fill in the details below.
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FieldGroup>
+                        <Controller
                             name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Station Name</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter station name..."
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="station-name">Station Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="station-name"
+                                        placeholder="Enter station name..."
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
                             )}
                         />
-                        <FormField
-                            control={form.control}
+
+                        <Controller
                             name="address"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Address</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Enter address..."
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="station-address">Address</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="station-address"
+                                        placeholder="Enter address..."
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
                             )}
                         />
-                        <FormField
-                            control={form.control}
+
+                        <Controller
                             name="province"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Province</FormLabel>
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Province</FieldLabel>
                                     <ProvinceCombobox
                                         provinces={provinces}
                                         value={field.value}
                                         onChange={field.onChange}
                                     />
-                                    <FormMessage />
-                                </FormItem>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
                             )}
                         />
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" disabled={isPending}>
-                                {isPending && <Loader2 className="animate-spin" />}
-                                Create Station
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                    </FieldGroup>
+
+                    <DialogFooter>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" disabled={isPending}>
+                            {isPending && <Loader2 className="animate-spin" />}
+                            Create Station
+                        </Button>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
-    );
-}
-
-interface ProvinceComboboxProps {
-    provinces: Province[];
-    value: { code: number; name: string; codename?: string };
-    onChange: (value: { code: number; name: string; codename: string }) => void;
-}
-
-function ProvinceCombobox({ provinces, value, onChange }: ProvinceComboboxProps) {
-    const [open, setOpen] = React.useState(false);
-
-    const selectedProvince = provinces.find((p) => p.code === value.code);
-
-    return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-                <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className={cn(
-                        "w-full justify-between",
-                        !selectedProvince && "text-muted-foreground"
-                    )}
-                >
-                    {selectedProvince?.name ?? "Select province..."}
-                    <ChevronsUpDown className="opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent 
-                className="w-[var(--radix-popover-trigger-width)] p-0"
-                align="start"
-                sideOffset={-40}
-                onWheel={(e) => e.stopPropagation()}
-            >
-                <Command>
-                    <CommandInput placeholder="Search province..." />
-                    <CommandList className="max-h-60 overflow-y-auto">
-                        <CommandEmpty>No province found.</CommandEmpty>
-                        <CommandGroup>
-                            {provinces.map((province) => (
-                                <CommandItem
-                                    key={province.code}
-                                    value={province.name}
-                                    onSelect={() => {
-                                        onChange({
-                                            code: province.code,
-                                            name: province.name,
-                                            codename: province.codename,
-                                        });
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <Check
-                                        className={cn(
-                                            value.code === province.code
-                                                ? "opacity-100"
-                                                : "opacity-0"
-                                        )}
-                                    />
-                                    {province.name}
-                                </CommandItem>
-                            ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
     );
 }

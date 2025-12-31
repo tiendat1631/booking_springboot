@@ -57,8 +57,8 @@ public record BookingResponse(
                 TripInfo tripInfo = new TripInfo(
                                 booking.getTrip().getId(),
                                 booking.getTrip().getRoute().getName(),
-                                booking.getTrip().getRoute().getDepartureStation().getName(),
-                                booking.getTrip().getRoute().getArrivalStation().getName(),
+                                booking.getTrip().getDepartureStation().getName(),
+                                booking.getTrip().getDestinationStation().getName(),
                                 booking.getTrip().getDepartureTime(),
                                 booking.getTrip().getArrivalTime(),
                                 booking.getTrip().getBus().getLicensePlate(),

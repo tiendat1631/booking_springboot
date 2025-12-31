@@ -22,10 +22,10 @@ import com.dkpm.bus_booking_api.domain.exception.ResourceNotFoundException;
 import com.dkpm.bus_booking_api.domain.security.Account;
 import com.dkpm.bus_booking_api.domain.security.AccountRepository;
 import com.dkpm.bus_booking_api.domain.security.Role;
+import com.dkpm.bus_booking_api.domain.trip.Ticket;
+import com.dkpm.bus_booking_api.domain.trip.TicketRepository;
 import com.dkpm.bus_booking_api.domain.trip.Trip;
 import com.dkpm.bus_booking_api.domain.trip.TripRepository;
-import com.dkpm.bus_booking_api.domain.trip.TripSeat;
-import com.dkpm.bus_booking_api.domain.trip.TripSeatRepository;
 import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 import com.dkpm.bus_booking_api.features.booking.dto.BookingResponse;
 import com.dkpm.bus_booking_api.features.booking.dto.CreateBookingRequest;
@@ -42,7 +42,7 @@ public class BookingService implements IBookingService {
 
     private final BookingRepository bookingRepository;
     private final TripRepository tripRepository;
-    private final TripSeatRepository tripSeatRepository;
+    private final TicketRepository ticketRepository;
     private final AccountRepository accountRepository;
     private final CancellationTokenRepository cancellationTokenRepository;
     private final IEmailService emailService;
@@ -53,7 +53,7 @@ public class BookingService implements IBookingService {
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request, UUID customerId) {
         // 1. Validate trip exists and is available
-        Trip trip = tripRepository.findByIdWithDetails(request.tripId())
+        Trip trip = tripRepository.findById(request.tripId())
                 .orElseThrow(() -> new ResourceNotFoundException("Trip not found with id: " + request.tripId()));
 
         if (trip.getStatus() != TripStatus.SCHEDULED) {
@@ -65,24 +65,24 @@ public class BookingService implements IBookingService {
             throw new IllegalStateException("Cannot book a trip that has already departed");
         }
 
-        // 2. Lock and validate seats
-        List<TripSeat> tripSeats = tripSeatRepository.findAndLockByTripIdAndSeatIds(
+        // 2. Lock and validate tickets (seats)
+        List<Ticket> tickets = ticketRepository.findAndLockByTripIdAndSeatIds(
                 request.tripId(), request.seatIds());
 
-        if (tripSeats.size() != request.seatIds().size()) {
+        if (tickets.size() != request.seatIds().size()) {
             throw new IllegalArgumentException("Some seats were not found");
         }
 
-        // Check all seats are available
-        for (TripSeat seat : tripSeats) {
-            if (!seat.isAvailable()) {
-                throw new IllegalStateException("Seat " + seat.getSeatId() + " is not available");
+        // Check all tickets are available
+        for (Ticket ticket : tickets) {
+            if (!ticket.isAvailable()) {
+                throw new IllegalStateException("Seat " + ticket.getSeatId() + " is not available");
             }
         }
 
         // 3. Calculate total amount
-        BigDecimal totalAmount = tripSeats.stream()
-                .map(seat -> seat.getFinalPrice(trip.getPrice()))
+        BigDecimal totalAmount = tickets.stream()
+                .map(Ticket::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 4. Get customer if logged in
@@ -109,17 +109,17 @@ public class BookingService implements IBookingService {
                 .notes(request.notes())
                 .build();
 
-        // 6. Create booking details and reserve seats
-        for (TripSeat tripSeat : tripSeats) {
-            // Reserve the seat
-            tripSeat.reserve();
-            tripSeatRepository.save(tripSeat);
+        // 6. Create booking details and reserve tickets
+        for (Ticket ticket : tickets) {
+            // Reserve the ticket
+            ticket.reserve();
+            ticketRepository.save(ticket);
 
             // Create booking detail
             BookingDetail detail = BookingDetail.builder()
-                    .tripSeat(tripSeat)
-                    .seatId(tripSeat.getSeatId())
-                    .seatPrice(tripSeat.getFinalPrice(trip.getPrice()))
+                    .ticket(ticket)
+                    .seatId(ticket.getSeatId())
+                    .seatPrice(ticket.getPrice())
                     .build();
             booking.addDetail(detail);
         }
@@ -127,14 +127,14 @@ public class BookingService implements IBookingService {
         booking = bookingRepository.save(booking);
 
         // 7. Update trip available seats
-        trip.setAvailableSeats(trip.getAvailableSeats() - tripSeats.size());
+        trip.setAvailableSeats(trip.getAvailableSeats() - tickets.size());
         tripRepository.save(trip);
 
         // 8. Send confirmation email
         emailService.sendBookingConfirmation(booking);
 
         log.info("Created booking {} for {} seats on trip {}",
-                booking.getBookingCode(), tripSeats.size(), trip.getId());
+                booking.getBookingCode(), tickets.size(), trip.getId());
 
         return BookingResponse.from(booking);
     }
@@ -192,8 +192,8 @@ public class BookingService implements IBookingService {
             throw new IllegalStateException("Cannot cancel booking after trip has departed");
         }
 
-        // Release seats
-        releaseBookingSeats(booking);
+        // Release tickets
+        releaseBookingTickets(booking);
 
         // Update booking status
         booking.setStatus(BookingStatus.CANCELLED);
@@ -220,8 +220,8 @@ public class BookingService implements IBookingService {
 
         for (Booking booking : expiredBookings) {
             try {
-                // Release seats
-                releaseBookingSeats(booking);
+                // Release tickets
+                releaseBookingTickets(booking);
 
                 // Update status
                 booking.setStatus(BookingStatus.EXPIRED);
@@ -249,11 +249,11 @@ public class BookingService implements IBookingService {
             throw new IllegalStateException("Booking is not in PENDING status");
         }
 
-        // Update seat status from RESERVED to BOOKED
+        // Update ticket status from RESERVED to BOOKED
         for (BookingDetail detail : booking.getDetails()) {
-            TripSeat tripSeat = detail.getTripSeat();
-            tripSeat.book();
-            tripSeatRepository.save(tripSeat);
+            Ticket ticket = detail.getTicket();
+            ticket.book();
+            ticketRepository.save(ticket);
         }
 
         // Update booking status
@@ -331,8 +331,8 @@ public class BookingService implements IBookingService {
             throw new IllegalStateException("Cannot cancel booking after trip has departed");
         }
 
-        // Release seats
-        releaseBookingSeats(booking);
+        // Release tickets
+        releaseBookingTickets(booking);
 
         // Update booking status
         booking.setStatus(BookingStatus.CANCELLED);
@@ -350,13 +350,13 @@ public class BookingService implements IBookingService {
     }
 
     /**
-     * Release seats when booking is cancelled or expired
+     * Release tickets when booking is cancelled or expired
      */
-    private void releaseBookingSeats(Booking booking) {
+    private void releaseBookingTickets(Booking booking) {
         for (BookingDetail detail : booking.getDetails()) {
-            TripSeat tripSeat = detail.getTripSeat();
-            tripSeat.release();
-            tripSeatRepository.save(tripSeat);
+            Ticket ticket = detail.getTicket();
+            ticket.release();
+            ticketRepository.save(ticket);
         }
 
         // Update trip available seats

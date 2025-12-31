@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, CheckCircle, XCircle, ArrowRight } from "lucide-react";
+import { MoreHorizontal, CheckCircle, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,35 +14,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import type { Route } from "@/types/route.types";
-
-// Format price in VND
-function formatPrice(price: number): string {
-    return new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-    }).format(price);
-}
+import { Route } from "@/schemas";
+import { formatPrice, formatDuration } from "@/lib/format";
 
 export function getRouteColumns(): ColumnDef<Route>[] {
     return [
-        {
-            id: "name",
-            accessorKey: "name",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} label="Route Name" />
-            ),
-            cell: ({ row }) => (
-                <div className="font-medium">{row.getValue("name")}</div>
-            ),
-            meta: {
-                label: "Name",
-                variant: "text",
-                placeholder: "Search routes...",
-            },
-            enableSorting: true,
-            enableColumnFilter: true,
-        },
         {
             id: "code",
             accessorKey: "code",
@@ -63,27 +39,21 @@ export function getRouteColumns(): ColumnDef<Route>[] {
             enableColumnFilter: true,
         },
         {
-            id: "route",
-            accessorKey: "departureStation",
-            header: "Route",
-            cell: ({ row }) => (
-                <div className="flex items-center gap-2 text-sm">
-                    <div className="flex flex-col">
-                        <span className="font-medium">{row.original.departureStation.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                            {row.original.departureStation.provinceName}
-                        </span>
-                    </div>
-                    <ArrowRight className="size-4 text-muted-foreground shrink-0" />
-                    <div className="flex flex-col">
-                        <span className="font-medium">{row.original.arrivalStation.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                            {row.original.arrivalStation.provinceName}
-                        </span>
-                    </div>
-                </div>
+            id: "name",
+            accessorKey: "name",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} label="Route Name" />
             ),
-            enableSorting: false,
+            cell: ({ row }) => (
+                <div className="font-medium">{row.getValue("name")}</div>
+            ),
+            meta: {
+                label: "Name",
+                variant: "text",
+                placeholder: "Search routes...",
+            },
+            enableSorting: true,
+            enableColumnFilter: true,
         },
         {
             id: "distanceKm",
@@ -97,13 +67,15 @@ export function getRouteColumns(): ColumnDef<Route>[] {
             enableSorting: true,
         },
         {
-            id: "formattedDuration",
-            accessorKey: "formattedDuration",
+            id: "estimatedDurationMinutes",
+            accessorKey: "estimatedDurationMinutes",
             header: "Duration",
             cell: ({ row }) => (
-                <div className="text-muted-foreground">{row.original.formattedDuration}</div>
+                <div className="text-muted-foreground">
+                    {formatDuration(row.original.estimatedDurationMinutes)}
+                </div>
             ),
-            enableSorting: false,
+            enableSorting: true,
         },
         {
             id: "basePrice",

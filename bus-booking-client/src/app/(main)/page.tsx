@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import { getVNProvinces } from "@/data";
 import {
     HeroSection,
     FeaturesSection,
@@ -14,12 +13,12 @@ export const metadata: Metadata = {
     description: "The easiest way to book bus tickets online. Discover thousands of routes, book in minutes, and travel comfortably across the country.",
 };
 
-export default async function HomePage() {
-    const provinces = await getVNProvinces();
+export default function HomePage() {
+
 
     return (
         <>
-            <HeroSection provinces={provinces} />
+            <HeroSection />
             <FeaturesSection />
             <PopularRoutesSection />
             <HowItWorksSection />

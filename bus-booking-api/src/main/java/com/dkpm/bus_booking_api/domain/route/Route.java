@@ -3,13 +3,13 @@ package com.dkpm.bus_booking_api.domain.route;
 import java.math.BigDecimal;
 
 import com.dkpm.bus_booking_api.domain.common.BaseEntity;
-import com.dkpm.bus_booking_api.domain.station.Station;
+import com.dkpm.bus_booking_api.domain.station.Province;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,33 +26,38 @@ import lombok.Setter;
 @Builder
 public class Route extends BaseEntity {
 
-    @Column(nullable = false)
-    private String name;
+        @Column(nullable = false)
+        private String name;
 
-    @Column(unique = true, nullable = false, length = 20)
-    private String code;
+        @Column(unique = true, nullable = false, length = 20)
+        private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departure_station_id", nullable = false)
-    private Station departureStation;
+        @Embedded
+        @AttributeOverrides({
+                        @AttributeOverride(name = "code", column = @Column(name = "departure_province_code")),
+                        @AttributeOverride(name = "name", column = @Column(name = "departure_province_name")),
+                        @AttributeOverride(name = "codename", column = @Column(name = "departure_province_codename"))
+        })
+        private Province departureProvince;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "arrival_station_id", nullable = false)
-    private Station arrivalStation;
+        @Embedded
+        @AttributeOverrides({
+                        @AttributeOverride(name = "code", column = @Column(name = "destination_province_code")),
+                        @AttributeOverride(name = "name", column = @Column(name = "destination_province_name")),
+                        @AttributeOverride(name = "codename", column = @Column(name = "destination_province_codename"))
+        })
+        private Province destinationProvince;
 
-    @Column(name = "distance_km")
-    private Integer distanceKm;
+        @Column(name = "distance_km")
+        private Integer distanceKm;
 
-    @Column(name = "estimated_duration_minutes")
-    private Integer estimatedDurationMinutes;
+        @Column(name = "estimated_duration_minutes")
+        private Integer estimatedDurationMinutes;
 
-    @Column(name = "base_price", precision = 12, scale = 2)
-    private BigDecimal basePrice;
+        @Column(name = "base_price", precision = 12, scale = 2)
+        private BigDecimal basePrice;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Builder.Default
-    @Column(name = "is_active")
-    private boolean active = true;
+        @Builder.Default
+        @Column(name = "is_active")
+        private boolean active = true;
 }

@@ -5,8 +5,8 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { getRouteColumns } from "./route-columns";
-import { getRoutes } from "@/data";
-import type { QueryKeys } from "@/types";
+import { getRoutes } from "@/queries";
+import type { QueryKeys } from "@/type";
 
 interface RoutesTableProps {
     promises: Promise<[
@@ -17,6 +17,8 @@ interface RoutesTableProps {
 
 export function RoutesTable({ promises, queryKeys }: RoutesTableProps) {
     const [{ content: data, page }] = React.use(promises);
+
+    console.log(data);
 
     const columns = React.useMemo(() => getRouteColumns(), []);
 

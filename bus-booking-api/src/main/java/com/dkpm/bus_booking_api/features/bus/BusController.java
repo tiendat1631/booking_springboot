@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.bus;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -34,27 +35,23 @@ public class BusController {
 
     private final IBusService busService;
 
-    @GetMapping("/types")
-    public ResponseEntity<ApiResponse<BusType[]>> getBusTypes() {
-        return ResponseEntity.ok(ApiResponse.success(BusType.values()));
-    }
-
-    @GetMapping("/statuses")
-    public ResponseEntity<ApiResponse<BusStatus[]>> getBusStatuses() {
-        return ResponseEntity.ok(ApiResponse.success(BusStatus.values()));
-    }
-
     @GetMapping
     public ResponseEntity<ApiResponse<Page<BusSummaryResponse>>> getBuses(
             @RequestParam(required = false) String licensePlate,
-            @RequestParam(required = false) BusType type,
-            @RequestParam(required = false) BusStatus status,
+            @RequestParam(required = false) List<BusType> types,
+            @RequestParam(required = false) List<BusStatus> statuses,
             @RequestParam(required = false) Integer minSeats,
             @RequestParam(required = false) Integer maxSeats,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<BusSummaryResponse> result = busService.searchBuses(licensePlate, type, status, minSeats, maxSeats,
+        Page<BusSummaryResponse> result = busService.searchBuses(licensePlate, types, statuses, minSeats, maxSeats,
                 pageable);
 
+        return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<ApiResponse<List<BusSummaryResponse>>> getActiveBuses() {
+        List<BusSummaryResponse> result = busService.getActiveBuses();
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 

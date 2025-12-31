@@ -8,6 +8,7 @@ import java.util.List;
 import com.dkpm.bus_booking_api.domain.bus.Bus;
 import com.dkpm.bus_booking_api.domain.common.BaseEntity;
 import com.dkpm.bus_booking_api.domain.route.Route;
+import com.dkpm.bus_booking_api.domain.station.Station;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,6 +44,14 @@ public class Trip extends BaseEntity {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_station_id", nullable = false)
+    private Station departureStation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_station_id", nullable = false)
+    private Station destinationStation;
+
     @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
 
@@ -65,7 +74,7 @@ public class Trip extends BaseEntity {
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<TripSeat> tripSeats = new ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 
     @Version
     private Long version;
@@ -81,19 +90,19 @@ public class Trip extends BaseEntity {
     }
 
     /**
-     * Update available seats count based on trip seats
+     * Update available seats count based on tickets
      */
     public void updateAvailableSeats() {
-        this.availableSeats = (int) tripSeats.stream()
-                .filter(seat -> seat.getStatus() == SeatStatus.AVAILABLE)
+        this.availableSeats = (int) tickets.stream()
+                .filter(ticket -> ticket.getStatus() == SeatStatus.AVAILABLE)
                 .count();
     }
 
     /**
-     * Add a trip seat to this trip
+     * Add a ticket to this trip
      */
-    public void addTripSeat(TripSeat tripSeat) {
-        tripSeats.add(tripSeat);
-        tripSeat.setTrip(this);
+    public void addTicket(Ticket ticket) {
+        tickets.add(ticket);
+        ticket.setTrip(this);
     }
 }

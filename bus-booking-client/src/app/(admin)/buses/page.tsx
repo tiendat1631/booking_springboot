@@ -4,10 +4,11 @@ import type { SearchParams } from "nuqs/server";
 
 import { AdminHeader } from "../_components/admin-header";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getBuses, getBusTypes, getBusStatuses } from "@/data";
+import { getBuses } from "@/queries";
 import { BusesTable } from "./_components/buses-table";
 import { CreateBusDialog } from "./_components/create-bus-dialog";
-import { searchBusesParamsCache } from "./_lib/validations";
+import { searchBusesParamsCache } from "@/lib/validations";
+
 
 export const metadata: Metadata = {
     title: "Buses",
@@ -22,9 +23,7 @@ async function BusesTableContent({ searchParams }: BusesPageProps) {
     const search = searchBusesParamsCache.parse(params);
 
     const promises = Promise.all([
-        getBuses(search),
-        getBusTypes(),
-        getBusStatuses(),
+        getBuses(search)
     ]);
 
     return <BusesTable promises={promises} />;
@@ -51,7 +50,6 @@ export default async function BusesPage({ searchParams }: BusesPageProps) {
 
                 {/* Data Table */}
                 <Suspense
-                    key={JSON.stringify(search)}
                     fallback={
                         <DataTableSkeleton
                             columnCount={6}

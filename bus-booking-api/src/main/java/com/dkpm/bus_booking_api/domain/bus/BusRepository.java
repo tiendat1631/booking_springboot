@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.domain.bus;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -25,16 +26,32 @@ public interface BusRepository extends JpaRepository<Bus, UUID> {
           )
           FROM Bus b
           WHERE (:licensePlate IS NULL OR LOWER(b.licensePlate) LIKE LOWER(CONCAT('%', :licensePlate, '%')))
-            AND (:type IS NULL OR b.type = :type)
-            AND (:status IS NULL OR b.status = :status)
+            AND (:types IS NULL OR b.type IN :types)
+            AND (:statuses IS NULL OR b.status IN :statuses)
             AND (:minSeats IS NULL OR b.totalSeats >= :minSeats)
             AND (:maxSeats IS NULL OR b.totalSeats <= :maxSeats)
       """)
   Page<BusSummaryResponse> searchBusSummaries(
       @Param("licensePlate") String licensePlate,
-      @Param("type") BusType type,
-      @Param("status") BusStatus status,
+      @Param("types") List<BusType> types,
+      @Param("statuses") List<BusStatus> statuses,
       @Param("minSeats") Integer minSeats,
       @Param("maxSeats") Integer maxSeats,
       Pageable pageable);
+
+  @Query("""
+          SELECT new com.dkpm.bus_booking_api.features.bus.dto.BusSummaryResponse(
+              b.id,
+              b.licensePlate,
+              b.type,
+              b.status,
+              b.totalSeats,
+              b.createdAt,
+              b.updatedAt
+          )
+          FROM Bus b
+          WHERE b.status = 'ACTIVE'
+          ORDER BY b.licensePlate ASC
+      """)
+  List<BusSummaryResponse> findActiveBuses();
 }

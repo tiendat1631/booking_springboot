@@ -1,7 +1,5 @@
 package com.dkpm.bus_booking_api.features.route;
 
-import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,10 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.route.dto.CreateRouteRequest;
 import com.dkpm.bus_booking_api.features.route.dto.RouteResponse;
+import com.dkpm.bus_booking_api.features.route.dto.RouteSummary;
 import com.dkpm.bus_booking_api.features.route.dto.UpdateRouteRequest;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/routes")
@@ -35,16 +37,22 @@ public class RouteController {
     private final IRouteService routeService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<RouteResponse>>> getRoutes(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String code,
-            @RequestParam(required = false) UUID departureStationId,
-            @RequestParam(required = false) UUID arrivalStationId,
+            @RequestParam(required = false) String departureProvince,
+            @RequestParam(required = false) String destinationProvince,
             @RequestParam(required = false) Boolean isActive,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<RouteResponse> result = routeService.searchRoutes(
-                name, code, departureStationId, arrivalStationId, isActive, pageable);
+                name, code, departureProvince, destinationProvince, isActive, pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<ApiResponse<List<RouteSummary>>> getActiveRoutes() {
+        return ResponseEntity.ok(ApiResponse.success(routeService.getActiveRoutes()));
     }
 
     @GetMapping("/{id}")
@@ -55,7 +63,8 @@ public class RouteController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<RouteResponse>> createRoute(@Valid @RequestBody CreateRouteRequest request) {
+    public ResponseEntity<ApiResponse<RouteResponse>> createRoute(
+            @Valid @RequestBody CreateRouteRequest request) {
         RouteResponse route = routeService.createRoute(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(route, "Route created successfully"));
     }

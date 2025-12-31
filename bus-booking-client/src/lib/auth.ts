@@ -2,8 +2,8 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { apiPost } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { Session, ApiResponse } from "@/types";
-import type { AuthTokenData, JwtPayload } from "@/types/auth.types";
+import type { Session, ApiResponse } from "@/type";
+import type { AuthTokenData, JwtPayload } from "@/type/auth.types";
 
 /**
  * Decode JWT token to extract payload (without verification)

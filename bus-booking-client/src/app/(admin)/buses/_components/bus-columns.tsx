@@ -1,7 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Bus, Armchair, BedDouble } from "lucide-react";
+import { MoreHorizontal, Bus as BusIcon, Armchair, BedDouble } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import type { Bus as BusType } from "@/types/bus.types";
+import { busStatusEnum, busTypeEnum, type Bus } from "@/schemas";
 
 // Get bus type icon
 function getBusTypeIcon(type: string) {
@@ -24,9 +24,9 @@ function getBusTypeIcon(type: string) {
         case "SLEEPER":
             return <BedDouble className="size-4" />;
         case "LIMOUSINE":
-            return <Bus className="size-4" />;
+            return <BusIcon className="size-4" />;
         default:
-            return <Bus className="size-4" />;
+            return <BusIcon className="size-4" />;
     }
 }
 
@@ -44,21 +44,16 @@ function getStatusVariant(status: string): "default" | "secondary" | "destructiv
     }
 }
 
-interface GetBusColumnsOptions {
-    busTypes?: string[];
-    busStatuses?: string[];
-}
-
-export function getBusColumns(options?: GetBusColumnsOptions): ColumnDef<BusType>[] {
-    const busTypeOptions = options?.busTypes?.map((t) => ({
+export function getBusColumns(): ColumnDef<Bus>[] {
+    const busTypeOptions = busTypeEnum.options.map((t) => ({
         label: t.charAt(0) + t.slice(1).toLowerCase(),
         value: t,
-    })) ?? [];
+    }));
 
-    const busStatusOptions = options?.busStatuses?.map((s) => ({
+    const busStatusOptions = busStatusEnum.options.map((s) => ({
         label: s.charAt(0) + s.slice(1).toLowerCase().replace(/_/g, " "),
         value: s,
-    })) ?? [];
+    }));
 
     return [
         {
@@ -95,7 +90,7 @@ export function getBusColumns(options?: GetBusColumnsOptions): ColumnDef<BusType
             },
             meta: {
                 label: "Type",
-                variant: "select",
+                variant: "multiSelect",
                 options: busTypeOptions,
             },
             enableSorting: true,

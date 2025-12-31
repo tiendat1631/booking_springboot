@@ -9,13 +9,16 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record CreateTripRequest(
-        @NotNull(message = "Route ID is required") UUID routeId,
 
-        @NotNull(message = "Bus ID is required") UUID busId,
+                @NotNull(message = "Bus ID is required") UUID busId,
 
-        @NotNull(message = "Departure time is required") @Future(message = "Departure time must be in the future") LocalDateTime departureTime,
+                @NotNull(message = "Departure station ID is required") UUID departureStationId,
 
-        @NotNull(message = "Arrival time is required") @Future(message = "Arrival time must be in the future") LocalDateTime arrivalTime,
+                @NotNull(message = "Destination station ID is required") UUID destinationStationId,
 
-        @NotNull(message = "Price is required") @Positive(message = "Price must be positive") BigDecimal price) {
+                @NotNull(message = "Departure time is required") @Future(message = "Departure time must be in the future") LocalDateTime departureTime,
+
+                @NotNull(message = "Arrival time is required") @Future(message = "Arrival time must be in the future") LocalDateTime arrivalTime,
+
+                @NotNull(message = "Price is required") @Positive(message = "Price must be positive") BigDecimal price) {
 }

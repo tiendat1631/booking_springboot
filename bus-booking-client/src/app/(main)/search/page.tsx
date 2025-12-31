@@ -4,8 +4,8 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ArrowRight, AlertCircle } from "lucide-react";
 
-import { searchTripsByProvince } from "@/data";
-import { SearchResultsClient } from "./_components/search-results-client";
+import { searchTripsByProvince } from "@/queries";
+// import { SearchResultsClient } from "./_components/search-results-client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -76,11 +76,12 @@ async function SearchResults({ searchParams }: SearchPageProps) {
     }
 
     return (
-        <SearchResultsClient
-            trips={result.content}
-            passengers={passengers ? parseInt(passengers) : 1}
-            totalElements={result.page.totalElements}
-        />
+        // <SearchResultsClient
+        //     trips={result.content}
+        //     passengers={passengers ? parseInt(passengers) : 1}
+        //     totalElements={result.page.totalElements}
+        // />
+        <></>
     );
 }
 

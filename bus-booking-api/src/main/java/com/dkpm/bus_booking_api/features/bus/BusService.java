@@ -29,10 +29,10 @@ public class BusService implements IBusService {
      * SEARCH BUSES WITH FILTERS
      */
     @Override
-    public Page<BusSummaryResponse> searchBuses(String licensePlate, BusType type, BusStatus status,
+    public Page<BusSummaryResponse> searchBuses(String licensePlate, List<BusType> types, List<BusStatus> statuses,
             Integer minSeats, Integer maxSeats, Pageable pageable) {
 
-        return busRepository.searchBusSummaries(licensePlate, type, status, minSeats, maxSeats, pageable);
+        return busRepository.searchBusSummaries(licensePlate, types, statuses, minSeats, maxSeats, pageable);
     }
 
     /**
@@ -44,6 +44,14 @@ public class BusService implements IBusService {
                 .orElseThrow(() -> new ResourceNotFoundException("Bus not found with id: " + id));
 
         return BusDetailResponse.from(bus);
+    }
+
+    /**
+     * GET ALL ACTIVE BUSES
+     */
+    @Override
+    public List<BusSummaryResponse> getActiveBuses() {
+        return busRepository.findActiveBuses();
     }
 
     /**

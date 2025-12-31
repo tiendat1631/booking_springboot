@@ -6,67 +6,48 @@ import java.util.UUID;
 import com.dkpm.bus_booking_api.domain.route.Route;
 
 public record RouteResponse(
-        UUID id,
-        String name,
-        String code,
-        StationSummary departureStation,
-        StationSummary arrivalStation,
-        Integer distanceKm,
-        Integer estimatedDurationMinutes,
-        String formattedDuration,
-        BigDecimal basePrice,
-        String description,
-        boolean active) {
+                UUID id,
+                String name,
+                String code,
+                ProvinceSummary departureProvince,
+                ProvinceSummary destinationProvince,
+                Integer distanceKm,
+                Integer estimatedDurationMinutes,
+                BigDecimal basePrice,
+                boolean active) {
 
-    public record StationSummary(
-            UUID id,
-            String name,
-            String provinceName) {
-    }
-
-    public static RouteResponse from(Route route) {
-        StationSummary departure = new StationSummary(
-                route.getDepartureStation().getId(),
-                route.getDepartureStation().getName(),
-                route.getDepartureStation().getProvince() != null
-                        ? route.getDepartureStation().getProvince().getName()
-                        : null);
-
-        StationSummary arrival = new StationSummary(
-                route.getArrivalStation().getId(),
-                route.getArrivalStation().getName(),
-                route.getArrivalStation().getProvince() != null
-                        ? route.getArrivalStation().getProvince().getName()
-                        : null);
-
-        String formattedDuration = formatDuration(route.getEstimatedDurationMinutes());
-
-        return new RouteResponse(
-                route.getId(),
-                route.getName(),
-                route.getCode(),
-                departure,
-                arrival,
-                route.getDistanceKm(),
-                route.getEstimatedDurationMinutes(),
-                formattedDuration,
-                route.getBasePrice(),
-                route.getDescription(),
-                route.isActive());
-    }
-
-    private static String formatDuration(Integer minutes) {
-        if (minutes == null) {
-            return null;
+        public record ProvinceSummary(
+                        Integer code,
+                        String name,
+                        String codename) {
         }
-        int hours = minutes / 60;
-        int mins = minutes % 60;
-        if (hours > 0 && mins > 0) {
-            return hours + "h " + mins + "m";
-        } else if (hours > 0) {
-            return hours + "h";
-        } else {
-            return mins + "m";
+
+        public static RouteResponse from(Route route) {
+                ProvinceSummary departure = null;
+                if (route.getDepartureProvince() != null) {
+                        departure = new ProvinceSummary(
+                                        route.getDepartureProvince().getCode(),
+                                        route.getDepartureProvince().getName(),
+                                        route.getDepartureProvince().getCodename());
+                }
+
+                ProvinceSummary destination = null;
+                if (route.getDestinationProvince() != null) {
+                        destination = new ProvinceSummary(
+                                        route.getDestinationProvince().getCode(),
+                                        route.getDestinationProvince().getName(),
+                                        route.getDestinationProvince().getCodename());
+                }
+
+                return new RouteResponse(
+                                route.getId(),
+                                route.getName(),
+                                route.getCode(),
+                                departure,
+                                destination,
+                                route.getDistanceKm(),
+                                route.getEstimatedDurationMinutes(),
+                                route.getBasePrice(),
+                                route.isActive());
         }
-    }
 }

@@ -5,8 +5,8 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { getStationColumns } from "./station-columns";
-import { getStations, getVNProvinces } from "@/data";
-import type { QueryKeys } from "@/types";
+import { getStations, getVNProvinces } from "@/queries";
+import type { QueryKeys } from "@/type";
 
 interface StationsTableProps {
     promises: Promise<[

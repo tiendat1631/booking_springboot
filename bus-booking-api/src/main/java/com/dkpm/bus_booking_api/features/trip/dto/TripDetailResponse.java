@@ -5,14 +5,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.dkpm.bus_booking_api.domain.trip.Ticket;
 import com.dkpm.bus_booking_api.domain.trip.Trip;
-import com.dkpm.bus_booking_api.domain.trip.TripSeat;
 import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 
 public record TripDetailResponse(
                 UUID tripId,
                 RouteDetail route,
                 BusDetail bus,
+                StationDetail departureStation,
+                StationDetail destinationStation,
                 LocalDateTime departureTime,
                 LocalDateTime arrivalTime,
                 String formattedDuration,
@@ -28,8 +30,8 @@ public record TripDetailResponse(
                         UUID id,
                         String name,
                         String code,
-                        StationDetail departureStation,
-                        StationDetail arrivalStation,
+                        String departureProvinceName,
+                        String destinationProvinceName,
                         Integer distanceKm) {
         }
 
@@ -60,29 +62,33 @@ public record TripDetailResponse(
                         BigDecimal price) {
         }
 
-        public static TripDetailResponse from(Trip trip, List<TripSeat> tripSeats) {
+        public static TripDetailResponse from(Trip trip, List<Ticket> tickets) {
                 StationDetail departureStation = new StationDetail(
-                                trip.getRoute().getDepartureStation().getId(),
-                                trip.getRoute().getDepartureStation().getName(),
-                                trip.getRoute().getDepartureStation().getAddress(),
-                                trip.getRoute().getDepartureStation().getProvince() != null
-                                                ? trip.getRoute().getDepartureStation().getProvince().getName()
+                                trip.getDepartureStation().getId(),
+                                trip.getDepartureStation().getName(),
+                                trip.getDepartureStation().getAddress(),
+                                trip.getDepartureStation().getProvince() != null
+                                                ? trip.getDepartureStation().getProvince().getName()
                                                 : null);
 
-                StationDetail arrivalStation = new StationDetail(
-                                trip.getRoute().getArrivalStation().getId(),
-                                trip.getRoute().getArrivalStation().getName(),
-                                trip.getRoute().getArrivalStation().getAddress(),
-                                trip.getRoute().getArrivalStation().getProvince() != null
-                                                ? trip.getRoute().getArrivalStation().getProvince().getName()
+                StationDetail destinationStation = new StationDetail(
+                                trip.getDestinationStation().getId(),
+                                trip.getDestinationStation().getName(),
+                                trip.getDestinationStation().getAddress(),
+                                trip.getDestinationStation().getProvince() != null
+                                                ? trip.getDestinationStation().getProvince().getName()
                                                 : null);
 
                 RouteDetail routeDetail = new RouteDetail(
                                 trip.getRoute().getId(),
                                 trip.getRoute().getName(),
                                 trip.getRoute().getCode(),
-                                departureStation,
-                                arrivalStation,
+                                trip.getRoute().getDepartureProvince() != null
+                                                ? trip.getRoute().getDepartureProvince().getName()
+                                                : null,
+                                trip.getRoute().getDestinationProvince() != null
+                                                ? trip.getRoute().getDestinationProvince().getName()
+                                                : null,
                                 trip.getRoute().getDistanceKm());
 
                 BusDetail busDetail = new BusDetail(
@@ -98,19 +104,21 @@ public record TripDetailResponse(
                                         trip.getBus().getSeatLayout().getTotalColumns());
                 }
 
-                List<SeatInfo> seatInfos = tripSeats.stream()
-                                .map(seat -> new SeatInfo(
-                                                seat.getSeatId(),
-                                                seat.getRow(),
-                                                seat.getCol(),
-                                                seat.getStatus().name(),
-                                                seat.getFinalPrice(trip.getPrice())))
+                List<SeatInfo> seatInfos = tickets.stream()
+                                .map(ticket -> new SeatInfo(
+                                                ticket.getSeatId(),
+                                                ticket.getRow(),
+                                                ticket.getCol(),
+                                                ticket.getStatus().name(),
+                                                ticket.getPrice()))
                                 .toList();
 
                 return new TripDetailResponse(
                                 trip.getId(),
                                 routeDetail,
                                 busDetail,
+                                departureStation,
+                                destinationStation,
                                 trip.getDepartureTime(),
                                 trip.getArrivalTime(),
                                 formatDuration(trip.getDurationMinutes()),

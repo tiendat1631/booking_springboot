@@ -5,26 +5,24 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { getTripColumns } from "./trip-columns";
-import { getTrips, getTripStatuses, getBusTypes } from "@/data";
-import type { QueryKeys } from "@/types";
+import { getActiveRoutes, getTrips } from "@/queries";
+import type { QueryKeys } from "@/type";
 
 interface TripsTableProps {
     promises: Promise<[
         Awaited<ReturnType<typeof getTrips>>,
-        Awaited<ReturnType<typeof getTripStatuses>>,
-        Awaited<ReturnType<typeof getBusTypes>>,
+        Awaited<ReturnType<typeof getActiveRoutes>>,
     ]>;
     queryKeys?: Partial<QueryKeys>;
 }
 
 export function TripsTable({ promises, queryKeys }: TripsTableProps) {
-    const [{ content: data, page }, statuses, busTypes] = React.use(promises);
-    console.log(data);
-    console.log(page);
+    const [{ content: data, page }, routes] = React.use(promises);
 
+    console.log(data);
     const columns = React.useMemo(
-        () => getTripColumns({ statuses, busTypes }),
-        [statuses, busTypes]
+        () => getTripColumns(routes),
+        []
     );
 
     const { table } = useDataTable({
@@ -35,7 +33,7 @@ export function TripsTable({ promises, queryKeys }: TripsTableProps) {
             pagination: { pageIndex: page.number, pageSize: page.size },
         },
         queryKeys,
-        getRowId: (originalRow) => originalRow.tripId,
+        getRowId: (originalRow) => originalRow.id,
         shallow: false,
         clearOnDefault: true,
         debounceMs: 500,

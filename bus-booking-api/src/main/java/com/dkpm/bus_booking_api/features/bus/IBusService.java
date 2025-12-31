@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.bus;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -16,13 +17,18 @@ public interface IBusService {
     /**
      * SEARCH BUSES WITH FILTERS AND PAGINATION
      */
-    Page<BusSummaryResponse> searchBuses(String licensePlate, BusType type, BusStatus status,
+    Page<BusSummaryResponse> searchBuses(String licensePlate, List<BusType> types, List<BusStatus> statuses,
             Integer minSeats, Integer maxSeats, Pageable pageable);
 
     /**
      * GET BUS DETAIL BY ID
      */
     BusDetailResponse getBusDetail(UUID id);
+
+    /**
+     * GET ALL ACTIVE BUSES
+     */
+    List<BusSummaryResponse> getActiveBuses();
 
     /**
      * CREATE GENERIC BUS

@@ -35,9 +35,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/actions/auth.actions";
+import { logout } from "@/actions/auth.action";
 import { ROUTES } from "@/lib/constants";
-import type { Session } from "@/types";
+import type { Session } from "@/type";
 
 const NAV_ITEMS = [
     {

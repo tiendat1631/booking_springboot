@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.station;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import com.dkpm.bus_booking_api.features.station.dto.UpdateStationRequest;
 
 public interface IStationService {
 
-    Page<StationResponse> searchStations(String name, String provinceName, Boolean active,
+    Page<StationResponse> searchStations(String name, List<String> provinces, Boolean active,
             Pageable pageable);
 
     StationResponse getStationById(UUID id);

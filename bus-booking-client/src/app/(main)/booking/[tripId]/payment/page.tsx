@@ -7,7 +7,7 @@ import { MapPin, Clock, Bus, Timer } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getBookingForPayment } from "@/data/booking.data";
+import { getBookingForPayment } from "@/queries/booking.data";
 import { PaymentMethods } from "./_components/payment-methods";
 
 export const metadata: Metadata = {

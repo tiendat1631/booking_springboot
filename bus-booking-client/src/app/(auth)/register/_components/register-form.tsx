@@ -8,7 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Loader2, Mail, User, Phone, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { register as registerAction } from "@/actions/auth.actions";
+import { register as registerAction } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -243,9 +243,6 @@ export function RegisterForm() {
                                 {fieldState.invalid && (
                                     <FieldError errors={[fieldState.error]} />
                                 )}
-                                <FieldDescription>
-                                    Password must be at least 6 characters
-                                </FieldDescription>
                             </Field>
                         )}
                     />

@@ -3,7 +3,7 @@ package com.dkpm.bus_booking_api.domain.booking;
 import java.math.BigDecimal;
 
 import com.dkpm.bus_booking_api.domain.common.BaseEntity;
-import com.dkpm.bus_booking_api.domain.trip.TripSeat;
+import com.dkpm.bus_booking_api.domain.trip.Ticket;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,8 +31,8 @@ public class BookingDetail extends BaseEntity {
     private Booking booking;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_seat_id", nullable = false)
-    private TripSeat tripSeat;
+    @JoinColumn(name = "ticket_id", nullable = false)
+    private Ticket ticket;
 
     @Column(name = "seat_id", nullable = false, length = 10)
     private String seatId;

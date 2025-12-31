@@ -5,24 +5,22 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { getBusColumns } from "./bus-columns";
-import { getBuses, getBusTypes, getBusStatuses } from "@/data";
-import type { QueryKeys } from "@/types";
+import { getBuses } from "@/queries";
+import type { QueryKeys } from "@/type";
 
 interface BusesTableProps {
     promises: Promise<[
         Awaited<ReturnType<typeof getBuses>>,
-        Awaited<ReturnType<typeof getBusTypes>>,
-        Awaited<ReturnType<typeof getBusStatuses>>,
     ]>;
     queryKeys?: Partial<QueryKeys>;
 }
 
 export function BusesTable({ promises, queryKeys }: BusesTableProps) {
-    const [{ content: data, page }, busTypes, busStatuses] = React.use(promises);
+    const [{ content: data, page }] = React.use(promises);
 
     const columns = React.useMemo(
-        () => getBusColumns({ busTypes, busStatuses }),
-        [busTypes, busStatuses]
+        () => getBusColumns(),
+        []
     );
 
     const { table } = useDataTable({

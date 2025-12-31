@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.station;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -37,7 +38,7 @@ public class StationController {
     @GetMapping
     public ResponseEntity<ApiResponse<Page<StationResponse>>> getStations(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String province,
+            @RequestParam(required = false) List<String> province,
             @RequestParam(required = false) Boolean active,
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<StationResponse> result = stationService.searchStations(name, province, active, pageable);

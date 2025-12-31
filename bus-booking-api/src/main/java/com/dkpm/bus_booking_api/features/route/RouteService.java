@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.features.route;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -10,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dkpm.bus_booking_api.domain.exception.ResourceNotFoundException;
 import com.dkpm.bus_booking_api.domain.route.Route;
 import com.dkpm.bus_booking_api.domain.route.RouteRepository;
-import com.dkpm.bus_booking_api.domain.station.Station;
-import com.dkpm.bus_booking_api.domain.station.StationRepository;
+import com.dkpm.bus_booking_api.domain.station.Province;
 import com.dkpm.bus_booking_api.features.route.dto.CreateRouteRequest;
 import com.dkpm.bus_booking_api.features.route.dto.RouteResponse;
+import com.dkpm.bus_booking_api.features.route.dto.RouteSummary;
 import com.dkpm.bus_booking_api.features.route.dto.UpdateRouteRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -24,23 +25,22 @@ import lombok.RequiredArgsConstructor;
 public class RouteService implements IRouteService {
 
     private final RouteRepository routeRepository;
-    private final StationRepository stationRepository;
 
     @Override
     public Page<RouteResponse> searchRoutes(
             String name,
             String code,
-            UUID departureStationId,
-            UUID arrivalStationId,
+            String departureProvince,
+            String destinationProvince,
             Boolean isActive,
             Pageable pageable) {
-        return routeRepository.searchRoutes(name, code, departureStationId, arrivalStationId, isActive, pageable)
+        return routeRepository.searchRoutes(name, code, departureProvince, destinationProvince, isActive, pageable)
                 .map(RouteResponse::from);
     }
 
     @Override
     public RouteResponse getRouteById(UUID id) {
-        Route route = routeRepository.findByIdWithStations(id)
+        Route route = routeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Route not found with id: " + id));
         return RouteResponse.from(route);
     }
@@ -48,29 +48,30 @@ public class RouteService implements IRouteService {
     @Override
     @Transactional
     public RouteResponse createRoute(CreateRouteRequest request) {
-        if (request.departureStationId().equals(request.arrivalStationId())) {
-            throw new IllegalArgumentException("Departure and arrival stations must be different");
+        if (request.departureProvince().codename().equals(request.destinationProvince().codename())) {
+            throw new IllegalArgumentException("Departure and destination provinces must be different");
         }
 
-        Station departureStation = stationRepository.findById(request.departureStationId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Departure station not found with id: " + request.departureStationId()));
+        Province departureProvince = Province.builder()
+                .code(request.departureProvince().code())
+                .name(request.departureProvince().name())
+                .codename(request.departureProvince().codename())
+                .build();
 
-        Station arrivalStation = stationRepository.findById(request.arrivalStationId())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Arrival station not found with id: " + request.arrivalStationId()));
-
-        String routeCode = generateRouteCode(departureStation, arrivalStation);
+        Province destinationProvince = Province.builder()
+                .code(request.destinationProvince().code())
+                .name(request.destinationProvince().name())
+                .codename(request.destinationProvince().codename())
+                .build();
 
         Route route = Route.builder()
-                .name(request.name())
-                .code(routeCode)
-                .departureStation(departureStation)
-                .arrivalStation(arrivalStation)
+                .code(generateRouteCode(departureProvince, destinationProvince))
+                .name(generateRouteName(departureProvince, destinationProvince))
+                .departureProvince(departureProvince)
+                .destinationProvince(destinationProvince)
                 .distanceKm(request.distanceKm())
                 .estimatedDurationMinutes(request.estimatedDurationMinutes())
                 .basePrice(request.basePrice())
-                .description(request.description())
                 .active(true)
                 .build();
 
@@ -81,29 +82,8 @@ public class RouteService implements IRouteService {
     @Override
     @Transactional
     public RouteResponse updateRoute(UUID id, UpdateRouteRequest request) {
-        Route route = routeRepository.findByIdWithStations(id)
+        Route route = routeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Route not found with id: " + id));
-
-        if (request.name() != null) {
-            route.setName(request.name());
-        }
-        if (request.departureStationId() != null) {
-            Station departureStation = stationRepository.findById(request.departureStationId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Departure station not found with id: " + request.departureStationId()));
-            route.setDepartureStation(departureStation);
-        }
-        if (request.arrivalStationId() != null) {
-            Station arrivalStation = stationRepository.findById(request.arrivalStationId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Arrival station not found with id: " + request.arrivalStationId()));
-            route.setArrivalStation(arrivalStation);
-        }
-
-        // Validate different stations
-        if (route.getDepartureStation().getId().equals(route.getArrivalStation().getId())) {
-            throw new IllegalArgumentException("Departure and arrival stations must be different");
-        }
 
         if (request.distanceKm() != null) {
             route.setDistanceKm(request.distanceKm());
@@ -113,9 +93,6 @@ public class RouteService implements IRouteService {
         }
         if (request.basePrice() != null) {
             route.setBasePrice(request.basePrice());
-        }
-        if (request.description() != null) {
-            route.setDescription(request.description());
         }
         if (request.active() != null) {
             route.setActive(request.active());
@@ -136,31 +113,23 @@ public class RouteService implements IRouteService {
         routeRepository.save(route);
     }
 
-    private String generateRouteCode(Station departureStation, Station arrivalStation) {
-        String departureAbbr = getProvinceAbbreviation(departureStation.getProvince().getCodename());
-        String arrivalAbbr = getProvinceAbbreviation(arrivalStation.getProvince().getCodename());
-        String prefix = departureAbbr + "-" + arrivalAbbr + "-";
-
-        // Generate 4-digit suffix
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        String suffix = timestamp.substring(timestamp.length() - 4);
-        String code = prefix + suffix;
-
-        // Ensure uniqueness
-        while (routeRepository.existsByCode(code)) {
-            timestamp = String.valueOf(System.currentTimeMillis());
-            suffix = timestamp.substring(timestamp.length() - 4);
-            code = prefix + suffix;
-        }
-        return code;
+    @Override
+    public List<RouteSummary> getActiveRoutes() {
+        return routeRepository.findAllActive().stream()
+                .map(RouteSummary::from)
+                .toList();
     }
 
-    /**
-     * Extract abbreviation from province codename.
-     * "thanh_pho_ho_chi_minh" -> "HCM"
-     * "tinh_ba_ria_vung_tau" -> "VT"
-     * "tinh_khanh_hoa" -> "KH"
-     */
+    private String generateRouteCode(Province departureProvince, Province destinationProvince) {
+        String departureAbbr = getProvinceAbbreviation(departureProvince.getCodename());
+        String arrivalAbbr = getProvinceAbbreviation(destinationProvince.getCodename());
+        return departureAbbr + "-" + arrivalAbbr;
+    }
+
+    private String generateRouteName(Province departureProvince, Province destinationProvince) {
+        return departureProvince.getName() + " - " + destinationProvince.getName();
+    }
+
     private String getProvinceAbbreviation(String codename) {
         if (codename == null || codename.isBlank()) {
             return "XX";

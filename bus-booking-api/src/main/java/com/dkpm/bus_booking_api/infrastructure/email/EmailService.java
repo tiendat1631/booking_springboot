@@ -225,8 +225,8 @@ public class EmailService implements IEmailService {
         // Trip info
         if (booking.getTrip() != null) {
             context.setVariable("routeName", booking.getTrip().getRoute().getName());
-            context.setVariable("departureStation", booking.getTrip().getRoute().getDepartureStation().getName());
-            context.setVariable("arrivalStation", booking.getTrip().getRoute().getArrivalStation().getName());
+            context.setVariable("departureStation", booking.getTrip().getDepartureStation().getName());
+            context.setVariable("arrivalStation", booking.getTrip().getDestinationStation().getName());
             context.setVariable("departureDate", booking.getTrip().getDepartureTime().format(DATE_FORMATTER));
             context.setVariable("departureTime", booking.getTrip().getDepartureTime().format(TIME_FORMATTER));
             context.setVariable("arrivalTime", booking.getTrip().getArrivalTime().format(TIME_FORMATTER));

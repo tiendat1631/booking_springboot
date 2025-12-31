@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Plus } from "lucide-react";
 import type { SearchParams } from "nuqs/server";
 
 import { AdminHeader } from "../_components/admin-header";
-import { Button } from "@/components/ui/button";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getTrips, getTripStatuses, getBusTypes } from "@/data";
+import { getActiveRoutes, getTrips } from "@/queries";
+import { getActiveBuses } from "@/queries/bus.data";
+import { getActiveStations } from "@/queries/station.data";
 import { TripsTable } from "./_components/trips-table";
-import { searchTripsParamsCache } from "./_lib/validations";
+// import { CreateTripDialog } from "./_components/create-trip-dialog";
+import { searchTripsParamsCache } from "@/lib/validations";
+
 
 export const metadata: Metadata = {
     title: "Trips",
@@ -24,16 +26,17 @@ async function TripsTableContent({ searchParams }: TripsPageProps) {
 
     const promises = Promise.all([
         getTrips(search),
-        getTripStatuses(),
-        getBusTypes(),
+        getActiveRoutes(),
     ]);
 
     return <TripsTable promises={promises} />;
 }
 
 export default async function TripsPage({ searchParams }: TripsPageProps) {
-    const params = await searchParams;
-    const search = searchTripsParamsCache.parse(params);
+    const [buses, stations] = await Promise.all([
+        getActiveBuses(),
+        getActiveStations(),
+    ]);
 
     return (
         <>
@@ -47,15 +50,11 @@ export default async function TripsPage({ searchParams }: TripsPageProps) {
                             Manage scheduled trips and availability
                         </p>
                     </div>
-                    <Button>
-                        <Plus />
-                        Add Trip
-                    </Button>
+                    {/* <CreateTripDialog buses={buses} stations={stations} /> */}
                 </div>
 
                 {/* Data Table */}
                 <Suspense
-                    key={JSON.stringify(search)}
                     fallback={
                         <DataTableSkeleton
                             columnCount={8}

@@ -12,14 +12,20 @@ import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
-import type { Province } from "@/types/station.types";
+import { getVNProvinces } from "@/queries";
+import { Province } from "@/schemas";
+
 
 interface HeroSearchFormProps {
-    provinces: Province[];
+    promises: Promise<[
+        Awaited<ReturnType<typeof getVNProvinces>>,
+    ]>;
 }
 
-export function HeroSearchForm({ provinces }: HeroSearchFormProps) {
+export function HeroSearchForm({ promises }: HeroSearchFormProps) {
     const router = useRouter();
+    const [ provinces ] = React.use(promises);
+    
     const [fromProvince, setFromProvince] = React.useState<Province | null>(null);
     const [toProvince, setToProvince] = React.useState<Province | null>(null);
     const [date, setDate] = React.useState<Date>();

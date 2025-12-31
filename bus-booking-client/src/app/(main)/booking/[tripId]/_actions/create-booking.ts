@@ -2,7 +2,7 @@
 
 import { apiPost } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { CreateBookingRequest, CreateBookingResponse, ApiResponse } from "@/types";
+import type { CreateBookingRequest, CreateBookingResponse, ApiResponse } from "@/type";
 
 export interface CreateBookingActionInput {
     tripId: string;
