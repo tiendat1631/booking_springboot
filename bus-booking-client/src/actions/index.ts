@@ -4,4 +4,4 @@ export * from "./booking.action";
 export * from "./bus.action";
 export * from "./route.action";
 export * from "./station.action";
-// export * from "./trip.action";
+export * from "./trip.action";

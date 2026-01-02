@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -22,6 +23,8 @@ import { ProvinceCombobox } from "@/components/shared/province-combobox";
 import { CreateStationInput, createStationSchema } from "@/lib/validations";
 import { createStation } from "@/actions";
 import { getVNProvinces } from "@/queries";
+import { InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea } from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 
 interface CreateStationDialogProps {
     promises: Promise<[
@@ -71,7 +74,7 @@ export function CreateStationDialog({ promises }: CreateStationDialogProps) {
                         Create a new bus station. Fill in the details below.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form id="create-station-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FieldGroup>
                         <Controller
                             name="name"
@@ -98,12 +101,20 @@ export function CreateStationDialog({ promises }: CreateStationDialogProps) {
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
                                     <FieldLabel htmlFor="station-address">Address</FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="station-address"
-                                        placeholder="Enter address..."
-                                        aria-invalid={fieldState.invalid}
-                                    />
+                                    <InputGroup>
+                                        <InputGroupTextarea
+                                            {...field}  
+                                            id="station-address"
+                                            placeholder="Enter address..."
+                                            rows={3}
+                                            aria-invalid={fieldState.invalid}
+                                        />
+                                        <InputGroupAddon align="block-end">
+                                            <InputGroupText className="tabular-nums">
+                                                {field.value.length}/100 characters
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                    </InputGroup>
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
                                     )}
@@ -118,9 +129,8 @@ export function CreateStationDialog({ promises }: CreateStationDialogProps) {
                                 <Field data-invalid={fieldState.invalid}>
                                     <FieldLabel>Province</FieldLabel>
                                     <ProvinceCombobox
+                                        {...field}
                                         provinces={provinces}
-                                        value={field.value}
-                                        onChange={field.onChange}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError errors={[fieldState.error]} />
@@ -131,15 +141,11 @@ export function CreateStationDialog({ promises }: CreateStationDialogProps) {
                     </FieldGroup>
 
                     <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                        >
-                            Cancel
-                        </Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
                         <Button type="submit" disabled={isPending}>
-                            {isPending && <Loader2 className="animate-spin" />}
+                            {isPending && <Spinner />}
                             Create Station
                         </Button>
                     </DialogFooter>

@@ -750,9 +750,9 @@ function onFilterInputRender<TData>({
 
       const displayValue =
         filter.operator === "isBetween" && dateValue.length === 2 && !isSameDate
-          ? `${formatDate(startDate, { month: "short" })} - ${formatDate(endDate, { month: "short" })}`
+          ? `${formatDate(startDate, "dd MMM")} - ${formatDate(endDate, "dd MMM")}`
           : startDate
-            ? formatDate(startDate, { month: "short" })
+            ? formatDate(startDate, "dd MMM")
             : "Pick a date";
 
       return (

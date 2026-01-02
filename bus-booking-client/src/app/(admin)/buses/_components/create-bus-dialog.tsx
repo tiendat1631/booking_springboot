@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -29,6 +30,7 @@ import {
 import { CreateBusInput, createBusSchema } from "@/lib/validations";
 import { createBus } from "@/actions";
 import { busTypeEnum } from "@/schemas";
+import { Spinner } from "@/components/ui/spinner";
 
 const busTypeLabels: Record<typeof busTypeEnum.options[number], string> = {
     SEATER: "Seater (Ghế ngồi)",
@@ -42,7 +44,6 @@ const busTypeOptions = busTypeEnum.options.map((value) => ({
 }));
 
 export function CreateBusDialog() {
-    const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const [isPending, startTransition] = React.useTransition();
 
@@ -62,7 +63,6 @@ export function CreateBusDialog() {
                 toast.success("Bus created successfully");
                 form.reset();
                 setOpen(false);
-                router.refresh();
             } else {
                 toast.error(result.error ?? "Failed to create bus");
             }
@@ -84,7 +84,7 @@ export function CreateBusDialog() {
                         Register a new bus to the fleet.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form id="create-bus-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FieldGroup>
                         <Controller
                             name="licensePlate"
@@ -113,6 +113,7 @@ export function CreateBusDialog() {
                                 <Field data-invalid={fieldState.invalid}>
                                     <FieldLabel htmlFor="bus-type">Bus Type</FieldLabel>
                                     <Select
+                                        {...field}
                                         value={field.value}
                                         onValueChange={field.onChange}
                                     >
@@ -136,15 +137,11 @@ export function CreateBusDialog() {
                     </FieldGroup>
 
                     <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                        >
-                            Cancel
-                        </Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
                         <Button type="submit" disabled={isPending}>
-                            {isPending && <Loader2 className="animate-spin" />}
+                            {isPending && <Spinner/>}
                             Create Bus
                         </Button>
                     </DialogFooter>

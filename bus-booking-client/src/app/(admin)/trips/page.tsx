@@ -8,7 +8,7 @@ import { getActiveRoutes, getTrips } from "@/queries";
 import { getActiveBuses } from "@/queries/bus.data";
 import { getActiveStations } from "@/queries/station.data";
 import { TripsTable } from "./_components/trips-table";
-// import { CreateTripDialog } from "./_components/create-trip-dialog";
+import { CreateTripDialog } from "./_components/create-trip-dialog";
 import { searchTripsParamsCache } from "@/lib/validations";
 
 
@@ -50,7 +50,7 @@ export default async function TripsPage({ searchParams }: TripsPageProps) {
                             Manage scheduled trips and availability
                         </p>
                     </div>
-                    {/* <CreateTripDialog buses={buses} stations={stations} /> */}
+                    <CreateTripDialog buses={buses} stations={stations} />
                 </div>
 
                 {/* Data Table */}

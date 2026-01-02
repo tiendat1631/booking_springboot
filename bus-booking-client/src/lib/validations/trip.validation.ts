@@ -29,20 +29,10 @@ export const createTripSchema = z.object({
     departureStationId: z.uuid("Invalid Station ID"),
     destinationStationId: z.uuid("Invalid Station ID"),
 
-    departureTime: z.coerce
-        .date("Departure time is required")
-        .refine((date) => date > new Date(), {
-            message: "Departure time must be in the future",
-        }),
-    arrivalTime: z.coerce
-        .date("Arrival time is required")
-        .refine((date) => date > new Date(), {
-            message: "Arrival time must be in the future",
-        }),
+    departureTime: z.iso.datetime("Invalid departure time"),
+    arrivalTime: z.iso.datetime("Invalid arrival time"),
 
-    price: z.coerce
-        .number("Price must be a number")
-        .positive("Price must be positive"),
+    price: z.number("Price must be a number").positive("Price must be positive"),
 })
 .superRefine((data, ctx) => {
     if (data.departureTime && data.arrivalTime && data.arrivalTime <= data.departureTime) {
@@ -61,6 +51,8 @@ export const createTripSchema = z.object({
         });
     }
 });
+
+export type CreateTripInput = z.infer<typeof createTripSchema>;
 
 
 export type GetTripsSchema = Awaited<

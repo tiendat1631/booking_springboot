@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -24,6 +25,7 @@ import { ProvinceCombobox } from "@/components/shared/province-combobox";
 import { CreateRouteInput, createRouteSchema } from "@/lib/validations";
 import { createRoute } from "@/actions";
 import { getVNProvinces } from "@/queries";
+import { Spinner } from "@/components/ui/spinner";
 
 
 interface CreateRouteDialogProps {
@@ -35,7 +37,6 @@ interface CreateRouteDialogProps {
 export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
     const [provinces] = React.use(promises);
 
-    const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const [isPending, startTransition] = React.useTransition();
 
@@ -57,7 +58,6 @@ export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
                 toast.success("Route created successfully");
                 form.reset();
                 setOpen(false);
-                router.refresh();
             } else {
                 toast.error(result.error ?? "Failed to create route");
             }
@@ -79,7 +79,7 @@ export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
                         Create a new bus route between provinces.
                     </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form id="create-route-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                     <FieldGroup>
                         <div className="grid grid-cols-2 gap-4">
                             <Controller
@@ -89,9 +89,8 @@ export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel>Departure Province</FieldLabel>
                                         <ProvinceCombobox
+                                            {...field}
                                             provinces={provinces}
-                                            value={field.value}
-                                            onChange={field.onChange}
                                             placeholder="Select departure..."
                                         />
                                         {fieldState.invalid && (
@@ -107,9 +106,8 @@ export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel>Destination Province</FieldLabel>
                                         <ProvinceCombobox
+                                            {...field}
                                             provinces={provinces}
-                                            value={field.value}
-                                            onChange={field.onChange}
                                             placeholder="Select destination..."
                                         />
                                         {fieldState.invalid && (
@@ -204,15 +202,11 @@ export function CreateRouteDialog({ promises }: CreateRouteDialogProps) {
                     </FieldGroup>
 
                     <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => setOpen(false)}
-                        >
-                            Cancel
-                        </Button>
+                        <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                        </DialogClose>
                         <Button type="submit" disabled={isPending}>
-                            {isPending && <Loader2 className="animate-spin" />}
+                            {isPending && <Spinner />}
                             Create Route
                         </Button>
                     </DialogFooter>

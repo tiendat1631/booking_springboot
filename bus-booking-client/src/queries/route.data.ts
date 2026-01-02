@@ -77,7 +77,7 @@ export const getActiveRoutes = cache(async (): Promise<RouteSummary[]> => {
             API_ENDPOINTS.ROUTES.ACTIVE,
             {
                 revalidate: 3600,
-                tags: ["routes-active"],
+                tags: ["routes"],
             }
         );
         

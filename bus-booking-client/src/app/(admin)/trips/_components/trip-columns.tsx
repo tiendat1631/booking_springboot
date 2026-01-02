@@ -76,8 +76,8 @@ export function getTripColumns(routes: RouteSummary[]): ColumnDef<Trip>[] {
 
     return [
         {
-            id: "route",
-            accessorKey: "route",
+            id: "routeCode",
+            accessorKey: "routeCode",
             header: "Route",
             cell: ({ row }) => {
                 const route = row.original.route;
@@ -97,7 +97,7 @@ export function getTripColumns(routes: RouteSummary[]): ColumnDef<Trip>[] {
             },
             meta: {
                 label: "Route",
-                variant: "multiSelect",
+                variant: "select",
                 options: routeOptions,
             },
             enableColumnFilter: true,

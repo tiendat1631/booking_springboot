@@ -22,7 +22,7 @@ export function TripsTable({ promises, queryKeys }: TripsTableProps) {
     console.log(data);
     const columns = React.useMemo(
         () => getTripColumns(routes),
-        []
+        [routes]
     );
 
     const { table } = useDataTable({

@@ -16,6 +16,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { GoogleIcon } from "@/components/shared";
 import { ROUTES } from "@/lib/constants";
 import { loginSchema, type LoginInput } from "@/lib/validators";
+import { Spinner } from "@/components/ui/spinner";
 
 export function LoginForm() {
     const router = useRouter();
@@ -145,7 +146,7 @@ export function LoginForm() {
                 >
                     {form.formState.isSubmitting ? (
                         <>
-                            <Loader2 className="size-4 animate-spin" />
+                           <Spinner />
                             Signing in...
                         </>
                     ) : (
