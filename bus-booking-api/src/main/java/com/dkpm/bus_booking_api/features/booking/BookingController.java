@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
 
     private final IBookingService bookingService;
@@ -53,6 +54,7 @@ public class BookingController {
     /**
      * Get my bookings (authenticated)
      */
+    @GetMapping("/my-bookings")
     @GetMapping("/my-bookings")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Page<BookingResponse>>> getMyBookings(

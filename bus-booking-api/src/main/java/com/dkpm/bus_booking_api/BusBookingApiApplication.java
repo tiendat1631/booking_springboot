@@ -12,8 +12,10 @@ import com.dkpm.bus_booking_api.config.AppProperties;
 import com.dkpm.bus_booking_api.config.RsaKeyProperties;
 import com.dkpm.bus_booking_api.config.JwtProperties;
 import com.dkpm.bus_booking_api.config.VnpayProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 @EnableJpaAuditing
 @EnableScheduling
 @EnableConfigurationProperties({ AppProperties.class, RsaKeyProperties.class, JwtProperties.class,
