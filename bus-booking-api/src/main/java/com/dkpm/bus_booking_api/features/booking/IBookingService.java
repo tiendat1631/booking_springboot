@@ -65,4 +65,8 @@ public interface IBookingService {
      * Confirm booking cancellation with OTP
      */
     BookingResponse confirmCancelBooking(String bookingCode, String otpCode);
+
+    void expireBooking(UUID bookingId);
+
+
 }

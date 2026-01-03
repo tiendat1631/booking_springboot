@@ -50,6 +50,7 @@ public class PaymentService implements IPaymentService {
 
         // Check if booking is expired
         if (booking.isExpired()) {
+            bookingService.expireBooking(bookingId);
             throw new IllegalStateException("Booking has expired");
         }
 
@@ -188,6 +189,7 @@ public class PaymentService implements IPaymentService {
 
         return PaymentResponse.from(payment);
     }
+
 
     /**
      * Generate unique VNPay transaction reference
