@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { CashPaymentSuccessDialog } from "./cash-payment-success-dialog";
 
 interface PaymentMethodsProps {
     bookingId: string;
@@ -30,11 +31,10 @@ const paymentMethods = [
         disabled: true,
     },
     {
-        id: "bank_transfer",
-        name: "Bank Transfer",
-        description: "Direct bank transfer",
+        id: "cash",
+        name: "Cash",
+        description: "Pay with cash",
         icon: Building2,
-        disabled: true,
     },
 ];
 
@@ -42,10 +42,47 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
     const router = useRouter();
     const [selectedMethod, setSelectedMethod] = useState("vnpay");
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showCashDialog, setShowCashDialog] = useState(false);
+    const [cashBookingCode, setCashBookingCode] = useState("");
 
     const handlePayment = async () => {
         setIsProcessing(true);
         try {
+            // Handle Cash Payment
+            if (selectedMethod === "cash") {
+                console.log("Initiating Cash payment for booking:", bookingId);
+
+                // Call backend API to create cash payment record
+                const response = await fetch(`/api/payments/booking/${bookingId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        method: "CASH",
+                        returnUrl: window.location.origin
+                    }),
+                });
+
+                console.log("Response status:", response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Payment API error:", errorText);
+                    throw new Error(`Failed to create cash payment: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Cash payment response:", data);
+
+                // Extract booking code from response or use bookingId
+                const bookingCode = data.data?.booking?.bookingCode || bookingId;
+                setCashBookingCode(bookingCode);
+
+                // Show success dialog
+                setShowCashDialog(true);
+                return;
+            }
+
+            // Handle VNPay Payment
             if (selectedMethod === "vnpay") {
                 console.log("Initiating VNPay payment for booking:", bookingId);
 
@@ -160,6 +197,16 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
                     By clicking "Pay Now", you agree to our Terms of Service and Privacy Policy
                 </p>
             </CardContent>
+
+            {/* Cash Payment Success Dialog */}
+            <CashPaymentSuccessDialog
+                open={showCashDialog}
+                onClose={() => {
+                    setShowCashDialog(false);
+                    router.push("/my-bookings");
+                }}
+                bookingCode={cashBookingCode}
+            />
         </Card>
     );
 }

@@ -8,6 +8,7 @@ export type PaymentStatus = "PENDING" | "PAID" | "REFUNDED" | "FAILED";
 
 export interface Booking {
     id: string;
+    bookingCode: string;
     tripId: string;
     customerId: string;
     customerName: string;
@@ -16,6 +17,7 @@ export interface Booking {
     seatNumbers: string[];
     bookingStatus: BookingStatus;
     paymentStatus: PaymentStatus;
+    paymentMethod?: string;
     totalPrice: number;
     bookedAt: string;
     updatedAt: string;

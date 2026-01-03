@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     // Bookings
     BOOKINGS: {
         BASE: "/bookings",
+        ADMIN: "/bookings/admin",
         MY_BOOKINGS: "/bookings/my-bookings",
         BY_ID: (id: string) => `/bookings/${id}`,
         REQUEST_CANCELLATION: (id: string) => `/bookings/${id}/request-cancellation`,

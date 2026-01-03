@@ -26,6 +26,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatDate, formatCurrency } from "@/lib/format";
 import type { Booking, BookingStatus, PaymentStatus } from "@/types";
+import { ConfirmCashPaymentButton } from "./confirm-cash-payment-button";
+import { BookingStatusBadge } from "./booking-status-badge";
+import { PaymentStatusBadge } from "./payment-status-badge";
 
 // Status options for filtering
 export const bookingStatusOptions = [
@@ -84,9 +87,10 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Mã đặt vé" />
             ),
-            cell: ({ row }) => (
-                <span className="font-mono text-sm">{row.getValue<string>("id").slice(0, 8)}...</span>
-            ),
+            cell: ({ row }) => {
+                const id = row.getValue<string>("id");
+                return <span className="font-mono text-sm">{id?.slice(0, 8) || "N/A"}...</span>;
+            },
             enableSorting: false,
             enableColumnFilter: false,
         },
@@ -118,6 +122,9 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             ),
             cell: ({ row }) => {
                 const seats = row.getValue<string[]>("seatNumbers");
+                if (!seats || seats.length === 0) {
+                    return <span className="text-muted-foreground text-sm">N/A</span>;
+                }
                 return (
                     <div className="flex flex-wrap gap-1">
                         {seats.map((seat) => (
@@ -137,7 +144,15 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Trạng thái" />
             ),
-            cell: ({ row }) => getBookingStatusBadge(row.getValue<BookingStatus>("bookingStatus")),
+            cell: ({ row }) => {
+                const booking = row.original;
+                return (
+                    <BookingStatusBadge
+                        bookingId={booking.id}
+                        currentStatus={booking.bookingStatus}
+                    />
+                );
+            },
             meta: {
                 label: "Trạng thái đặt vé",
                 variant: "select" as const,
@@ -152,7 +167,17 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Thanh toán" />
             ),
-            cell: ({ row }) => getPaymentStatusBadge(row.getValue<PaymentStatus>("paymentStatus")),
+            cell: ({ row }) => {
+                const booking = row.original;
+                return (
+                    <PaymentStatusBadge
+                        bookingId={booking.id}
+                        bookingCode={booking.bookingCode}
+                        currentStatus={booking.paymentStatus}
+                        paymentMethod={booking.paymentMethod}
+                    />
+                );
+            },
             meta: {
                 label: "Trạng thái thanh toán",
                 variant: "select" as const,
@@ -220,6 +245,20 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
                                 Sao chép mã đặt vé
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
+
+                            {/* Show confirm payment for CASH + PENDING bookings */}
+                            {booking.paymentMethod === "CASH" &&
+                                booking.paymentStatus === "PENDING" &&
+                                booking.bookingStatus === "PENDING" && (
+                                    <>
+                                        <ConfirmCashPaymentButton
+                                            bookingId={booking.id}
+                                            bookingCode={booking.bookingCode || booking.id?.slice(0, 8) || "N/A"}
+                                        />
+                                        <DropdownMenuSeparator />
+                                    </>
+                                )}
+
                             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
                             {booking.bookingStatus === "CONFIRMED" && (
                                 <DropdownMenuItem className="text-destructive">

@@ -71,9 +71,63 @@ export const getAllBookings = cache(
         if (params?.status) searchParams.set("status", params.status);
 
         const query = searchParams.toString();
-        return apiGet(`${API_ENDPOINTS.BOOKINGS.BASE}${query ? `?${query}` : ""}`, {
+
+        console.log("Fetching admin bookings with query:", query);
+
+        // Backend returns ApiResponse<Page<BookingResponse>>
+        const response = await apiGet<ApiResponse<any>>(`${API_ENDPOINTS.BOOKINGS.ADMIN}${query ? `?${query}` : ""}`, {
             revalidate: 30,
             tags: ["bookings"],
         });
+
+        console.log("Raw API response:", response);
+
+        // Transform Spring Page to PaginatedResponse
+        if (response.success && response.data) {
+            console.log("Response data:", response.data);
+
+            // Transform BookingResponse[] to Booking[]
+            const transformedContent = (response.data.content || []).map((item: any) => ({
+                id: item.bookingId,
+                bookingCode: item.bookingCode,
+                tripId: item.trip?.tripId || "",
+                customerId: "", // Not in BookingResponse
+                customerName: item.passenger?.name || "",
+                customerEmail: item.passenger?.email || "",
+                customerPhone: item.passenger?.phone || "",
+                seatNumbers: item.seats?.map((s: any) => s.seatId) || [],
+                bookingStatus: item.status,
+                paymentStatus: item.payment?.status || "PENDING",
+                paymentMethod: item.payment?.method,
+                totalPrice: item.finalAmount || 0,
+                bookedAt: item.bookingTime,
+                updatedAt: item.bookingTime,
+            }));
+
+            console.log("Transformed content:", transformedContent);
+
+            return {
+                content: transformedContent,
+                page: {
+                    size: response.data.size || params?.size || 10,
+                    number: response.data.number || params?.page || 0,
+                    totalElements: response.data.totalElements || 0,
+                    totalPages: response.data.totalPages || 0,
+                },
+            };
+        }
+
+        console.warn("No data in response, returning empty");
+
+        // Fallback empty response
+        return {
+            content: [],
+            page: {
+                size: params?.size || 10,
+                number: params?.page || 0,
+                totalElements: 0,
+                totalPages: 0,
+            },
+        };
     }
 );
