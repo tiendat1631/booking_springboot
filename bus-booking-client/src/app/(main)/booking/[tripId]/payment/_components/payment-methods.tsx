@@ -46,19 +46,39 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
     const handlePayment = async () => {
         setIsProcessing(true);
         try {
-            // TODO: Call payment API based on selected method
             if (selectedMethod === "vnpay") {
-                // Call VNPay API to get payment URL
-                const response = await fetch(`/api/payment/vnpay/create`, {
+                console.log("Initiating VNPay payment for booking:", bookingId);
+
+                // Call backend API to initiate VNPay payment
+                const response = await fetch(`/api/payments/booking/${bookingId}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ bookingId, amount: totalAmount }),
+                    body: JSON.stringify({
+                        method: "VNPAY",
+                        returnUrl: `${window.location.origin}/payment/vnpay-return`
+                    }),
                 });
 
+                console.log("Response status:", response.status);
+                console.log("Response ok:", response.ok);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Payment API error:", errorText);
+                    throw new Error(`Failed to initiate payment: ${response.status}`);
+                }
+
                 const data = await response.json();
-                if (data.paymentUrl) {
-                    window.location.href = data.paymentUrl;
+                console.log("Payment response data:", data);
+
+                // Redirect to VNPay payment URL
+                if (data.data?.paymentUrl) {
+                    console.log("Redirecting to VNPay:", data.data.paymentUrl);
+                    window.location.href = data.data.paymentUrl;
                     return;
+                } else {
+                    console.error("No paymentUrl in response:", data);
+                    throw new Error("No payment URL received");
                 }
             }
 
@@ -66,6 +86,7 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
             router.push(`/booking/confirmation/${bookingId}`);
         } catch (error) {
             console.error("Payment error:", error);
+            alert("Failed to process payment. Please try again.");
         } finally {
             setIsProcessing(false);
         }
