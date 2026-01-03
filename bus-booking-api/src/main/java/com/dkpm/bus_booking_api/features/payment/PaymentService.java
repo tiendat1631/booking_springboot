@@ -50,6 +50,8 @@ public class PaymentService implements IPaymentService {
 
         // Check if booking is expired
         if (booking.isExpired()) {
+            // Expire the booking and release seats
+            bookingService.expireBooking(bookingId);
             throw new IllegalStateException("Booking has expired");
         }
 

@@ -54,7 +54,7 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ bookingId, amount: totalAmount }),
                 });
-                
+
                 const data = await response.json();
                 if (data.paymentUrl) {
                     window.location.href = data.paymentUrl;
@@ -90,14 +90,14 @@ export function PaymentMethods({ bookingId, totalAmount }: PaymentMethodsProps) 
                                     htmlFor={method.id}
                                     className={cn(
                                         "flex items-center gap-4 p-4 border rounded-lg cursor-pointer transition-colors",
-                                        selectedMethod === method.id 
-                                            ? "border-primary bg-primary/5" 
+                                        selectedMethod === method.id
+                                            ? "border-primary bg-primary/5"
                                             : "border-border hover:border-primary/50",
                                         method.disabled && "opacity-50 cursor-not-allowed"
                                     )}
                                 >
-                                    <RadioGroupItem 
-                                        value={method.id} 
+                                    <RadioGroupItem
+                                        value={method.id}
                                         id={method.id}
                                         disabled={method.disabled}
                                     />
