@@ -383,6 +383,33 @@ public class BookingService implements IBookingService {
         return code;
     }
 
+    @Override
+    @Transactional
+    public void expireBooking(UUID bookingId) {
+        Booking booking = bookingRepository.findByIdWithDetails(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
+
+        // Only expire if booking is in PENDING status and actually expired
+        if (booking.getStatus() != BookingStatus.PENDING) {
+            log.warn("Attempted to expire booking {} with status {}", booking.getBookingCode(), booking.getStatus());
+            return;
+        }
+
+        if (!booking.isExpired()) {
+            log.warn("Attempted to expire booking {} that is not yet expired", booking.getBookingCode());
+            return;
+        }
+
+        // Release seats
+        releaseBookingSeats(booking);
+
+        // Update status
+        booking.setStatus(BookingStatus.EXPIRED);
+        bookingRepository.save(booking);
+
+        log.info("Expired booking {}", booking.getBookingCode());
+    }
+
     /**
      * Generate 6-digit OTP code
      */

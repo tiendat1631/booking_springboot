@@ -31,25 +31,25 @@ public class Payment extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id", nullable = false, unique = true)
-    private Booking booking;
+    private Booking booking; // 1 booking = 1 payment
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentMethod method;
+    private PaymentMethod method; // VNPAY, CASH
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private PaymentStatus status = PaymentStatus.PENDING;
+    private PaymentStatus status = PaymentStatus.PENDING;  // PENDING, COMPLETED, FAILED
 
     @Column(precision = 12, scale = 2, nullable = false)
     private BigDecimal amount;
 
     @Column(name = "transaction_id", length = 100)
-    private String transactionId;
+    private String transactionId;  // ID từ gateway
 
     @Column(name = "vnpay_txn_ref", length = 100)
-    private String vnpayTxnRef;
+    private String vnpayTxnRef; // Unique ref cho VNPay
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
