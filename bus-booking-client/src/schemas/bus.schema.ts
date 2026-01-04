@@ -32,3 +32,5 @@ export const busDetailSchema = busSchema.extend({
 
 export type BusDetail = z.infer<typeof busDetailSchema>;
 export type Bus = z.infer<typeof busSchema>;
+export type BusType = z.infer<typeof busTypeEnum>;
+export type BusStatus = z.infer<typeof busStatusEnum>;

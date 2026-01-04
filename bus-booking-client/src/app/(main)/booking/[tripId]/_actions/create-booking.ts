@@ -2,7 +2,7 @@
 
 import { apiPost } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
-import type { CreateBookingRequest, CreateBookingResponse, ApiResponse } from "@/type";
+import type { ApiResponse } from "@/type";
 
 export interface CreateBookingActionInput {
     tripId: string;
@@ -13,6 +13,11 @@ export interface CreateBookingActionInput {
     notes?: string;
 }
 
+interface CreateBookingResponse {
+    bookingId: string;
+    bookingCode: string;
+}
+
 export interface CreateBookingActionResult {
     success: boolean;
     data?: CreateBookingResponse;
@@ -21,18 +26,16 @@ export interface CreateBookingActionResult {
 
 export async function createBooking(input: CreateBookingActionInput): Promise<CreateBookingActionResult> {
     try {
-        const requestBody: CreateBookingRequest = {
-            tripId: input.tripId,
-            seatIds: input.seatIds,
-            passengerName: input.passengerName,
-            passengerPhone: input.passengerPhone,
-            passengerEmail: input.passengerEmail,
-            notes: input.notes,
-        };
-
         const response = await apiPost<ApiResponse<CreateBookingResponse>>(
             API_ENDPOINTS.BOOKINGS.BASE,
-            requestBody
+            {
+                tripId: input.tripId,
+                seatIds: input.seatIds,
+                passengerName: input.passengerName,
+                passengerPhone: input.passengerPhone,
+                passengerEmail: input.passengerEmail,
+                notes: input.notes,
+            }
         );
 
         if (response.success && response.data) {

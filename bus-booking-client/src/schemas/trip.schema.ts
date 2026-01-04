@@ -21,7 +21,7 @@ const stationSummarySchema = z.object({
 });
 
 export const tripSchema = z.object({
-    id: z.uuid(),
+    tripId: z.uuid(),
     
     route: routeSummarySchema,
     bus: busSummarySchema,

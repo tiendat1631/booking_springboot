@@ -109,10 +109,22 @@ public class Booking extends BaseEntity {
 
     /**
      * Check if booking is expired
+     * - Cash payments: expire at trip departure time
+     * - Other payments: expire after 15 minutes (expiryTime)
      */
     public boolean isExpired() {
-        return this.status == BookingStatus.PENDING &&
-                LocalDateTime.now().isAfter(this.expiryTime);
+        if (this.status != BookingStatus.PENDING) {
+            return false;
+        }
+
+        // For cash payments, expire at trip departure time
+        if (this.payment != null
+                && this.payment.getMethod() == com.dkpm.bus_booking_api.domain.payment.PaymentMethod.CASH) {
+            return LocalDateTime.now().isAfter(this.trip.getDepartureTime());
+        }
+
+        // For other payment methods, use the standard expiry time (15 minutes)
+        return LocalDateTime.now().isAfter(this.expiryTime);
     }
 
     /**

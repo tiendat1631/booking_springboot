@@ -10,7 +10,7 @@ public interface IPaymentService {
     /**
      * Initiate payment for a booking
      */
-    PaymentResponse initiatePayment(UUID bookingId, InitiatePaymentRequest request);
+    PaymentResponse initiatePayment(UUID bookingId, InitiatePaymentRequest request, String ipAddress);
 
     /**
      * Get payment status

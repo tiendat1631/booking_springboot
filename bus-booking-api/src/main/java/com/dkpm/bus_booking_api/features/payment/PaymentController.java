@@ -42,15 +42,8 @@ public class PaymentController {
             @Valid @RequestBody InitiatePaymentRequest request,
             HttpServletRequest httpRequest) {
 
-        // Get client IP
         String ipAddress = getClientIp(httpRequest);
-
-        InitiatePaymentRequest requestWithIp = new InitiatePaymentRequest(
-                request.method(),
-                request.returnUrl(),
-                ipAddress);
-
-        PaymentResponse payment = paymentService.initiatePayment(bookingId, requestWithIp);
+        PaymentResponse payment = paymentService.initiatePayment(bookingId, request, ipAddress);
         return ResponseEntity.ok(ApiResponse.success(payment, "Payment initiated successfully"));
     }
 

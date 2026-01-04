@@ -401,7 +401,7 @@ public class BookingService implements IBookingService {
         }
 
         // Release seats
-        releaseBookingSeats(booking);
+        releaseBookingTickets(booking);
 
         // Update status
         booking.setStatus(BookingStatus.EXPIRED);

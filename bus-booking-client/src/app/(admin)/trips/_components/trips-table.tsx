@@ -33,7 +33,7 @@ export function TripsTable({ promises, queryKeys }: TripsTableProps) {
             pagination: { pageIndex: page.number, pageSize: page.size },
         },
         queryKeys,
-        getRowId: (originalRow) => originalRow.id,
+        getRowId: (originalRow) => originalRow.tripId,
         shallow: false,
         clearOnDefault: true,
         debounceMs: 500,

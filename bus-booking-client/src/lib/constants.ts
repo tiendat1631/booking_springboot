@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     // Bookings
     BOOKINGS: {
         BASE: "/bookings",
+        ADMIN: "/bookings/admin",
         MY_BOOKINGS: "/bookings/my-bookings",
         BY_ID: (id: string) => `/bookings/${id}`,
         REQUEST_CANCELLATION: (id: string) => `/bookings/${id}/request-cancellation`,
@@ -42,8 +43,9 @@ export const API_ENDPOINTS = {
     },
     // Payment
     PAYMENT: {
-        VNPAY_CREATE: "/payment/vnpay/create",
-        VNPAY_CALLBACK: "/payment/vnpay/callback",
+        INITIATE: (bookingId: string) => `/payments/booking/${bookingId}`,
+        VNPAY_CALLBACK: "/payments/vnpay/callback",
+        CONFIRM_CASH: (bookingId: string) => `/payments/cash/confirm/${bookingId}`
     },
 } as const;
 

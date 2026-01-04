@@ -2,10 +2,11 @@
 
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { apiPost } from "@/lib/api";
+import { apiGet, apiPost } from "@/lib/api";
 import { API_ENDPOINTS, ROUTES } from "@/lib/constants";
 import { bookingSchema, cancelBookingSchema } from "@/lib/validators";
-import type { ActionResult, Booking } from "@/type";
+import type { ActionResult, ApiResponse } from "@/type";
+import type { Booking } from "@/schemas/booking.schema";
 
 /**
  * Create a new booking
@@ -128,7 +129,7 @@ export async function createBookingAndRedirect(
     const result = await createBooking(null, formData);
 
     if (result.success) {
-        redirect(ROUTES.BOOKING_CONFIRMATION(result.data.id));
+        redirect(ROUTES.BOOKING_CONFIRMATION(result.data.bookingId));
     }
 
     return {
@@ -137,3 +138,4 @@ export async function createBookingAndRedirect(
         fieldErrors: result.fieldErrors,
     };
 }
+

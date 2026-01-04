@@ -248,7 +248,7 @@ export function getTripColumns(routes: RouteSummary[]): ColumnDef<Trip>[] {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(trip.id)}
+                                onClick={() => navigator.clipboard.writeText(trip.tripId)}
                             >
                                 Copy ID
                             </DropdownMenuItem>

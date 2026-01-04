@@ -66,7 +66,12 @@ public interface IBookingService {
      */
     BookingResponse confirmCancelBooking(String bookingCode, String otpCode);
 
+    /**
+     * Expire a booking and release its seats
+     * This is called when a booking is detected as expired (e.g., during payment
+     * initiation)
+     * 
+     * @param bookingId the booking to expire
+     */
     void expireBooking(UUID bookingId);
-
-
 }

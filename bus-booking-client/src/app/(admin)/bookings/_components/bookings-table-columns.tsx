@@ -25,7 +25,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, formatCurrency } from "@/lib/format";
-import type { Booking, BookingStatus, PaymentStatus } from "@/type";
+import type { Booking, BookingStatus, PaymentStatus } from "@/schemas/booking.schema";
+import { ConfirmCashPaymentButton } from "./confirm-cash-payment-button";
+import { BookingStatusBadge } from "./booking-status-badge";
+import { PaymentStatusBadge } from "./payment-status-badge";
 
 // Status options for filtering
 export const bookingStatusOptions = [
@@ -37,7 +40,7 @@ export const bookingStatusOptions = [
 
 export const paymentStatusOptions = [
     { label: "Chưa thanh toán", value: "PENDING", icon: Clock },
-    { label: "Đã thanh toán", value: "PAID", icon: CheckCircle },
+    { label: "Đã thanh toán", value: "COMPLETED", icon: CheckCircle },
     { label: "Đã hoàn tiền", value: "REFUNDED", icon: DollarSign },
     { label: "Thất bại", value: "FAILED", icon: XCircle },
 ];
@@ -62,13 +65,13 @@ function getBookingStatusBadge(status: BookingStatus) {
 function getPaymentStatusBadge(status: PaymentStatus) {
     const variants: Record<PaymentStatus, "default" | "secondary" | "destructive" | "outline"> = {
         PENDING: "secondary",
-        PAID: "default",
+        COMPLETED: "default",
         REFUNDED: "outline",
         FAILED: "destructive",
     };
     const labels: Record<PaymentStatus, string> = {
         PENDING: "Chưa thanh toán",
-        PAID: "Đã thanh toán",
+        COMPLETED: "Đã thanh toán",
         REFUNDED: "Đã hoàn tiền",
         FAILED: "Thất bại",
     };
@@ -79,27 +82,28 @@ function getPaymentStatusBadge(status: PaymentStatus) {
 export function getBookingsColumns(): ColumnDef<Booking>[] {
     return [
         {
-            id: "id",
-            accessorKey: "id",
+            id: "bookingId",
+            accessorKey: "bookingId",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Mã đặt vé" />
             ),
-            cell: ({ row }) => (
-                <span className="font-mono text-sm">{row.getValue<string>("id").slice(0, 8)}...</span>
-            ),
+            cell: ({ row }) => {
+                const id = row.getValue<string>("bookingId");
+                return <span className="font-mono text-sm">{id?.slice(0, 8) || "N/A"}...</span>;
+            },
             enableSorting: false,
             enableColumnFilter: false,
         },
         {
-            id: "customerName",
-            accessorKey: "customerName",
+            id: "passengerName",
+            accessorFn: (row) => row.passenger?.name,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Khách hàng" />
             ),
             cell: ({ row }) => (
                 <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <span>{row.getValue<string>("customerName")}</span>
+                    <span>{row.original.passenger?.name || "N/A"}</span>
                 </div>
             ),
             meta: {
@@ -111,18 +115,21 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             enableColumnFilter: true,
         },
         {
-            id: "seatNumbers",
-            accessorKey: "seatNumbers",
+            id: "seats",
+            accessorFn: (row) => row.seats?.map(s => s.seatId),
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Ghế" />
             ),
             cell: ({ row }) => {
-                const seats = row.getValue<string[]>("seatNumbers");
+                const seats = row.original.seats;
+                if (!seats || seats.length === 0) {
+                    return <span className="text-muted-foreground text-sm">N/A</span>;
+                }
                 return (
                     <div className="flex flex-wrap gap-1">
                         {seats.map((seat) => (
-                            <Badge key={seat} variant="outline" className="font-mono">
-                                {seat}
+                            <Badge key={seat.seatId} variant="outline" className="font-mono">
+                                {seat.seatId}
                             </Badge>
                         ))}
                     </div>
@@ -132,12 +139,20 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             enableColumnFilter: false,
         },
         {
-            id: "bookingStatus",
-            accessorKey: "bookingStatus",
+            id: "status",
+            accessorKey: "status",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Trạng thái" />
             ),
-            cell: ({ row }) => getBookingStatusBadge(row.getValue<BookingStatus>("bookingStatus")),
+            cell: ({ row }) => {
+                const booking = row.original;
+                return (
+                    <BookingStatusBadge
+                        bookingId={booking.bookingId}
+                        currentStatus={booking.status}
+                    />
+                );
+            },
             meta: {
                 label: "Trạng thái đặt vé",
                 variant: "select" as const,
@@ -148,11 +163,21 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
         },
         {
             id: "paymentStatus",
-            accessorKey: "paymentStatus",
+            accessorFn: (row) => row.payment?.status,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Thanh toán" />
             ),
-            cell: ({ row }) => getPaymentStatusBadge(row.getValue<PaymentStatus>("paymentStatus")),
+            cell: ({ row }) => {
+                const booking = row.original;
+                return (
+                    <PaymentStatusBadge
+                        bookingId={booking.bookingId}
+                        bookingCode={booking.bookingCode}
+                        currentStatus={(booking.payment?.status as PaymentStatus) || "PENDING"}
+                        paymentMethod={booking.payment?.method}
+                    />
+                );
+            },
             meta: {
                 label: "Trạng thái thanh toán",
                 variant: "select" as const,
@@ -162,14 +187,14 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
             enableColumnFilter: true,
         },
         {
-            id: "totalPrice",
-            accessorKey: "totalPrice",
+            id: "finalAmount",
+            accessorKey: "finalAmount",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Tổng tiền" />
             ),
             cell: ({ row }) => (
                 <span className="font-medium">
-                    {formatCurrency(row.getValue<number>("totalPrice"))}
+                    {formatCurrency(row.getValue<number>("finalAmount"))}
                 </span>
             ),
             meta: {
@@ -179,18 +204,18 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
                 unit: "đ",
                 icon: DollarSign,
             },
-            enableColumnFilter: false, // Disable for now, enable if needed
+            enableColumnFilter: false,
         },
         {
-            id: "bookedAt",
-            accessorKey: "bookedAt",
+            id: "bookingTime",
+            accessorKey: "bookingTime",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} label="Ngày đặt" />
             ),
             cell: ({ row }) => (
                 <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{formatDate(row.getValue<string>("bookedAt"))}</span>
+                    <span>{formatDate(row.getValue<string>("bookingTime"))}</span>
                 </div>
             ),
             meta: {
@@ -215,13 +240,27 @@ export function getBookingsColumns(): ColumnDef<Booking>[] {
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Hành động</DropdownMenuLabel>
                             <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(booking.id)}
+                                onClick={() => navigator.clipboard.writeText(booking.bookingId)}
                             >
                                 Sao chép mã đặt vé
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
+
+                            {/* Show confirm payment for CASH + PENDING bookings */}
+                            {booking.payment?.method === "CASH" &&
+                                booking.payment?.status === "PENDING" &&
+                                booking.status === "PENDING" && (
+                                    <>
+                                        <ConfirmCashPaymentButton
+                                            bookingId={booking.bookingId}
+                                            bookingCode={booking.bookingCode || booking.bookingId?.slice(0, 8) || "N/A"}
+                                        />
+                                        <DropdownMenuSeparator />
+                                    </>
+                                )}
+
                             <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-                            {booking.bookingStatus === "CONFIRMED" && (
+                            {booking.status === "CONFIRMED" && (
                                 <DropdownMenuItem className="text-destructive">
                                     Hủy đặt vé
                                 </DropdownMenuItem>

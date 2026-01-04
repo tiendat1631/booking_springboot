@@ -39,7 +39,7 @@ public class PaymentService implements IPaymentService {
 
     @Override
     @Transactional
-    public PaymentResponse initiatePayment(UUID bookingId, InitiatePaymentRequest request) {
+    public PaymentResponse initiatePayment(UUID bookingId, InitiatePaymentRequest request, String ipAddress) {
         Booking booking = bookingRepository.findByIdWithDetails(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found with id: " + bookingId));
 
@@ -50,6 +50,7 @@ public class PaymentService implements IPaymentService {
 
         // Check if booking is expired
         if (booking.isExpired()) {
+            // Expire the booking and release seats
             bookingService.expireBooking(bookingId);
             throw new IllegalStateException("Booking has expired");
         }
@@ -87,7 +88,7 @@ public class PaymentService implements IPaymentService {
                     txnRef,
                     booking.getFinalAmount(),
                     orderInfo,
-                    request.ipAddress(),
+                    ipAddress,
                     request.returnUrl());
 
             log.info("Generated VNPay URL for booking {} with txnRef {}",
@@ -189,7 +190,6 @@ public class PaymentService implements IPaymentService {
 
         return PaymentResponse.from(payment);
     }
-
 
     /**
      * Generate unique VNPay transaction reference

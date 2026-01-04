@@ -8,6 +8,7 @@ import { searchTripsByProvince } from "@/queries";
 // import { SearchResultsClient } from "./_components/search-results-client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SearchResultsClient } from "./_components/search-results-client";
 
 export const metadata: Metadata = {
     title: "Search Results - BusGo",
@@ -76,12 +77,12 @@ async function SearchResults({ searchParams }: SearchPageProps) {
     }
 
     return (
-        // <SearchResultsClient
-        //     trips={result.content}
-        //     passengers={passengers ? parseInt(passengers) : 1}
-        //     totalElements={result.page.totalElements}
-        // />
-        <></>
+        <SearchResultsClient
+            trips={result.content}
+            passengers={passengers ? parseInt(passengers) : 1}
+            totalElements={result.page.totalElements}
+        />
+
     );
 }
 

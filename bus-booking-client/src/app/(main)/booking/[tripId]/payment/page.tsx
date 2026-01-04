@@ -52,9 +52,9 @@ export default async function PaymentPage({ params, searchParams }: PaymentPageP
 
     const departureTime = new Date(booking.trip.departureTime);
     const arrivalTime = new Date(booking.trip.arrivalTime);
-    const expiryTime = new Date(booking.expiryTime);
+    const expiryTime = booking.expiryTime ? new Date(booking.expiryTime) : null;
     const now = new Date();
-    const timeRemaining = Math.max(0, Math.floor((expiryTime.getTime() - now.getTime()) / 1000 / 60));
+    const timeRemaining = expiryTime ? Math.max(0, Math.floor((expiryTime.getTime() - now.getTime()) / 1000 / 60)) : 0;
     const duration = formatDuration(booking.trip.departureTime, booking.trip.arrivalTime);
 
     return (
@@ -69,7 +69,7 @@ export default async function PaymentPage({ params, searchParams }: PaymentPageP
                 </div>
 
                 {/* Timer Warning */}
-                {booking.status === "PENDING" && timeRemaining > 0 && (
+                {booking.status === "PENDING" && expiryTime && timeRemaining > 0 && (
                     <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-3">
                         <Timer className="size-5 text-yellow-600" />
                         <div>
