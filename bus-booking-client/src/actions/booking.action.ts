@@ -2,53 +2,40 @@
 
 import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { apiGet, apiPost } from "@/lib/api";
+import { apiPost } from "@/lib/api";
 import { API_ENDPOINTS, ROUTES } from "@/lib/constants";
-import { bookingSchema, cancelBookingSchema } from "@/lib/validators";
-import type { ActionResult, ApiResponse } from "@/type";
+import { cancelBookingSchema } from "@/lib/validators";
+import { ApiResponse, isApiSuccess, type ActionResult } from "@/type";
 import type { Booking } from "@/schemas/booking.schema";
+import { createBookingSchema, CreateBookingInput } from "@/lib/validations";
 
 /**
  * Create a new booking
  */
 export async function createBooking(
-    _prevState: ActionResult<Booking> | null,
-    formData: FormData
+    input: CreateBookingInput
 ): Promise<ActionResult<Booking>> {
-    try {
-        const rawData = {
-            tripId: formData.get("tripId") as string,
-            seatNumbers: formData.getAll("seatNumbers") as string[],
-            customerName: formData.get("customerName") as string,
-            customerEmail: formData.get("customerEmail") as string,
-            customerPhone: formData.get("customerPhone") as string,
+    const parsed = createBookingSchema.safeParse(input);
+    if (!parsed.success) {
+        return {
+            success: false,
+            error: "Invalid input",
         };
+    }
+    try {
+        const response = await apiPost<ApiResponse<Booking>>(
+            API_ENDPOINTS.BOOKINGS.BASE,
+            parsed.data
+        );
 
-        const validated = bookingSchema.safeParse(rawData);
-        if (!validated.success) {
-            const fieldErrors: Record<string, string[]> = {};
-            validated.error.issues.forEach((issue) => {
-                const field = issue.path[0] as string;
-                if (!fieldErrors[field]) fieldErrors[field] = [];
-                fieldErrors[field].push(issue.message);
-            });
+        if (!isApiSuccess(response)) {
             return {
                 success: false,
-                error: validated.error.issues[0]?.message || "Dữ liệu không hợp lệ",
-                fieldErrors,
+                error: response.message,
             };
         }
 
-        const booking = await apiPost<Booking>(
-            API_ENDPOINTS.BOOKINGS.BASE,
-            validated.data
-        );
-
-        // Revalidate related caches
-        revalidateTag("my-bookings", "max");
-        revalidateTag(`trip-${validated.data.tripId}-seats`, "max");
-
-        return { success: true, data: booking };
+        return { success: true, data: response.data };
     } catch (error) {
         return {
             success: false,
@@ -117,25 +104,5 @@ export async function confirmCancellation(
             error: error instanceof Error ? error.message : "Xác nhận hủy vé thất bại",
         };
     }
-}
-
-/**
- * Create booking and redirect to confirmation
- */
-export async function createBookingAndRedirect(
-    _prevState: ActionResult<void> | null,
-    formData: FormData
-): Promise<ActionResult<void>> {
-    const result = await createBooking(null, formData);
-
-    if (result.success) {
-        redirect(ROUTES.BOOKING_CONFIRMATION(result.data.bookingId));
-    }
-
-    return {
-        success: false,
-        error: result.error,
-        fieldErrors: result.fieldErrors,
-    };
 }
 

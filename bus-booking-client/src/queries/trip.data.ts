@@ -3,7 +3,7 @@ import { apiGet } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { GetTripsSchema } from "@/lib/validations";
 import type { PaginatedResponse, ApiResponse } from "@/type";
-import { Trip } from "@/schemas";
+import { Trip, TripDetail } from "@/schemas";
 
 /**
  * Get all trips with filtering and sorting (admin)
@@ -64,11 +64,11 @@ export const getTrips = cache(
 );
 
 /**
- * Get trip by ID
+ * Get trip by ID (returns detailed trip info for booking)
  */
-export const getTripById = cache(async (tripId: string): Promise<Trip | null> => {
+export const getTripById = cache(async (tripId: string): Promise<TripDetail | null> => {
     try {
-        const response = await apiGet<ApiResponse<Trip>>(
+        const response = await apiGet<ApiResponse<TripDetail>>(
             API_ENDPOINTS.TRIPS.BY_ID(tripId),
             {
                 revalidate: 30,

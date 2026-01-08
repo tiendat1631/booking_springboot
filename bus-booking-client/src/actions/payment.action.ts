@@ -93,10 +93,7 @@ export async function processVNPayCallback(
             { revalidate: 0 }
         );
 
-        if (response.RspCode === "00") {
-            updateTag("bookings");
-            updateTag("my-bookings");
-        }
+        updateTag("trips")
 
         return {
             success: response.RspCode === "00",

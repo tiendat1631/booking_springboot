@@ -24,3 +24,14 @@ export const searchBookingsParamsCache = createSearchParamsCache({
 export type GetBookingsSchema = Awaited<
     ReturnType<typeof searchBookingsParamsCache.parse>
 >;
+
+export const createBookingSchema = z.object({
+    tripId: z.string(),
+    seatIds: z.array(z.string()),
+    passengerName: z.string(),
+    passengerPhone: z.string(),
+    passengerEmail: z.string(),
+    notes: z.string().optional(),
+});
+
+export type CreateBookingInput = z.infer<typeof createBookingSchema>;

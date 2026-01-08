@@ -29,7 +29,6 @@ import com.dkpm.bus_booking_api.domain.trip.TripRepository;
 import com.dkpm.bus_booking_api.domain.trip.TripStatus;
 import com.dkpm.bus_booking_api.features.booking.dto.BookingResponse;
 import com.dkpm.bus_booking_api.features.booking.dto.CreateBookingRequest;
-import com.dkpm.bus_booking_api.infrastructure.email.IEmailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,6 @@ public class BookingService implements IBookingService {
     private final TicketRepository ticketRepository;
     private final AccountRepository accountRepository;
     private final CancellationTokenRepository cancellationTokenRepository;
-    private final IEmailService emailService;
 
     private static final int BOOKING_EXPIRY_MINUTES = 15;
 
@@ -130,8 +128,8 @@ public class BookingService implements IBookingService {
         trip.setAvailableSeats(trip.getAvailableSeats() - tickets.size());
         tripRepository.save(trip);
 
-        // 8. Send confirmation email
-        emailService.sendBookingConfirmation(booking);
+        // 8. Sent email
+        // emailService.sendBookingConfirmation(emailData);
 
         log.info("Created booking {} for {} seats on trip {}",
                 booking.getBookingCode(), tickets.size(), trip.getId());
@@ -199,8 +197,8 @@ public class BookingService implements IBookingService {
         booking.setStatus(BookingStatus.CANCELLED);
         booking = bookingRepository.save(booking);
 
-        // Send cancellation email
-        emailService.sendBookingCancellation(booking);
+        // EmailBookingData emailData = EmailBookingData.from(booking);
+        // emailService.sendBookingCancellation(emailData);
 
         log.info("Cancelled booking {}", booking.getBookingCode());
 
@@ -290,8 +288,8 @@ public class BookingService implements IBookingService {
         CancellationToken token = CancellationToken.create(booking, otpCode);
         cancellationTokenRepository.save(token);
 
-        // Send OTP via email
-        emailService.sendCancellationOtp(booking, otpCode);
+        // EmailBookingData emailData = EmailBookingData.from(booking);
+        // emailService.sendCancellationOtp(emailData, otpCode);
 
         log.info("Sent cancellation OTP for booking {}", bookingCode);
     }
@@ -341,8 +339,8 @@ public class BookingService implements IBookingService {
         // Delete token
         cancellationTokenRepository.delete(token);
 
-        // Send cancellation confirmation email
-        emailService.sendBookingCancellation(booking);
+        // EmailBookingData emailData = EmailBookingData.from(booking);
+        // emailService.sendBookingCancellation(emailData);
 
         log.info("Guest cancelled booking {} via OTP", booking.getBookingCode());
 

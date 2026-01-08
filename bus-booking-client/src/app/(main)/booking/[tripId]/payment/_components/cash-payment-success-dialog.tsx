@@ -109,7 +109,7 @@ export function CashPaymentSuccessDialog({
                     <Card className="border-amber-200 bg-amber-50">
                         <CardContent className="p-3">
                             <div className="flex gap-2">
-                                <Clock className="size-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                <Clock className="size-4 text-amber-600 mt-0.5 flex-0" />
                                 <div className="text-sm">
                                     <p className="font-medium text-amber-900">
                                         Payment Deadline
