@@ -34,3 +34,6 @@ build/
 
 ### Certificates ###
 src/main/resources/certs/private.pem
+
+### Application Properties ###
+src/main/resources/application.properties

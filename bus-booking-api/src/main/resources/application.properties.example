@@ -1,28 +1,55 @@
 # ===================================
-# BUS BOOKING API - EXAMPLE CONFIGURATION
+# BUS BOOKING API - CONFIGURATION EXAMPLE
 # ===================================
 # Copy this file to application.properties and update values
 
+spring.application.name=bus-booking-api
+spring.profiles.active=dev
+
+# ===================================
+# RSA Keys for JWT
+# ===================================
+# Generate keys using:
+# openssl genrsa -out private.pem 2048
+# openssl rsa -in private.pem -pubout -out public.pem
+rsa.private-key=classpath:certs/private.pem
+rsa.public-key=classpath:certs/public.pem
+
+# ===================================
 # Database Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/bus_booking?useSSL=false&serverTimezone=UTC
+# ===================================
+spring.datasource.url=jdbc:mysql://localhost:3306/bus_booking
 spring.datasource.username=your_username
 spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.show-sql=false
 
+# Hibernate DDL
+# Options: none, validate, update, create, create-drop
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# ===================================
 # JWT Configuration
-jwt.secret=your-secret-key-here-make-it-long-and-random
+# ===================================
 jwt.expiration=900000
 jwt.refresh-expiration=604800000
 
+# ===================================
 # VNPay Configuration
+# ===================================
+# Get credentials from: https://sandbox.vnpayment.vn/
 vnpay.tmn-code=YOUR_TMN_CODE
 vnpay.hash-secret=YOUR_HASH_SECRET
 vnpay.url=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
 vnpay.return-url=http://localhost:8080/api/payments/vnpay/callback
 vnpay.version=2.1.0
 
-# Email Configuration (Gmail example)
+# ===================================
+# Email Configuration (Gmail)
+# ===================================
+# For Gmail, create an App Password:
+# https://myaccount.google.com/apppasswords
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
 spring.mail.username=your-email@gmail.com
@@ -30,13 +57,17 @@ spring.mail.password=your-app-password
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-# App Configuration
-app.name=Bus Booking
-app.frontend-url=http://localhost:3000
-
-# Thymeleaf Configuration (for email templates)
+# ===================================
+# Thymeleaf (Email Templates)
+# ===================================
 spring.thymeleaf.check-template-location=true
 spring.thymeleaf.prefix=classpath:/templates/
 spring.thymeleaf.suffix=.html
 spring.thymeleaf.mode=HTML
 spring.thymeleaf.encoding=UTF-8
+
+# ===================================
+# App Configuration
+# ===================================
+app.name=Bus Booking
+app.frontend-url=http://localhost:3000
