@@ -5,8 +5,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import com.dkpm.bus_booking_api.config.JwtProperties;
-import com.dkpm.bus_booking_api.domain.security.Account;
+import com.dkpm.bus_booking_api.infrastructure.config.JwtProperties;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
 
 import lombok.RequiredArgsConstructor;
 

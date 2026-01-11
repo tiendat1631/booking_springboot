@@ -5,131 +5,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác thực tài khoản</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: #1a1a1a;
-            background-color: #fafafa;
-            padding: 40px 20px;
-        }
-
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-        }
-
-        .header {
-            padding: 40px 32px 24px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .header h1 {
-            font-size: 20px;
-            font-weight: 600;
-            color: #1a1a1a;
-            letter-spacing: -0.3px;
-        }
-
-        .content {
-            padding: 32px;
-        }
-
-        .content p {
-            color: #525252;
-            font-size: 15px;
-            margin-bottom: 16px;
-        }
-
-        .btn-container {
-            text-align: center;
-            margin: 32px 0;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: #1a1a1a;
-            color: #ffffff !important;
-            padding: 14px 32px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: opacity 0.2s;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-        }
-
-        .link-box {
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 24px;
-        }
-
-        .link-box p {
-            font-size: 13px;
-            color: #737373;
-            margin-bottom: 8px;
-        }
-
-        .link-box span {
-            font-size: 12px;
-            color: #525252;
-            word-break: break-all;
-            font-family: 'SF Mono', Monaco, monospace;
-        }
-
-        .footer {
-            padding: 24px 32px;
-            text-align: center;
-            border-top: 1px solid #f0f0f0;
-        }
-
-        .footer p {
-            font-size: 12px;
-            color: #a3a3a3;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Xác thực tài khoản</h1>
-        </div>
-        <div class="content">
-            <p>Chào mừng bạn đến với <strong th:text="${appName}">Bus Booking</strong>.</p>
-            <p>Vui lòng nhấn vào nút bên dưới để xác thực email và kích hoạt tài khoản:</p>
+<body style="margin: 0; padding: 0; background-color: #ecfdf5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding: 48px 16px;">
+        <tr>
+            <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 420px; background: #ffffff; border-radius: 16px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);">
 
-            <div class="btn-container">
-                <a th:href="${verificationUrl}" class="btn">Xác thực tài khoản</a>
-            </div>
+                    <!-- Title -->
+                    <tr>
+                        <td style="padding: 40px 40px 0; text-align: center;">
+                            <h1 style="margin: 0; font-size: 22px; font-weight: 600; color: #065f46; letter-spacing: -0.5px;">
+                                Xác thực tài khoản
+                            </h1>
+                        </td>
+                    </tr>
 
-            <p style="font-size: 13px; color: #737373;">Liên kết này sẽ hết hạn sau 24 giờ. Nếu bạn không thực hiện đăng
-                ký này, vui lòng bỏ qua email.</p>
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 20px 40px 0;">
+                            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #6b7280; text-align: center;">
+                                Chào mừng bạn đến với <strong th:text="${appName}" style="color: #065f46;">Bus Booking</strong>
+                            </p>
+                        </td>
+                    </tr>
 
-            <div class="link-box">
-                <p>Nếu nút không hoạt động, hãy sao chép liên kết:</p>
-                <span th:text="${verificationUrl}">http://localhost:8080/api/auth/verify?token=xxx</span>
-            </div>
-        </div>
-        <div class="footer">
-            <p>© 2024 <span th:text="${appName}">Bus Booking</span></p>
-        </div>
-    </div>
+                    <tr>
+                        <td style="padding: 8px 40px 0;">
+                            <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #6b7280; text-align: center;">
+                                Nhấn nút bên dưới để kích hoạt tài khoản của bạn.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CTA Button -->
+                    <tr>
+                        <td style="padding: 32px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center">
+                                        <a th:href="${verificationUrl}" 
+                                           style="display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; letter-spacing: 0.3px;">
+                                            Xác thực ngay
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 40px;">
+                            <div style="height: 1px; background: #d1fae5;"></div>
+                        </td>
+                    </tr>
+
+                    <!-- Link fallback -->
+                    <tr>
+                        <td style="padding: 24px 40px;">
+                            <p style="margin: 0 0 12px; font-size: 12px; color: #9ca3af; text-align: center;">
+                                Hoặc sao chép liên kết này:
+                            </p>
+                            <p style="margin: 0; padding: 12px 16px; background: #f0fdf4; border-radius: 8px; font-size: 11px; color: #6b7280; word-break: break-all; font-family: 'SF Mono', Monaco, Consolas, monospace; text-align: center;">
+                                <span th:text="${verificationUrl}">http://localhost:8080/api/auth/verify?token=xxx</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 0 40px 32px;">
+                            <p style="margin: 0; font-size: 11px; color: #9ca3af; text-align: center; line-height: 1.5;">
+                                Liên kết hết hạn sau 24 giờ.<br>
+                                Nếu bạn không yêu cầu email này, vui lòng bỏ qua.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Copyright -->
+                    <tr>
+                        <td style="padding: 20px 40px; background: #f0fdf4; border-radius: 0 0 16px 16px;">
+                            <p style="margin: 0; font-size: 11px; color: #9ca3af; text-align: center;">
+                                © 2026 <span th:text="${appName}">Bus Booking</span>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

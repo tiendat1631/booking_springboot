@@ -15,7 +15,7 @@ export interface User {
 export interface AuthTokenData {
     accessToken: string;
     refreshToken: string;
-    expiresIn: number; // in milliseconds
+    expiresIn: number; 
 }
 
 // Decoded JWT payload

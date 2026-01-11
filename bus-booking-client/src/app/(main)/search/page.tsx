@@ -5,14 +5,13 @@ import { vi } from "date-fns/locale";
 import { ArrowRight, AlertCircle } from "lucide-react";
 
 import { searchTripsByProvince } from "@/queries";
-// import { SearchResultsClient } from "./_components/search-results-client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SearchResultsClient } from "./_components/search-results-client";
 
 export const metadata: Metadata = {
-    title: "Search Results - BusGo",
-    description: "Find and book bus tickets for your journey",
+    title: "Kết quả tìm kiếm - BusGo",
+    description: "Tìm và đặt vé xe khách cho chuyến đi của bạn",
 };
 
 interface SearchPageProps {
@@ -48,9 +47,9 @@ async function SearchResults({ searchParams }: SearchPageProps) {
         return (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Missing Search Parameters</AlertTitle>
+                <AlertTitle>Thiếu thông tin tìm kiếm</AlertTitle>
                 <AlertDescription>
-                    Please provide departure province, arrival province, and date to search for trips.
+                    Vui lòng cung cấp tỉnh đi, tỉnh đến và ngày để tìm chuyến xe.
                 </AlertDescription>
             </Alert>
         );
@@ -67,10 +66,10 @@ async function SearchResults({ searchParams }: SearchPageProps) {
         return (
             <Alert>
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>No Trips Found</AlertTitle>
+                <AlertTitle>Không tìm thấy chuyến xe</AlertTitle>
                 <AlertDescription>
-                    No trips available for this route on {format(new Date(date), "PPP", { locale: vi })}. 
-                    Please try a different date or route.
+                    Không có chuyến xe nào cho tuyến này vào ngày {format(new Date(date), "PPP", { locale: vi })}. 
+                    Vui lòng thử ngày khác hoặc tuyến đường khác.
                 </AlertDescription>
             </Alert>
         );
@@ -91,13 +90,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     const { from, to, date, passengers } = params;
 
     // Format date for display
-    const formattedDate = date ? format(new Date(date), "PPP", { locale: vi }) : "Not specified";
+    const formattedDate = date ? format(new Date(date), "PPP", { locale: vi }) : "Chưa chọn";
 
     return (
         <div className="container px-4 sm:px-6 lg:px-8 py-8">
             {/* Search Summary Header */}
             <div className="mb-8">
-                <h1 className="text-2xl font-bold mb-2">Search Results</h1>
+                <h1 className="text-2xl font-bold mb-2">Kết quả tìm kiếm</h1>
                 {from && to && (
                     <div className="flex flex-wrap items-center gap-2 text-lg text-muted-foreground">
                         <span className="font-medium text-foreground capitalize">{from.replace(/_/g, " ")}</span>
@@ -108,7 +107,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                         {passengers && (
                             <>
                                 <span className="mx-2">•</span>
-                                <span>{passengers} passenger(s)</span>
+                                <span>{passengers} hành khách</span>
                             </>
                         )}
                     </div>

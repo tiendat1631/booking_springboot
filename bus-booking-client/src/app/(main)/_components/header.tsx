@@ -1,19 +1,22 @@
 import Link from "next/link";
 import { Bus } from "lucide-react";
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/actions/auth.action";
 import { ROUTES } from "@/lib/constants";
 import { HeaderAuth } from "./header-auth";
 
-const NAV_LINKS = [
-    { label: "Search Trips", href: ROUTES.SEARCH },
-    { label: "My Bookings", href: ROUTES.MY_BOOKINGS },
-    { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
-] as const;
+const getNavLinks = (isAuthenticated: boolean) => [
+    { label: "Tìm chuyến", href: "/search?from=thanh_pho_ha_noi&to=thanh_pho_ho_chi_minh&date=2026-01-26&passengers=1" },
+    isAuthenticated
+        ? { label: "Vé của tôi", href: ROUTES.MY_BOOKINGS }
+        : { label: "Tra cứu vé", href: ROUTES.LOOKUP_BOOKING },
+    { label: "Giới thiệu", href: "#about" },
+    { label: "Liên hệ", href: "#contact" },
+];
 
 export async function Header() {
     const session = await getSession();
+    const navLinks = getNavLinks(!!session);
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
@@ -29,7 +32,7 @@ export async function Header() {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-1">
-                        {NAV_LINKS.map((link) => (
+                        {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}

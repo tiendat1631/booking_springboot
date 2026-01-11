@@ -49,12 +49,6 @@ public class BusController {
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<ApiResponse<List<BusSummaryResponse>>> getActiveBuses() {
-        List<BusSummaryResponse> result = busService.getActiveBuses();
-        return ResponseEntity.ok(ApiResponse.success(result));
-    }
-
     @GetMapping("/{busId}")
     public ResponseEntity<ApiResponse<BusDetailResponse>> getBusById(@PathVariable UUID busId) {
         BusDetailResponse busDetail = busService.getBusDetail(busId);

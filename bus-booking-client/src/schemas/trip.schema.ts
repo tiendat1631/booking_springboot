@@ -59,7 +59,7 @@ export const stationDetailSchema = z.object({
     provinceName: z.string().nullable(),
 });
 
-export const busDetailSchema = z.object({
+export const tripBusDetailSchema = z.object({
     id: z.uuid(),
     licensePlate: z.string(),
     type: z.string(),
@@ -82,7 +82,7 @@ export const seatInfoSchema = z.object({
 export const tripDetailSchema = z.object({
     tripId: z.uuid(),
     route: routeDetailSchema,
-    bus: busDetailSchema,
+    bus: tripBusDetailSchema,
     departureStation: stationDetailSchema,
     destinationStation: stationDetailSchema,
     departureTime: z.string(),
@@ -101,6 +101,6 @@ export type Trip = z.infer<typeof tripSchema>;
 export type TripDetail = z.infer<typeof tripDetailSchema>;
 export type RouteDetail = z.infer<typeof routeDetailSchema>;
 export type StationDetail = z.infer<typeof stationDetailSchema>;
-export type BusDetail = z.infer<typeof busDetailSchema>;
+export type TripBusDetail = z.infer<typeof tripBusDetailSchema>;
 export type SeatLayoutInfo = z.infer<typeof seatLayoutInfoSchema>;
 export type SeatInfo = z.infer<typeof seatInfoSchema>;

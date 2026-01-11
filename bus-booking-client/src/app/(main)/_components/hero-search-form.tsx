@@ -63,7 +63,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                     <div className="flex flex-col sm:flex-row items-end gap-3">
                         {/* From Province */}
                         <div className="flex-1 w-full space-y-2">
-                            <Label className="text-sm font-medium">From</Label>
+                            <Label className="text-sm font-medium">Điểm đi</Label>
                             <Popover open={fromOpen} onOpenChange={setFromOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -75,7 +75,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                                         <div className="flex items-center gap-2">
                                             <MapPin className="size-4 text-primary shrink-0" />
                                             <span className={cn(!fromProvince && "text-muted-foreground")}>
-                                                {fromProvince?.name ?? "Select departure province"}
+                                                {fromProvince?.name ?? "Chọn tỉnh/thành đi"}
                                             </span>
                                         </div>
                                         <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
@@ -83,9 +83,9 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[300px] p-0" align="start">
                                     <Command>
-                                        <CommandInput placeholder="Search province..." />
+                                        <CommandInput placeholder="Tìm tỉnh/thành..." />
                                         <CommandList>
-                                            <CommandEmpty>No province found.</CommandEmpty>
+                                            <CommandEmpty>Không tìm thấy.</CommandEmpty>
                                             <CommandGroup>
                                                 {provinces.map((province) => (
                                                     <CommandItem
@@ -127,7 +127,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
 
                         {/* To Province */}
                         <div className="flex-1 w-full space-y-2">
-                            <Label className="text-sm font-medium">To</Label>
+                            <Label className="text-sm font-medium">Điểm đến</Label>
                             <Popover open={toOpen} onOpenChange={setToOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -139,7 +139,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                                         <div className="flex items-center gap-2">
                                             <MapPin className="size-4 text-primary shrink-0" />
                                             <span className={cn(!toProvince && "text-muted-foreground")}>
-                                                {toProvince?.name ?? "Select arrival province"}
+                                                {toProvince?.name ?? "Chọn tỉnh/thành đến"}
                                             </span>
                                         </div>
                                         <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
@@ -147,9 +147,9 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[300px] p-0" align="start">
                                     <Command>
-                                        <CommandInput placeholder="Search province..." />
+                                        <CommandInput placeholder="Tìm tỉnh/thành..." />
                                         <CommandList>
-                                            <CommandEmpty>No province found.</CommandEmpty>
+                                            <CommandEmpty>Không tìm thấy.</CommandEmpty>
                                             <CommandGroup>
                                                 {provinces.map((province) => (
                                                     <CommandItem
@@ -183,7 +183,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                     <div className="flex flex-col sm:flex-row items-end gap-3">
                         {/* Date Picker */}
                         <div className="flex-1 w-full space-y-2">
-                            <Label className="text-sm font-medium">Date</Label>
+                            <Label className="text-sm font-medium">Ngày đi</Label>
                             <Popover open={dateOpen} onOpenChange={setDateOpen}>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -196,7 +196,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                                         )}
                                     >
                                         <CalendarIcon className="mr-2 size-4 text-primary" />
-                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                        {date ? format(date, "PPP") : <span>Chọn ngày</span>}
                                     </Button>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-auto p-0 overflow-hidden" align="start">
@@ -217,7 +217,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                         {/* Passengers */}
                         <div className="w-full sm:w-32 space-y-2">
                             <Label htmlFor="passengers" className="text-sm font-medium">
-                                Passengers
+                                Hành khách
                             </Label>
                             <div className="relative">
                                 <Users className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-primary" />
@@ -241,7 +241,7 @@ export function HeroSearchForm({ promises }: HeroSearchFormProps) {
                             disabled={!isValid}
                         >
                             <Search className="size-4 mr-2" />
-                            Search Trips
+                            Tìm chuyến
                         </Button>
                     </div>
                 </div>

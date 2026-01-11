@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.dkpm.bus_booking_api.config.AppProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.AppProperties;
 import com.dkpm.bus_booking_api.domain.booking.Booking;
-import com.dkpm.bus_booking_api.domain.security.Account;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -115,21 +114,21 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    @Async
-    public void sendVerificationEmail(Account account, String token) {
-        log.info("Sending verification email to {}", account.getEmail());
+    public void sendVerificationEmail(String email, String token) {
+        log.info("Sending verification email to {}", email);
         try {
             Context context = new Context();
-            context.setVariable("email", account.getEmail());
+            context.setVariable("email", email);
             context.setVariable("token", token);
             context.setVariable("appName", appProperties.name());
             // Use configured frontend URL for verification link
             context.setVariable("verificationUrl", appProperties.frontendUrl() + "/verify?token=" + token);
 
             String htmlContent = templateEngine.process("email/verification-email", context);
-            sendEmail(account.getEmail(), "Xác thực tài khoản - " + appProperties.name(), htmlContent);
+            sendEmail(email, "Xác thực tài khoản - " + appProperties.name(), htmlContent);
+            log.info("Sent verification email to {}", email);
         } catch (Exception e) {
-            log.error("Failed to send verification email to {}: {}", account.getEmail(), e.getMessage());
+            log.error("Failed to send verification email to {}: {}", email, e.getMessage());
         }
     }
 

@@ -10,7 +10,7 @@ import { CreateStationDialog } from "./_components/create-station-dialog";
 import { searchStationsParamsCache } from "@/lib/validations";
 
 export const metadata: Metadata = {
-    title: "Stations",
+    title: "Quản lý bến xe",
 };
 
 interface StationsPageProps {
@@ -42,14 +42,14 @@ export default async function StationsPage({ searchParams }: StationsPageProps) 
 
     return (
         <>
-            <AdminHeader title="Stations" />
+            <AdminHeader title="Bến xe" />
             <div className="flex flex-1 flex-col gap-4 p-6">
                 {/* Header with action */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Stations</h2>
+                        <h2 className="text-2xl font-bold tracking-tight">Bến xe</h2>
                         <p className="text-muted-foreground">
-                            Manage bus stations and terminals
+                            Quản lý bến xe và nhà ga
                         </p>
                     </div>
                     <CreateStationDialog promises={promises} />

@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
         ADMIN: "/bookings/admin",
         MY_BOOKINGS: "/bookings/my-bookings",
         BY_ID: (id: string) => `/bookings/${id}`,
+        BY_CODE: (code: string) => `/bookings/code/${code}`,
         REQUEST_CANCELLATION: (id: string) => `/bookings/${id}/request-cancellation`,
         CANCEL: (id: string) => `/bookings/${id}/cancel`,
         PAYMENT: (id: string) => `/bookings/${id}/payment`,
@@ -22,7 +23,6 @@ export const API_ENDPOINTS = {
     TRIPS: {
         BASE: "/trips",
         SEARCH: "/trips/search",
-        STATUSES: "/trips/statuses",
         BY_ID: (id: string) => `/trips/${id}`,
     },
     // Stations
@@ -60,6 +60,7 @@ export const ROUTES = {
     BOOKING: (tripId: string) => `/booking/${tripId}`,
     BOOKING_CONFIRMATION: (bookingId: string) => `/booking/confirmation/${bookingId}`,
     MY_BOOKINGS: "/my-bookings",
+    LOOKUP_BOOKING: "/lookup-booking",
     PROFILE: "/profile",
     // Admin routes
     ADMIN: {

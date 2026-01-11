@@ -13,7 +13,7 @@ import { searchTripsParamsCache } from "@/lib/validations";
 
 
 export const metadata: Metadata = {
-    title: "Trips",
+    title: "Quản lý chuyến đi",
 };
 
 interface TripsPageProps {
@@ -40,14 +40,14 @@ export default async function TripsPage({ searchParams }: TripsPageProps) {
 
     return (
         <>
-            <AdminHeader title="Trips" />
+            <AdminHeader title="Chuyến đi" />
             <div className="flex flex-1 flex-col gap-4 p-6">
                 {/* Header with action */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Trips</h2>
+                        <h2 className="text-2xl font-bold tracking-tight">Chuyến đi</h2>
                         <p className="text-muted-foreground">
-                            Manage scheduled trips and availability
+                            Quản lý lịch trình và chỗ trống
                         </p>
                     </div>
                     <CreateTripDialog buses={buses} stations={stations} />

@@ -7,28 +7,34 @@ const protectedRoutes = ["/my-bookings", "/profile"];
 // Routes only for unauthenticated users
 const authRoutes = ["/login", "/register", "/forgot-password"];
 
-// Routes only for admin users
-const adminRoutes = ["/admin"];
+// Routes only for admin users (admin panel)
+const adminRoutes = [
+    "/dashboard",
+    "/stations",
+    "/routes",
+    "/buses",
+    "/trips",
+    "/bookings",
+    "/payments",
+];
 
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Get auth token from cookies
-    const accessToken = request.cookies.get("accessToken")?.value;
-    const userCookie = request.cookies.get("user")?.value;
+    // Get session from cookies (contains user info including roles)
+    const sessionCookie = request.cookies.get("session")?.value;
 
-    const isAuthenticated = !!accessToken;
-
-    // Parse user for role check
-    let userRole: string | null = null;
-    if (userCookie) {
+    let session: { roles?: string } | null = null;
+    if (sessionCookie) {
         try {
-            const user = JSON.parse(userCookie);
-            userRole = user.role;
+            session = JSON.parse(sessionCookie);
         } catch {
-            // Invalid user cookie
+            session = null;
         }
     }
+
+    const isAuthenticated = !!session;
+    const isAdmin = session?.roles?.includes("ADMIN") ?? false;
 
     // Redirect authenticated users away from auth pages
     if (authRoutes.some((route) => pathname.startsWith(route))) {
@@ -55,7 +61,7 @@ export function proxy(request: NextRequest) {
             return NextResponse.redirect(loginUrl);
         }
 
-        if (userRole !== "ADMIN") {
+        if (!isAdmin) {
             // Redirect non-admin users to home
             return NextResponse.redirect(new URL("/", request.url));
         }

@@ -70,16 +70,24 @@ export function HeaderAuth({ session }: HeaderAuthProps) {
                     </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
+                {session.roles?.includes("ADMIN") && (
+                    <DropdownMenuItem asChild>
+                        <Link href={ROUTES.ADMIN.DASHBOARD} className="cursor-pointer">
+                            <Settings className="mr-2 size-4" />
+                            Admin Dashboard
+                        </Link>
+                    </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                     <Link href={ROUTES.MY_BOOKINGS} className="cursor-pointer">
                         <Ticket className="mr-2 size-4" />
-                        My Bookings
+                        Vé của tôi
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                     <Link href={ROUTES.PROFILE} className="cursor-pointer">
-                        <Settings className="mr-2 size-4" />
-                        Settings
+                        <User className="mr-2 size-4" />
+                        Tài khoản
                     </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

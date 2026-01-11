@@ -6,10 +6,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dkpm.bus_booking_api.config.JwtProperties;
-import com.dkpm.bus_booking_api.domain.security.Account;
-import com.dkpm.bus_booking_api.domain.security.RefreshToken;
-import com.dkpm.bus_booking_api.domain.security.RefreshTokenRepository;
+import com.dkpm.bus_booking_api.infrastructure.config.JwtProperties;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
+import com.dkpm.bus_booking_api.domain.security.models.RefreshToken;
+import com.dkpm.bus_booking_api.domain.security.repositories.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

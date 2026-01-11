@@ -2,7 +2,7 @@ package com.dkpm.bus_booking_api.domain.user;
 
 import java.util.UUID;
 
-import com.dkpm.bus_booking_api.domain.security.Account;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.dkpm.bus_booking_api.domain.security.Account;
-import com.dkpm.bus_booking_api.domain.security.AccountRepository;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
+import com.dkpm.bus_booking_api.domain.security.repositories.AccountRepository;
 
 import lombok.RequiredArgsConstructor;
 

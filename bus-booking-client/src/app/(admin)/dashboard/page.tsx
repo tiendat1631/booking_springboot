@@ -12,54 +12,54 @@ import { AdminHeader } from "../_components/admin-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-    title: "Dashboard",
+    title: "Tổng quan",
 };
 
 // Placeholder stats data - will be replaced with real API data
 const STATS = [
     {
-        title: "Total Bookings",
+        title: "Tổng đặt vé",
         value: "1,234",
         change: "+12%",
         changeType: "positive" as const,
         icon: Ticket,
-        description: "from last month",
+        description: "so với tháng trước",
     },
     {
-        title: "Revenue",
+        title: "Doanh thu",
         value: "₫45.5M",
         change: "+8%",
         changeType: "positive" as const,
         icon: DollarSign,
-        description: "from last month",
+        description: "so với tháng trước",
     },
     {
-        title: "Active Trips",
+        title: "Chuyến đang hoạt động",
         value: "89",
         change: "+5",
         changeType: "positive" as const,
         icon: Calendar,
-        description: "scheduled today",
+        description: "đã lên lịch hôm nay",
     },
     {
-        title: "Pending Payments",
+        title: "Chờ thanh toán",
         value: "23",
         change: "-3",
         changeType: "negative" as const,
         icon: CreditCard,
-        description: "awaiting confirmation",
+        description: "chờ xác nhận",
     },
 ];
 
 const QUICK_STATS = [
-    { label: "New Customers", value: "156", icon: Users },
-    { label: "Completion Rate", value: "94%", icon: TrendingUp },
+    { label: "Khách hàng mới", value: "156", icon: Users },
+    { label: "Tỷ lệ hoàn thành", value: "94%", icon: TrendingUp },
 ];
 
 export default function AdminDashboardPage() {
     return (
         <>
-            <AdminHeader title="Dashboard" />
+            <AdminHeader title="Tổng quan" />
             <div className="flex flex-1 flex-col gap-6 p-6">
                 {/* Stats Grid */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -111,21 +111,21 @@ export default function AdminDashboardPage() {
                 <div className="grid gap-4 lg:grid-cols-7">
                     <Card className="lg:col-span-4">
                         <CardHeader>
-                            <CardTitle>Recent Bookings</CardTitle>
+                            <CardTitle>Đặt vé gần đây</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-muted-foreground text-sm">
-                                Recent booking data will be displayed here.
+                                Dữ liệu đặt vé gần đây sẽ được hiển thị tại đây.
                             </p>
                         </CardContent>
                     </Card>
                     <Card className="lg:col-span-3">
                         <CardHeader>
-                            <CardTitle>Popular Routes</CardTitle>
+                            <CardTitle>Tuyến đường phổ biến</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="text-muted-foreground text-sm">
-                                Popular route analytics will be displayed here.
+                                Phân tích tuyến đường phổ biến sẽ được hiển thị tại đây.
                             </p>
                         </CardContent>
                     </Card>

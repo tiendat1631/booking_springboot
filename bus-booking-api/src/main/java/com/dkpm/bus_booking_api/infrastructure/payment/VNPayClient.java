@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.stereotype.Component;
 
-import com.dkpm.bus_booking_api.config.VnpayProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.VnpayProperties;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

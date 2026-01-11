@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dkpm.bus_booking_api.domain.security.Account;
-import com.dkpm.bus_booking_api.domain.security.AccountRepository;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
+import com.dkpm.bus_booking_api.domain.security.repositories.AccountRepository;
 import com.dkpm.bus_booking_api.features.profile.dto.ProfileResponse;
 
 import lombok.RequiredArgsConstructor;

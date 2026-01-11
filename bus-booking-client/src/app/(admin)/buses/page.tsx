@@ -11,7 +11,7 @@ import { searchBusesParamsCache } from "@/lib/validations";
 
 
 export const metadata: Metadata = {
-    title: "Buses",
+    title: "Quản lý xe khách",
 };
 
 interface BusesPageProps {
@@ -35,14 +35,14 @@ export default async function BusesPage({ searchParams }: BusesPageProps) {
 
     return (
         <>
-            <AdminHeader title="Buses" />
+            <AdminHeader title="Xe khách" />
             <div className="flex flex-1 flex-col gap-4 p-6">
                 {/* Header with action */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Buses</h2>
+                        <h2 className="text-2xl font-bold tracking-tight">Xe khách</h2>
                         <p className="text-muted-foreground">
-                            Manage bus fleet and vehicles
+                            Quản lý đội xe và phương tiện
                         </p>
                     </div>
                     <CreateBusDialog />

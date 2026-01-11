@@ -41,37 +41,37 @@ import type { Session } from "@/type";
 
 const NAV_ITEMS = [
     {
-        title: "Dashboard",
+        title: "Tổng quan",
         icon: LayoutDashboard,
         href: ROUTES.ADMIN.DASHBOARD,
     },
     {
-        title: "Stations",
+        title: "Bến xe",
         icon: MapPin,
         href: ROUTES.ADMIN.STATIONS,
     },
     {
-        title: "Routes",
+        title: "Tuyến đường",
         icon: Route,
         href: ROUTES.ADMIN.ROUTES,
     },
     {
-        title: "Buses",
+        title: "Xe khách",
         icon: Bus,
         href: ROUTES.ADMIN.BUSES,
     },
     {
-        title: "Trips",
+        title: "Chuyến đi",
         icon: Calendar,
         href: ROUTES.ADMIN.TRIPS,
     },
     {
-        title: "Bookings",
+        title: "Đặt vé",
         icon: Ticket,
         href: ROUTES.ADMIN.BOOKINGS,
     },
     {
-        title: "Payments",
+        title: "Thanh toán",
         icon: CreditCard,
         href: ROUTES.ADMIN.PAYMENTS,
     },
@@ -102,7 +102,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold">BusGo</span>
                                     <span className="text-xs text-muted-foreground">
-                                        Admin Panel
+                                        Quản trị
                                     </span>
                                 </div>
                             </Link>
@@ -114,7 +114,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
             {/* Navigation */}
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Management</SidebarGroupLabel>
+                    <SidebarGroupLabel>Quản lý</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {NAV_ITEMS.map((item) => {
@@ -157,7 +157,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
                                             {session?.email || "Admin"}
                                         </span>
                                         <span className="text-xs text-muted-foreground">
-                                            {session?.roles || "Administrator"}
+                                            {session?.roles || "Quản trị viên"}
                                         </span>
                                     </div>
                                     <ChevronUp className="ml-auto" />
@@ -170,7 +170,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
                                 <DropdownMenuItem asChild>
                                     <Link href={ROUTES.HOME}>
                                         <Bus className="mr-2 size-4" />
-                                        Back to Site
+                                        Về trang chủ
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
@@ -179,7 +179,7 @@ export function AdminSidebar({ session }: AdminSidebarProps) {
                                     className="text-destructive focus:text-destructive"
                                 >
                                     <LogOut className="mr-2 size-4" />
-                                    Sign out
+                                    Đăng xuất
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

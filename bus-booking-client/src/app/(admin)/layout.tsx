@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/actions/auth.action";
 import { ROUTES } from "@/lib/constants";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./_components/admin-sidebar";

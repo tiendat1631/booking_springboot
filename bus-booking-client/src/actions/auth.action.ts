@@ -238,8 +238,18 @@ export async function verifyEmail(token: string): Promise<ActionResult<void>> {
 }
 
 /**
+ * Clear session cookies (utility for logout)
+ */
+export async function clearSession(): Promise<void> {
+    const cookieStore = await cookies();
+    cookieStore.delete("accessToken");
+    cookieStore.delete("refreshToken");
+    cookieStore.delete("session");
+}
+
+/**
  * Get current session from cookies (server-side)
- * Automatically refreshes expired tokens
+ * For use in Server Components and Server Actions
  */
 export async function getSession(): Promise<Session | null> {
     const cookieStore = await cookies();
@@ -248,29 +258,8 @@ export async function getSession(): Promise<Session | null> {
     if (!sessionCookie) return null;
 
     try {
-        const session = JSON.parse(sessionCookie) as Session;
-
-        // Check if session is expired (with 1 minute buffer)
-        const bufferMs = 60 * 1000; // 1 minute
-        if (session.expiresAt < Date.now() + bufferMs) {
-            // Try to refresh token
-            const refreshResult = await refreshToken();
-            if (refreshResult.success) {
-                return refreshResult.data;
-            }
-            return null;
-        }
-
-        return session;
+        return JSON.parse(sessionCookie) as Session;
     } catch {
         return null;
     }
-}
-
-/**
- * Check if user is authenticated (server-side)
- */
-export async function isAuthenticated(): Promise<boolean> {
-    const session = await getSession();
-    return session !== null;
 }

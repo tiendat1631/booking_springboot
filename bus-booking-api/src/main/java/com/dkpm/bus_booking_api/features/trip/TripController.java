@@ -41,11 +41,6 @@ public class TripController {
 
     private final ITripService tripService;
 
-    @GetMapping("/statuses")
-    public ResponseEntity<ApiResponse<TripStatus[]>> getTripStatuses() {
-        return ResponseEntity.ok(ApiResponse.success(TripStatus.values()));
-    }
-
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<TripResponse>>> getTrips(
@@ -81,13 +76,6 @@ public class TripController {
                 passengers,
                 pageable);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
-    }
-
-    @GetMapping("/upcoming")
-    public ResponseEntity<ApiResponse<Page<TripResponse>>> getUpcomingTrips(
-            @PageableDefault(size = 10, sort = "departureTime", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<TripResponse> result = tripService.getUpcomingTrips(pageable);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 

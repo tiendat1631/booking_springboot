@@ -25,7 +25,7 @@ public interface IEmailService {
     /**
      * Send email verification token
      */
-    void sendVerificationEmail(com.dkpm.bus_booking_api.domain.security.Account account, String token);
+    void sendVerificationEmail(String email, String token);
 
     /**
      * Send cancellation OTP email

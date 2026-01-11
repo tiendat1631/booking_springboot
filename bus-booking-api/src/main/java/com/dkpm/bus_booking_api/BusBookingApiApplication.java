@@ -8,10 +8,10 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.dkpm.bus_booking_api.config.AppProperties;
-import com.dkpm.bus_booking_api.config.RsaKeyProperties;
-import com.dkpm.bus_booking_api.config.JwtProperties;
-import com.dkpm.bus_booking_api.config.VnpayProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.AppProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.RsaKeyProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.JwtProperties;
+import com.dkpm.bus_booking_api.infrastructure.config.VnpayProperties;
 
 @SpringBootApplication
 @EnableJpaAuditing

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2,XCircle, RefreshCw } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -62,23 +62,13 @@ export function PaymentStatusBadge({
                 throw new Error(result.error);
             }
 
-            toast.success(`✅ Đã xác nhận thanh toán cho booking ${bookingCode}`);
+            toast.success(`Đã xác nhận thanh toán cho booking ${bookingCode}`);
             router.refresh();
         } catch (error) {
             console.error("Error confirming payment:", error);
-            toast.error(`❌ Lỗi: ${error instanceof Error ? error.message : "Không thể xác nhận thanh toán"}`);
+            toast.error(`Lỗi: ${error instanceof Error ? error.message : "Không thể xác nhận thanh toán"}`);
         } finally {
             setIsUpdating(false);
-        }
-    };
-
-    const handleStatusAction = (action: string) => {
-        if (action === "CONFIRM") {
-            setShowConfirmDialog(true);
-        } else if (action === "REFUND") {
-            toast.warning("Chức năng hoàn tiền đang được phát triển");
-        } else if (action === "FAIL") {
-            toast.warning("Chức năng đánh dấu thất bại đang được phát triển");
         }
     };
 
@@ -87,16 +77,25 @@ export function PaymentStatusBadge({
         variant: "outline" as const
     };
 
-    // Only show actions for PENDING status
-    const showActions = currentStatus === "PENDING";
+    // Only show confirm action for CASH + PENDING payments
+    const canConfirmPayment = currentStatus === "PENDING" && paymentMethod === "CASH";
+
+    // If no actions available, just show badge
+    if (!canConfirmPayment) {
+        return (
+            <Badge variant={config.variant}>
+                {config.label}
+            </Badge>
+        );
+    }
 
     return (
         <>
             <DropdownMenu>
-                <DropdownMenuTrigger asChild disabled={isUpdating || !showActions}>
+                <DropdownMenuTrigger asChild disabled={isUpdating}>
                     <Badge
                         variant={config.variant}
-                        className={showActions ? "cursor-pointer hover:opacity-80 transition-opacity" : ""}
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
                     >
                         {isUpdating ? (
                             <>
@@ -108,46 +107,36 @@ export function PaymentStatusBadge({
                         )}
                     </Badge>
                 </DropdownMenuTrigger>
-                {showActions && (
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleStatusAction("CONFIRM")}>
-                            <Check className="mr-2 h-4 w-4 text-green-600" />
-                            Xác nhận thanh toán
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusAction("REFUND")}>
-                            <RefreshCw className="mr-2 h-4 w-4 text-blue-600" />
-                            Hoàn tiền
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleStatusAction("FAIL")}>
-                            <XCircle className="mr-2 h-4 w-4 text-red-600" />
-                            Đánh dấu thất bại
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                )}
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setShowConfirmDialog(true)}>
+                        <Check className="mr-2 h-4 w-4 text-green-600" />
+                        Xác nhận đã nhận tiền mặt
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Confirm Payment Dialog */}
             <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Xác nhận thanh toán?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Bạn có chắc chắn đã nhận thanh toán cho booking{" "}
-                            <span className="font-mono font-semibold">{bookingCode}</span>?
-                            <br />
-                            <br />
-                            Hành động này sẽ:
-                            <ul className="list-disc list-inside mt-2 space-y-1">
-                                <li>Xác nhận thanh toán</li>
-                                <li>Cập nhật trạng thái booking thành "Đã xác nhận"</li>
-                                <li>Gửi email xác nhận cho khách hàng</li>
-                            </ul>
+                        <AlertDialogTitle>Xác nhận thanh toán tiền mặt?</AlertDialogTitle>
+                        <AlertDialogDescription asChild>
+                            <div className="text-sm text-muted-foreground">
+                                Xác nhận đã nhận thanh toán tiền mặt cho booking{" "}
+                                <span className="font-mono font-semibold">{bookingCode}</span>?
+                                <br /><br />
+                                Hành động này sẽ:
+                                <ul className="list-disc list-inside mt-2 space-y-1">
+                                    <li>Cập nhật trạng thái thanh toán thành "Đã thanh toán"</li>
+                                    <li>Xác nhận booking</li>
+                                    <li>Gửi email xác nhận cho khách hàng</li>
+                                </ul>
+                            </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Hủy</AlertDialogCancel>
                         <AlertDialogAction onClick={handleConfirmPayment}>
-                            Xác nhận
+                            Xác nhận đã nhận tiền
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

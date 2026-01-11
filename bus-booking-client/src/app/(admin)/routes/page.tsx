@@ -10,7 +10,7 @@ import { CreateRouteDialog } from "./_components/create-route-dialog";
 import { searchRoutesParamsCache } from "@/lib/validations";
 
 export const metadata: Metadata = {
-    title: "Routes",
+    title: "Quản lý tuyến đường",
 };
 
 interface RoutesPageProps {
@@ -41,14 +41,14 @@ export default async function RoutesPage({ searchParams }: RoutesPageProps) {
 
     return (
         <>
-            <AdminHeader title="Routes" />
+            <AdminHeader title="Tuyến đường" />
             <div className="flex flex-1 flex-col gap-4 p-6">
                 {/* Header with action */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Routes</h2>
+                        <h2 className="text-2xl font-bold tracking-tight">Tuyến đường</h2>
                         <p className="text-muted-foreground">
-                            Manage bus routes and pricing
+                            Quản lý tuyến xe và giá vé
                         </p>
                     </div>
                     <CreateRouteDialog promises={promises} />

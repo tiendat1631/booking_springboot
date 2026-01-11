@@ -13,6 +13,7 @@ import com.dkpm.bus_booking_api.features.auth.dto.LoginRequest;
 import com.dkpm.bus_booking_api.features.auth.dto.RefreshTokenRequest;
 import com.dkpm.bus_booking_api.features.auth.dto.RegisterRequest;
 import com.dkpm.bus_booking_api.features.auth.dto.TokenResponse;
+import com.dkpm.bus_booking_api.features.auth.service.IAuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

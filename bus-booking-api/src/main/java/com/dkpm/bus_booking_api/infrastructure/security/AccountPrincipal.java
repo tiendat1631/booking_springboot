@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.dkpm.bus_booking_api.domain.security.Account;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
 
 public class AccountPrincipal implements UserDetails {
 

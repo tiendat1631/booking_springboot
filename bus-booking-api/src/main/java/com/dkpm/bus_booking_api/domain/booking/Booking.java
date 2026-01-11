@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.dkpm.bus_booking_api.domain.common.BaseEntity;
 import com.dkpm.bus_booking_api.domain.payment.Payment;
-import com.dkpm.bus_booking_api.domain.security.Account;
+import com.dkpm.bus_booking_api.domain.security.models.Account;
 import com.dkpm.bus_booking_api.domain.trip.Trip;
 
 import jakarta.persistence.CascadeType;

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
-
-@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
 
     private final IBookingService bookingService;
@@ -117,30 +114,6 @@ public class BookingController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<BookingResponse>> adminCancelBooking(@PathVariable UUID bookingId) {
         BookingResponse booking = bookingService.cancelBooking(bookingId, null);
-        return ResponseEntity.ok(ApiResponse.success(booking, "Booking cancelled successfully"));
-    }
-
-    /**
-     * Request booking cancellation (sends OTP to email)
-     */
-    @PostMapping("/request-cancel")
-    public ResponseEntity<ApiResponse<Void>> requestCancelBooking(
-            @RequestParam String bookingCode,
-            @RequestParam String passengerPhone) {
-
-        bookingService.requestCancelBooking(bookingCode, passengerPhone);
-        return ResponseEntity.ok(ApiResponse.success("OTP sent to your email. Please check your inbox."));
-    }
-
-    /**
-     * Confirm booking cancellation with OTP
-     */
-    @PostMapping("/confirm-cancel")
-    public ResponseEntity<ApiResponse<BookingResponse>> confirmCancelBooking(
-            @RequestParam String bookingCode,
-            @RequestParam String otpCode) {
-
-        BookingResponse booking = bookingService.confirmCancelBooking(bookingCode, otpCode);
         return ResponseEntity.ok(ApiResponse.success(booking, "Booking cancelled successfully"));
     }
 }
