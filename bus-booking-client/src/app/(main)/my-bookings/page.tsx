@@ -7,6 +7,9 @@ import { apiGet } from "@/lib/api";
 import { API_ENDPOINTS } from "@/lib/constants";
 import { cookies } from "next/headers";
 
+// Force dynamic rendering because we use cookies
+export const dynamic = 'force-dynamic';
+
 // Hàm gọi API từ Server với authentication
 async function getBookings(): Promise<Booking[]> {
     "use server";
