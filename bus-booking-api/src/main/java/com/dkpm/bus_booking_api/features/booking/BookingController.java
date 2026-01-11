@@ -1,0 +1,119 @@
+package com.dkpm.bus_booking_api.features.booking;
+
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dkpm.bus_booking_api.application.response.ApiResponse;
+import com.dkpm.bus_booking_api.domain.booking.BookingStatus;
+import com.dkpm.bus_booking_api.features.booking.dto.BookingResponse;
+import com.dkpm.bus_booking_api.features.booking.dto.CreateBookingRequest;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/bookings")
+@RequiredArgsConstructor
+public class BookingController {
+
+    private final IBookingService bookingService;
+
+    /**
+     * Create a new booking
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<BookingResponse>> createBooking(
+            @Valid @RequestBody CreateBookingRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        UUID customerId = jwt != null ? UUID.fromString(jwt.getClaimAsString("userId")) : null;
+        BookingResponse booking = bookingService.createBooking(request, customerId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(booking, "Booking created successfully"));
+    }
+
+    /**
+     * Get my bookings (authenticated)
+     */
+    @GetMapping("/my-bookings")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Page<BookingResponse>>> getMyBookings(
+            @AuthenticationPrincipal Jwt jwt,
+            @PageableDefault(size = 10, sort = "bookingTime", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        UUID customerId = UUID.fromString(jwt.getClaimAsString("userId"));
+        Page<BookingResponse> bookings = bookingService.getCustomerBookings(customerId, pageable);
+        return ResponseEntity.ok(ApiResponse.success(bookings));
+    }
+
+    /**
+     * Get booking by ID
+     */
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<ApiResponse<BookingResponse>> getBookingById(@PathVariable UUID bookingId) {
+        BookingResponse booking = bookingService.getBookingById(bookingId);
+        return ResponseEntity.ok(ApiResponse.success(booking));
+    }
+
+    /**
+     * Get booking by code (public lookup)
+     */
+    @GetMapping("/code/{bookingCode}")
+    public ResponseEntity<ApiResponse<BookingResponse>> getBookingByCode(@PathVariable String bookingCode) {
+        BookingResponse booking = bookingService.getBookingByCode(bookingCode);
+        return ResponseEntity.ok(ApiResponse.success(booking));
+    }
+
+    /**
+     * Cancel a booking
+     */
+    @PostMapping("/{bookingId}/cancel")
+    public ResponseEntity<ApiResponse<BookingResponse>> cancelBooking(
+            @PathVariable UUID bookingId,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        UUID customerId = jwt != null ? UUID.fromString(jwt.getClaimAsString("userId")) : null;
+        BookingResponse booking = bookingService.cancelBooking(bookingId, customerId);
+        return ResponseEntity.ok(ApiResponse.success(booking, "Booking cancelled successfully"));
+    }
+
+    /**
+     * Search bookings (Admin)
+     */
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<Page<BookingResponse>>> searchBookings(
+            @RequestParam(required = false) BookingStatus status,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "bookingTime", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<BookingResponse> bookings = bookingService.searchBookings(status, keyword, pageable);
+        return ResponseEntity.ok(ApiResponse.success(bookings));
+    }
+
+    /**
+     * Admin cancel booking
+     */
+    @PostMapping("/admin/{bookingId}/cancel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<BookingResponse>> adminCancelBooking(@PathVariable UUID bookingId) {
+        BookingResponse booking = bookingService.cancelBooking(bookingId, null);
+        return ResponseEntity.ok(ApiResponse.success(booking, "Booking cancelled successfully"));
+    }
+}

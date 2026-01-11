@@ -1,0 +1,1382 @@
+﻿{
+    "info":  {
+                 "_postman_id":  "47ec911a-8029-4fc3-a75a-ae30af66fec8",
+                 "name":  "Bus Booking API",
+                 "description":  "Complete API collection for the Bus Booking System",
+                 "schema":  "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+                 "_exporter_id":  "42926723"
+             },
+    "item":  [
+                 {
+                     "name":  "Auth",
+                     "item":  [
+                                  {
+                                      "name":  "Login",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "if (pm.response.code === 200) {\r",
+                                                                                    "    const response = pm.response.json();\r",
+                                                                                    "    \r",
+                                                                                    "    if (response.success \u0026\u0026 response.data) {\r",
+                                                                                    "        const token = response.data.accessToken;\r",
+                                                                                    "        const refreshToken = response.data.refreshToken;\r",
+                                                                                    "        pm.collectionVariables.set(\"token\", token);\r",
+                                                                                    "        pm.collectionVariables.set(\"refreshToken\", refreshToken);\r",
+                                                                                    "        console.log(\"Tokens have been updated successfully!\");\r",
+                                                                                    "    } else {\r",
+                                                                                    "        console.log(\"Login failed: \" + response.message);\r",
+                                                                                    "    }\r",
+                                                                                    "}"
+                                                                                ],
+                                                                       "type":  "text/javascript",
+                                                                       "packages":  {
+
+                                                                                    },
+                                                                       "requests":  {
+
+                                                                                    }
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\r\n    \"username\": \"cancainick69@gmail.com\",\r\n    \"password\": \"Password123\"\r\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/auth/login"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Register",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n    \"email\": \"cancainick69@gmail.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"Anh Khoa\",\n    \"lastName\": \"Nguyen\",\n    \"phone\": \"0938355333\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/auth/register"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Verify",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/auth/verify?token=VERIFICATION_TOKEN_HERE",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "auth",
+                                                                               "verify"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "token",
+                                                                                    "value":  "VERIFICATION_TOKEN_HERE"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Refresh Token",
+                                      "event":  [
+                                                    {
+                                                        "listen":  "test",
+                                                        "script":  {
+                                                                       "exec":  [
+                                                                                    "if (pm.response.code === 200) {\r",
+                                                                                    "    const response = pm.response.json();\r",
+                                                                                    "    \r",
+                                                                                    "    if (response.success \u0026\u0026 response.data) {\r",
+                                                                                    "        const token = response.data.accessToken;\r",
+                                                                                    "        const refreshToken = response.data.refreshToken;\r",
+                                                                                    "        pm.collectionVariables.set(\"token\", token);\r",
+                                                                                    "        pm.collectionVariables.set(\"refreshToken\", refreshToken);\r",
+                                                                                    "        console.log(\"Tokens have been refreshed successfully!\");\r",
+                                                                                    "    }\r",
+                                                                                    "}"
+                                                                                ],
+                                                                       "type":  "text/javascript"
+                                                                   }
+                                                    }
+                                                ],
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/auth/refresh"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Logout",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}",
+                                                                   "options":  {
+                                                                                   "raw":  {
+                                                                                               "language":  "json"
+                                                                                           }
+                                                                               }
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/auth/logout"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Profile",
+                     "item":  [
+                                  {
+                                      "name":  "Get My Profile",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  "{{baseUrl}}/api/profile/me"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Stations",
+                     "item":  [
+                                  {
+                                      "name":  "Get Stations",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/stations?name=\u0026province=\u0026active=true\u0026page=0\u0026size=10\u0026sort=name,asc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "stations"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "name",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional search by name"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "province",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by province"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "active",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Optional filter by active status (true/false)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "name,asc"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Station By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/stations/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "stations",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{stationId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Create Station (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"My Dinh Bus Station\",\n  \"address\": \"20 Pham Hung, My Dinh\",\n  \"provinceCode\": \"thanh_pho_ha_noi\",\n  \"latitude\": 21.0285,\n  \"longitude\": 105.7823\n}"
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/stations"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Station (Admin)",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"My Dinh Bus Station - Updated\",\n  \"address\": \"20 Pham Hung, My Dinh, Cau Giay\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/stations/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "stations",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{stationId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Delete Station (Admin)",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/stations/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "stations",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{stationId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Routes",
+                     "item":  [
+                                  {
+                                      "name":  "Get Routes",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/routes?name=\u0026code=\u0026departureStationId=\u0026arrivalStationId=\u0026isActive=true\u0026page=0\u0026size=10\u0026sort=name,asc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "routes"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "name",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by name"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "code",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by code"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "departureStationId",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by departure station ID"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "arrivalStationId",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by arrival station ID"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "isActive",
+                                                                                    "value":  "true",
+                                                                                    "description":  "Optional filter by active status (true/false)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "name,asc"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Route By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/routes/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "routes",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{routeId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Create Route (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Hanoi - Ho Chi Minh City\",\n  \"code\": \"HN-SG-001\",\n  \"departureStationId\": \"{{departureStationId}}\",\n  \"arrivalStationId\": \"{{arrivalStationId}}\",\n  \"distanceKm\": 1700,\n  \"estimatedDurationMinutes\": 1800,\n  \"basePrice\": 500000,\n  \"description\": \"Express route from Hanoi to HCMC\"\n}"
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/routes"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Route (Admin)",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"name\": \"Hanoi - Ho Chi Minh City Express\",\n  \"basePrice\": 550000,\n  \"description\": \"Updated express route\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/routes/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "routes",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{routeId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Delete Route (Admin)",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/routes/:id",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "routes",
+                                                                               ":id"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "id",
+                                                                                       "value":  "{{routeId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Buses",
+                     "item":  [
+                                  {
+                                      "name":  "Get Buses",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/buses?licensePlate=\u0026type=\u0026status=\u0026minSeats=\u0026maxSeats=\u0026page=0\u0026size=10\u0026sort=createdAt,desc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buses"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "licensePlate",
+                                                                                    "value":  "",
+                                                                                    "description":  "Search by license plate"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "type",
+                                                                                    "value":  "",
+                                                                                    "description":  "STANDARD, VIP, SLEEPER"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "",
+                                                                                    "description":  "ACTIVE, MAINTENANCE, INACTIVE"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "minSeats",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "maxSeats",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "createdAt,desc"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Bus By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/buses/:busId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "buses",
+                                                                               ":busId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "busId",
+                                                                                       "value":  "{{busId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Create Bus (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"licensePlate\": \"29A-12345\",\n  \"type\": \"VIP\"\n}"
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/buses"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Trips",
+                     "item":  [
+                                  {
+                                      "name":  "Get Trips (Admin)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips?status=\u0026routeId=\u0026busId=\u0026fromDate=\u0026toDate=\u0026route=\u0026busLicensePlate=\u0026page=0\u0026size=10\u0026sort=departureTime,desc",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "",
+                                                                                    "description":  "SCHEDULED, ONGOING, COMPLETED, CANCELLED"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "routeId",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by route ID"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "busId",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter by bus ID"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "fromDate",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter from date (YYYY-MM-DD)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "toDate",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional filter to date (YYYY-MM-DD)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "route",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional search by route name"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "busLicensePlate",
+                                                                                    "value":  "",
+                                                                                    "description":  "Optional search by bus license plate"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "sort",
+                                                                                    "value":  "departureTime,desc"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Search Available Trips",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips/search?departureProvince=thanh_pho_ha_noi\u0026arrivalProvince=thanh_pho_ho_chi_minh\u0026departureDate=2025-12-30\u0026passengers=1\u0026page=0\u0026size=10",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips",
+                                                                               "search"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "departureProvince",
+                                                                                    "value":  "thanh_pho_ha_noi",
+                                                                                    "description":  "Province codename for departure"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "arrivalProvince",
+                                                                                    "value":  "thanh_pho_ho_chi_minh",
+                                                                                    "description":  "Province codename for arrival"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "departureDate",
+                                                                                    "value":  "2025-12-30",
+                                                                                    "description":  "ISO date format: YYYY-MM-DD"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "passengers",
+                                                                                    "value":  "1",
+                                                                                    "description":  "Number of passengers (default: 1)"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Trip Details",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips/:tripId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips",
+                                                                               ":tripId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "tripId",
+                                                                                       "value":  "{{tripId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Create Trip (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"routeId\": \"{{routeId}}\",\n  \"busId\": \"{{busId}}\",\n  \"departureTime\": \"2025-01-15T08:00:00\",\n  \"arrivalTime\": \"2025-01-16T14:00:00\",\n  \"price\": 550000\n}"
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/trips"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Update Trip (Admin)",
+                                      "request":  {
+                                                      "method":  "PUT",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"departureTime\": \"2025-01-15T09:00:00\",\n  \"arrivalTime\": \"2025-01-16T15:00:00\",\n  \"price\": 600000,\n  \"status\": \"SCHEDULED\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips/:tripId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips",
+                                                                               ":tripId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "tripId",
+                                                                                       "value":  "{{tripId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Cancel Trip (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips/:tripId/cancel",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips",
+                                                                               ":tripId",
+                                                                               "cancel"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "tripId",
+                                                                                       "value":  "{{tripId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Delete Trip (Admin)",
+                                      "request":  {
+                                                      "method":  "DELETE",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/trips/:tripId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "trips",
+                                                                               ":tripId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "tripId",
+                                                                                       "value":  "{{tripId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Bookings",
+                     "item":  [
+                                  {
+                                      "name":  "Create Booking",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"tripId\": \"{{tripId}}\",\n  \"seatIds\": [\"G05\", \"G06\"],\n  \"passengerName\": \"Nguyen Van A\",\n  \"passengerPhone\": \"0901234567\",\n  \"passengerEmail\": \"cancainick69@gmail.com\",\n  \"notes\": \"Window seat preferred\"\n}"
+                                                               },
+                                                      "url":  "{{baseUrl}}/api/bookings"
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get My Bookings",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/my?page=0\u0026size=10",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               "my"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Booking By ID",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/:bookingId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               ":bookingId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Booking By Code",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/code/:bookingCode",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               "code",
+                                                                               ":bookingCode"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingCode",
+                                                                                       "value":  "BK-ABC123"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Cancel Booking",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/:bookingId/cancel",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               ":bookingId",
+                                                                               "cancel"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Search Bookings (Admin)",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/admin?status=\u0026keyword=\u0026page=0\u0026size=10",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               "admin"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "status",
+                                                                                    "value":  "",
+                                                                                    "description":  "PENDING, CONFIRMED, CANCELLED, COMPLETED"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "keyword",
+                                                                                    "value":  "",
+                                                                                    "description":  "Search by code, name, phone"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "page",
+                                                                                    "value":  "0"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "size",
+                                                                                    "value":  "10"
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Admin Cancel Booking",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/bookings/admin/:bookingId/cancel",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "bookings",
+                                                                               "admin",
+                                                                               ":bookingId",
+                                                                               "cancel"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 },
+                 {
+                     "name":  "Payments",
+                     "item":  [
+                                  {
+                                      "name":  "Initiate Payment",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+                                                                     {
+                                                                         "key":  "Content-Type",
+                                                                         "value":  "application/json"
+                                                                     }
+                                                                 ],
+                                                      "body":  {
+                                                                   "mode":  "raw",
+                                                                   "raw":  "{\n  \"method\": \"VNPAY\",\n  \"returnUrl\": \"http://localhost:3000/payment/callback\"\n}"
+                                                               },
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/payments/booking/:bookingId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "booking",
+                                                                               ":bookingId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Get Payment Status",
+                                      "request":  {
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/payments/booking/:bookingId",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "booking",
+                                                                               ":bookingId"
+                                                                           ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "VNPay CallBack",
+                                      "request":  {
+                                                      "auth":  {
+                                                                   "type":  "noauth"
+                                                               },
+                                                      "method":  "GET",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/payments/vnpay/callback?vnp_Amount=\u0026vnp_BankCode=\u0026vnp_BankTranNo=\u0026vnp_CardType=\u0026vnp_OrderInfo=\u0026vnp_PayDate=\u0026vnp_ResponseCode=00\u0026vnp_TmnCode=\u0026vnp_TransactionNo=\u0026vnp_TransactionStatus=00\u0026vnp_TxnRef=\u0026vnp_SecureHash=",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "vnpay",
+                                                                               "callback"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "vnp_Amount",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_BankCode",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_BankTranNo",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_CardType",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_OrderInfo",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_PayDate",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_ResponseCode",
+                                                                                    "value":  "00"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_TmnCode",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_TransactionNo",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_TransactionStatus",
+                                                                                    "value":  "00"
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_TxnRef",
+                                                                                    "value":  ""
+                                                                                },
+                                                                                {
+                                                                                    "key":  "vnp_SecureHash",
+                                                                                    "value":  ""
+                                                                                }
+                                                                            ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  },
+                                  {
+                                      "name":  "Confirm Cash Payment (Admin)",
+                                      "request":  {
+                                                      "method":  "POST",
+                                                      "header":  [
+
+                                                                 ],
+                                                      "url":  {
+                                                                  "raw":  "{{baseUrl}}/api/payments/cash/confirm/:bookingId?note=Paid in cash at counter",
+                                                                  "host":  [
+                                                                               "{{baseUrl}}"
+                                                                           ],
+                                                                  "path":  [
+                                                                               "api",
+                                                                               "payments",
+                                                                               "cash",
+                                                                               "confirm",
+                                                                               ":bookingId"
+                                                                           ],
+                                                                  "query":  [
+                                                                                {
+                                                                                    "key":  "note",
+                                                                                    "value":  "Paid in cash at counter"
+                                                                                }
+                                                                            ],
+                                                                  "variable":  [
+                                                                                   {
+                                                                                       "key":  "bookingId",
+                                                                                       "value":  "{{bookingId}}"
+                                                                                   }
+                                                                               ]
+                                                              }
+                                                  },
+                                      "response":  [
+
+                                                   ]
+                                  }
+                              ]
+                 }
+             ],
+    "auth":  {
+                 "type":  "bearer",
+                 "bearer":  {
+                                "token":  "{{token}}"
+                            }
+             },
+    "variable":  [
+                     {
+                         "key":  "baseUrl",
+                         "value":  "http://localhost:8080",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "token",
+                         "value":  "",
+                         "type":  "string"
+                     },
+                     {
+                         "key":  "refreshToken",
+                         "value":  "",
+                         "type":  "string"
+                     }
+                 ]
+}
