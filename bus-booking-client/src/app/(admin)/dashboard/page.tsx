@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getDashboardStats } from "@/lib/dashboard";
 import {
     Ticket,
     DollarSign,
@@ -15,48 +16,60 @@ export const metadata: Metadata = {
     title: "Tổng quan",
 };
 
-// Placeholder stats data - will be replaced with real API data
-const STATS = [
-    {
+
+
+
+export default async function AdminDashboardPage() {
+    let stats;
+
+    try {
+    stats = await getDashboardStats();
+    } catch (error) {
+    console.error("Failed to load dashboard stats:", error);
+
+    stats = {
+        totalBookings: 0,
+        totalTrips: 0,
+        totalTicketsSold: 0,
+        revenueToday: 0,
+        revenueThisMonth: 0,
+        revenueThisYear: 0,
+    };
+    }
+    const STATS = [
+        {
         title: "Tổng đặt vé",
-        value: "1,234",
-        change: "+12%",
+        value: stats.totalBookings.toLocaleString(),
+        change: "",
         changeType: "positive" as const,
         icon: Ticket,
-        description: "so với tháng trước",
-    },
-    {
-        title: "Doanh thu",
-        value: "₫45.5M",
-        change: "+8%",
+        description: "tổng số booking",
+        },
+        {
+        title: "Doanh thu hôm nay",
+        value: `₫${stats.revenueToday.toLocaleString()}`,
+        change: "",
         changeType: "positive" as const,
         icon: DollarSign,
-        description: "so với tháng trước",
-    },
-    {
-        title: "Chuyến đang hoạt động",
-        value: "89",
-        change: "+5",
+        description: "doanh thu hôm nay",
+        },
+        {
+        title: "Tổng chuyến xe",
+        value: stats.totalTrips.toString(),
+        change: "",
         changeType: "positive" as const,
         icon: Calendar,
-        description: "đã lên lịch hôm nay",
-    },
-    {
-        title: "Chờ thanh toán",
-        value: "23",
-        change: "-3",
-        changeType: "negative" as const,
+        description: "tổng chuyến xe",
+        },
+        {
+        title: "Vé đã bán",
+        value: stats.totalTicketsSold.toString(),
+        change: "",
+        changeType: "positive" as const,
         icon: CreditCard,
-        description: "chờ xác nhận",
-    },
-];
-
-const QUICK_STATS = [
-    { label: "Khách hàng mới", value: "156", icon: Users },
-    { label: "Tỷ lệ hoàn thành", value: "94%", icon: TrendingUp },
-];
-
-export default function AdminDashboardPage() {
+        description: "tổng vé đã bán",
+        },
+    ];
     return (
         <>
             <AdminHeader title="Tổng quan" />
@@ -90,46 +103,7 @@ export default function AdminDashboardPage() {
                     ))}
                 </div>
 
-                {/* Quick Stats Row */}
-                <div className="grid gap-4 md:grid-cols-2">
-                    {QUICK_STATS.map((stat) => (
-                        <Card key={stat.label}>
-                            <CardContent className="flex items-center gap-4 pt-6">
-                                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-                                    <stat.icon className="size-6 text-primary" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                                    <p className="text-2xl font-bold">{stat.value}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                {/* Placeholder for charts/tables */}
-                <div className="grid gap-4 lg:grid-cols-7">
-                    <Card className="lg:col-span-4">
-                        <CardHeader>
-                            <CardTitle>Đặt vé gần đây</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground text-sm">
-                                Dữ liệu đặt vé gần đây sẽ được hiển thị tại đây.
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card className="lg:col-span-3">
-                        <CardHeader>
-                            <CardTitle>Tuyến đường phổ biến</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground text-sm">
-                                Phân tích tuyến đường phổ biến sẽ được hiển thị tại đây.
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
+                
             </div>
         </>
     );

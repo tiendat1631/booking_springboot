@@ -38,4 +38,11 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
         List<Ticket> findAndLockByTripIdAndSeatIds(
                         @Param("tripId") UUID tripId,
                         @Param("seatIds") List<String> seatIds);
+
+        @Query("""
+        SELECT COUNT(t)
+        FROM Ticket t
+        WHERE t.status = 'BOOKED'
+        """)
+        long countSoldTickets();
 }

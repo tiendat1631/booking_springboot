@@ -65,6 +65,7 @@ public class SecurityConfig {
                         // Guest payment endpoints
                         .requestMatchers("/api/payments/booking/{bookingId}").permitAll()
                         .requestMatchers("/api/payments/vnpay/callback").permitAll()
+                        .requestMatchers("/api/admin/statistic/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
