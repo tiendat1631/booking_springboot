@@ -1,6 +1,7 @@
 package com.dkpm.bus_booking_api.infrastructure.seeding;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,11 +192,13 @@ public class DataSeeder {
 
                 // Departure times: 6h, 8h, 10h, 13h, 15h, 18h, 21h
                 int[] departureTimes = { 6, 8, 10, 13, 15, 18, 21 };
-
+                LocalDate startDate = LocalDate.now();
                 // Seed trips for January 24-26, 2026
-                for (int day = 24; day <= 26; day++) {
+                for (int i = 0; i < 3; i++) {
                         for (int hour : departureTimes) {
-                                LocalDateTime departureTime = LocalDateTime.of(2026, 1, day, hour, 0);
+                            LocalDateTime departureTime = startDate
+                                    .plusDays(i)
+                                    .atTime(hour, 0);
                                 LocalDateTime arrivalTime = departureTime.plusMinutes(durationMinutes);
 
                                 // Check if trip already exists
@@ -241,12 +244,7 @@ public class DataSeeder {
                                 }
 
                                 tripRepository.save(trip);
-                                log.info("Created trip: {} -> {} on {} at {}:00 with {} seats",
-                                                departureStation.getName(),
-                                                arrivalStation.getName(),
-                                                String.format("2026-01-%02d", day),
-                                                hour,
-                                                trip.getTickets().size());
+
                         }
                 }
         }

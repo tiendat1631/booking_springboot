@@ -41,6 +41,10 @@ export const API_ENDPOINTS = {
         BASE: "/buses",
         BY_ID: (id: string) => `/buses/${id}`,
     },
+    // Statistics
+    STATISTICS: {
+        DASHBOARD: "/admin/statistic",
+    },
     // Payment
     PAYMENT: {
         INITIATE: (bookingId: string) => `/payments/booking/${bookingId}`,

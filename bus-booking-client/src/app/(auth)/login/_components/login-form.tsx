@@ -37,7 +37,16 @@ export function LoginForm() {
                 toast.success("Welcome back!", {
                     description: "You have successfully signed in.",
                 });
-                router.push(ROUTES.HOME);
+
+                // check role and route correctly page
+                const roles = result?.data?.roles || "";
+
+                if (roles.includes("ADMIN")) {
+                    router.push(ROUTES.ADMIN.DASHBOARD);
+                }
+                else {
+                    router.push(ROUTES.HOME);
+                }
                 router.refresh();
             } else if (result?.error) {
                 // Handle field-specific errors
@@ -146,7 +155,7 @@ export function LoginForm() {
                 >
                     {form.formState.isSubmitting ? (
                         <>
-                           <Spinner />
+                            <Spinner />
                             Signing in...
                         </>
                     ) : (

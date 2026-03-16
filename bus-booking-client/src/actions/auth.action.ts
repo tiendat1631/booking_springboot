@@ -92,7 +92,7 @@ async function saveSession(tokenData: AuthTokenData): Promise<Session | null> {
  */
 export async function login(
     data: LoginInput
-): Promise<ActionResult<void>> {
+): Promise<ActionResult<{roles: string}>> {
     try {
         // Call login API
         const response = await apiPost<ApiResponse<AuthTokenData>>(
@@ -117,7 +117,10 @@ export async function login(
             };
         }
 
-        return { success: true, data: undefined };
+        return { 
+            success: true, 
+            data: {roles: session.roles} 
+        };
     } catch (error) {
         return {
             success: false,
