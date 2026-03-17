@@ -36,15 +36,13 @@ public class VNPayClient {
     /**
      * Create VNPay payment URL
      *
-     * @param txnRef          Unique transaction reference
-     * @param amount          Amount in VND
-     * @param orderInfo       Order description
-     * @param ipAddress       Client IP address
-     * @param customReturnUrl Optional custom return URL
+     * @param txnRef    Unique transaction reference
+     * @param amount    Amount in VND
+     * @param orderInfo Order description
+     * @param ipAddress Client IP address
      * @return VNPay payment URL
      */
-    public String createPaymentUrl(String txnRef, BigDecimal amount, String orderInfo,
-            String ipAddress, String customReturnUrl) {
+    public String createPaymentUrl(String txnRef, BigDecimal amount, String orderInfo, String ipAddress) {
 
         Map<String, String> vnpParams = new HashMap<>();
 
@@ -57,7 +55,7 @@ public class VNPayClient {
         vnpParams.put("vnp_OrderInfo", orderInfo);
         vnpParams.put("vnp_OrderType", "billpayment");
         vnpParams.put("vnp_Locale", "vn");
-        vnpParams.put("vnp_ReturnUrl", customReturnUrl != null ? customReturnUrl : vnpayProperties.returnUrl());
+        vnpParams.put("vnp_ReturnUrl", vnpayProperties.returnUrl());
         vnpParams.put("vnp_IpAddr", ipAddress != null ? ipAddress : "127.0.0.1");
 
         // Create date

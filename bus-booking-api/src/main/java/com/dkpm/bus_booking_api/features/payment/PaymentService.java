@@ -88,8 +88,7 @@ public class PaymentService implements IPaymentService {
                     txnRef,
                     booking.getFinalAmount(),
                     orderInfo,
-                    ipAddress,
-                    request.returnUrl());
+                    ipAddress);
 
             log.info("Generated VNPay URL for booking {} with txnRef {}",
                     booking.getBookingCode(), txnRef);

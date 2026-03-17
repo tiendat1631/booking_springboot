@@ -85,6 +85,7 @@ public interface TripRepository extends JpaRepository<Trip, UUID> {
                         AND t.status = 'SCHEDULED'
                         AND ds.province.codename = :departureProvince
                         AND ars.province.codename = :destinationProvince
+                        AND t.departureTime > CURRENT_TIMESTAMP 
                         AND CAST(t.departureTime AS LocalDate) = :departureDate
                         AND t.availableSeats >= :requiredSeats
                         ORDER BY t.departureTime ASC

@@ -2,19 +2,18 @@ version: "3.8"
 
 services:
 
-  postgres:
-    image: postgres:18
-    container_name: booking_postgres
+  mysql:
+    image: mysql:8
+    container_name: booking_mysql
     environment:
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_USER: postgres
-      POSTGRES_DB: bus_booking
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: bus_booking
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - postgres18_data:/var/lib/postgresql
+      - mysql8_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d bus_booking"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,11 +24,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bus_booking
-      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bus_booking
+      SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
+      VNPAY_RETURN_URL: ${VNPAY_RETURN_URL:-http://localhost:8080/api/payments/vnpay/callback}
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
 
   frontend:
@@ -44,4 +44,4 @@ services:
       - backend
 
 volumes:
-  postgres18_data:
+  mysql8_data:

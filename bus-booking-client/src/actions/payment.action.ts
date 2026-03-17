@@ -5,7 +5,7 @@ import { API_ENDPOINTS } from "@/lib/constants";
 import { CreatePaymentInput, createPaymentSchema } from "@/lib/validations/payment.validation";
 import { Payment } from "@/schemas/payment.schema";
 import { ApiResponse } from "@/type";
-import { revalidateTag, updateTag } from "next/cache";
+
 
 export interface VNPayCallbackResult {
     success: boolean;
@@ -92,8 +92,6 @@ export async function processVNPayCallback(
             `${API_ENDPOINTS.PAYMENT.VNPAY_CALLBACK}?${queryParams.toString()}`,
             { revalidate: 0 }
         );
-
-        updateTag("trips")
 
         return {
             success: response.RspCode === "00",
