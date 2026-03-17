@@ -74,12 +74,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- MySQL Driver -->
-		 <dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+		<!-- PostgreSQL Driver -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-    	</dependency>
+		</dependency>
 		
 		<!-- Lombok -->
 		<dependency>
@@ -149,9 +149,7 @@
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-plugin</artifactId>
-			<configuration>
-				<argLine>-javaagent:${org.mockito:mockito-core:jar}</argLine>
-			</configuration>
+
 		</plugin>
 		</plugins>
   </build>

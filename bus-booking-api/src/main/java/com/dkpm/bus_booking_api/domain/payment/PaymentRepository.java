@@ -61,7 +61,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     SELECT COALESCE(SUM(p.amount), 0)
     FROM Payment p
     WHERE p.status = 'COMPLETED'
-    AND DATE(p.paidAt) = CURRENT_DATE
+    AND CAST(p.paidAt AS LocalDate) = CURRENT_DATE
 """)
     BigDecimal getRevenueToday();
 
@@ -69,8 +69,8 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     SELECT COALESCE(SUM(p.amount), 0)
     FROM Payment p
     WHERE p.status = 'COMPLETED'
-    AND YEAR(p.paidAt) = YEAR(CURRENT_DATE)
-    AND MONTH(p.paidAt) = MONTH(CURRENT_DATE)
+    AND EXTRACT(YEAR FROM p.paidAt) = EXTRACT(YEAR FROM CURRENT_DATE)
+    AND EXTRACT(MONTH FROM p.paidAt) = EXTRACT(MONTH FROM CURRENT_DATE)
 """)
     BigDecimal getRevenueThisMonth();
 
@@ -78,7 +78,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     SELECT COALESCE(SUM(p.amount), 0)
     FROM Payment p
     WHERE p.status = 'COMPLETED'
-    AND YEAR(p.paidAt) = YEAR(CURRENT_DATE)
+    AND EXTRACT(YEAR FROM p.paidAt) = EXTRACT(YEAR FROM CURRENT_DATE)
 """)
     BigDecimal getRevenueThisYear();
 

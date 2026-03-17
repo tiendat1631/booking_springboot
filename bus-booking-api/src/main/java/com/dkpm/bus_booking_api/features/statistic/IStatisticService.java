@@ -1,11 +1,7 @@
 package com.dkpm.bus_booking_api.features.statistic;
 
 import com.dkpm.bus_booking_api.features.statistic.dto.DashboardStatisticResponse;
-import com.dkpm.bus_booking_api.features.statistic.dto.RevenueChartResponse;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
 
 public interface IStatisticService {
     /**

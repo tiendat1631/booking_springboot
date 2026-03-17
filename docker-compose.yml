@@ -2,18 +2,19 @@ version: "3.8"
 
 services:
 
-  mysql:
-    image: mysql:8
-    container_name: booking_mysql
+  postgres:
+    image: postgres:18
+    container_name: booking_postgres
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: bus_booking
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DB: bus_booking
     ports:
-      - "3307:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres18_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bus_booking"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,11 +25,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bus_booking
-      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bus_booking
+      SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 1234
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
 
   frontend:
@@ -43,4 +44,4 @@ services:
       - backend
 
 volumes:
-  mysql_data:
+  postgres18_data:
