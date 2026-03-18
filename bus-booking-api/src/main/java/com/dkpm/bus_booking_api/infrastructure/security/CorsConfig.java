@@ -1,5 +1,6 @@
 package com.dkpm.bus_booking_api.infrastructure.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -12,41 +13,40 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
+    // Lấy link từ application.properties, nếu không có thì mặc định là localhost:3000
+    @Value("${app.frontend-url:http://localhost:3000}")
+    private String frontendUrl;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Allow both development and production origins
+
+        // Cấu hình danh sách các domain được phép truy cập
         configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",  // Next.js dev
-            "http://localhost:3001",  // Alternative dev port
-            "http://127.0.0.1:3000",
-            "http://127.0.0.1:3001"
+                "http://localhost:3000",
+                "http://localhost:3001",
+                "http://127.0.0.1:3000",
+                frontendUrl // Đây chính là link Vercel khi chạy trên Render
         ));
-        
-        // Allow all common HTTP methods
+
         configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
         ));
-        
-        // Allow all headers
+
         configuration.setAllowedHeaders(List.of("*"));
-        
-        // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
-        
-        // Expose headers that the client might need
+
         configuration.setExposedHeaders(Arrays.asList(
-            "Authorization", 
-            "Content-Type",
-            "X-Total-Count"
+                "Authorization",
+                "Content-Type",
+                "X-Total-Count"
         ));
-        
-        // Cache preflight response for 1 hour
+
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", configuration);
+        // Áp dụng cho toàn bộ các endpoint của API
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
