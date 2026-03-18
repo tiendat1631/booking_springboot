@@ -193,59 +193,55 @@ public class DataSeeder {
                 // Departure times: 6h, 8h, 10h, 13h, 15h, 18h, 21h
                 int[] departureTimes = { 6, 8, 10, 13, 15, 18, 21 };
                 LocalDate startDate = LocalDate.now();
-                // Seed trips for January 24-26, 2026
-                for (int i = 0; i < 3; i++) {
-                        for (int hour : departureTimes) {
-                            LocalDateTime departureTime = startDate
-                                    .plusDays(i)
-                                    .atTime(hour, 0);
-                                LocalDateTime arrivalTime = departureTime.plusMinutes(durationMinutes);
+                int daysToGenerate = 60;
 
-                                // Check if trip already exists
-                                var existingTrips = tripRepository.findByRouteAndDateRange(
-                                                route.getId(),
-                                                departureTime.minusMinutes(30),
-                                                departureTime.plusMinutes(30));
-                                if (!existingTrips.isEmpty()) {
-                                        log.info("Trip already exists for {} at {}", route.getCode(), departureTime);
-                                        continue;
-                                }
+                for (int i = 0; i < daysToGenerate; i++) {
+                    for (int hour : departureTimes) {
+                        LocalDateTime departureTime = startDate
+                                .plusDays(i)
+                                .atTime(hour, 0);
 
-                                // Create trip
-                                Trip trip = Trip.builder()
-                                                .route(route)
-                                                .bus(bus)
-                                                .departureStation(departureStation)
-                                                .destinationStation(arrivalStation)
-                                                .departureTime(departureTime)
-                                                .arrivalTime(arrivalTime)
-                                                .price(basePrice)
-                                                .status(TripStatus.SCHEDULED)
-                                                .totalSeats(bus.getTotalSeats())
-                                                .availableSeats(bus.getTotalSeats())
-                                                .tickets(new ArrayList<>())
-                                                .build();
+                        LocalDateTime arrivalTime = departureTime.plusMinutes(durationMinutes);
 
-                                // Create tickets based on bus seat layout
-                                if (bus.getSeatLayout() != null && bus.getSeatLayout().getSeats() != null) {
-                                        for (Seat seat : bus.getSeatLayout().getSeats()) {
-                                                if (seat.isActive()) {
-                                                        Ticket ticket = Ticket.builder()
-                                                                        .trip(trip)
-                                                                        .seatId(seat.getSeatId())
-                                                                        .row(seat.getRow())
-                                                                        .col(seat.getCol())
-                                                                        .status(SeatStatus.AVAILABLE)
-                                                                        .price(basePrice)
-                                                                        .build();
-                                                        trip.getTickets().add(ticket);
-                                                }
-                                        }
-                                }
+                        var existingTrips = tripRepository.findByRouteAndDateRange(
+                                route.getId(),
+                                departureTime.minusMinutes(30),
+                                departureTime.plusMinutes(30));
 
-                                tripRepository.save(trip);
-
+                        if (!existingTrips.isEmpty()) {
+                            continue;
                         }
+
+                        Trip trip = Trip.builder()
+                                .route(route)
+                                .bus(bus)
+                                .departureStation(departureStation)
+                                .destinationStation(arrivalStation)
+                                .departureTime(departureTime)
+                                .arrivalTime(arrivalTime)
+                                .price(basePrice)
+                                .status(TripStatus.SCHEDULED)
+                                .totalSeats(bus.getTotalSeats())
+                                .availableSeats(bus.getTotalSeats())
+                                .tickets(new ArrayList<>())
+                                .build();
+
+                        for (Seat seat : bus.getSeatLayout().getSeats()) {
+                            if (seat.isActive()) {
+                                Ticket ticket = Ticket.builder()
+                                        .trip(trip)
+                                        .seatId(seat.getSeatId())
+                                        .row(seat.getRow())
+                                        .col(seat.getCol())
+                                        .status(SeatStatus.AVAILABLE)
+                                        .price(basePrice)
+                                        .build();
+                                trip.getTickets().add(ticket);
+                            }
+                        }
+
+                        tripRepository.save(trip);
+                    }
                 }
         }
 }
