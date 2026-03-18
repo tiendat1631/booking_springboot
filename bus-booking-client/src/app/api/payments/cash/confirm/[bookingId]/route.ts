@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080/api";
+// Sử dụng đúng tên biến bạn đã đặt trên Vercel dashboard
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/api";
 
 export async function POST(
     request: NextRequest,
@@ -34,7 +35,9 @@ export async function POST(
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
+                    cache: 'no-store'
                 },
+                // Sử dụng đúng tên biến bạn đã đặt trên Vercel dashboard
             }
         );
 
