@@ -126,32 +126,15 @@ export function getRouteColumns(): ColumnDef<Route>[] {
         },
         {
             id: "actions",
+            header: ({ column }) => (
+                <DataTableColumnHeader column={column} label="Tracking" />
+            ),
             cell: ({ row }) => {
                 const route = row.original;
-
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="size-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="size-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(route.id)}
-                            >
-                                Copy ID
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>
-                                {route.active ? "Disable" : "Enable"}
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
+                
+                // return (
+                   
+                // );
             },
             enableSorting: false,
             enableHiding: false,

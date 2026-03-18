@@ -1,6 +1,7 @@
 package com.dkpm.bus_booking_api.domain.payment;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,7 +88,7 @@ public interface PaymentRepository extends JpaRepository<Payment, UUID> {
     FROM Payment p
     JOIN p.booking b
     JOIN b.trip t
-    WHERE p.status = 'COMPLETED'
+    WHERE p.status = com.dkpm.bus_booking_api.domain.payment.PaymentStatus.COMPLETED
     AND t.deleted = false
 """)
     BigDecimal getTotalRevenueByTrip();

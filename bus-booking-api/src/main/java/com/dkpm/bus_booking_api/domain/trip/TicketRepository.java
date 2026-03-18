@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.dkpm.bus_booking_api.features.statistic.dto.TripStatisticResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -44,5 +45,13 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
         FROM Ticket t
         WHERE t.status = 'BOOKED'
         """)
-        long countSoldTickets();
+        long getTicketsSold();
+
+        @Query("""
+        SELECT COUNT(t)
+                FROM Ticket t
+                        WHERE t.status = com.dkpm.bus_booking_api.domain.trip.SeatStatus.CANCELLED
+        """)
+        int getTotalTicketsCancelled();
+
 }

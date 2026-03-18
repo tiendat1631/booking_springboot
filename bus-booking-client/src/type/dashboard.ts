@@ -16,3 +16,9 @@ export type DashboardStatisticResponse = {
   totalRevenueByTrip: number;
   popularTrips: PopularTrip[];
 };
+
+export type TripStatisticResponse = {
+  totalTicketsSold: number;
+  totalTicketsCancelled: number;
+  revenueOfTrip: number;
+};

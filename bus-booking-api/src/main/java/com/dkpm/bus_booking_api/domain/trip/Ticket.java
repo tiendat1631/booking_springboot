@@ -90,4 +90,14 @@ public class Ticket extends BaseEntity {
             this.status = SeatStatus.AVAILABLE;
         }
     }
+
+    /**
+     * dùng release thì cũng đúng nhưng mà sẽ bị mất lịch sử
+     * khó tracking
+     */
+    public void cancelled(){
+        if (this.status == SeatStatus.BOOKED || this.status == SeatStatus.RESERVED) {
+            this.status = SeatStatus.CANCELLED;
+        }
+    }
 }

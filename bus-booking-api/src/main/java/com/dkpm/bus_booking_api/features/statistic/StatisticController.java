@@ -2,6 +2,7 @@ package com.dkpm.bus_booking_api.features.statistic;
 
 import com.dkpm.bus_booking_api.application.response.ApiResponse;
 import com.dkpm.bus_booking_api.features.statistic.dto.DashboardStatisticResponse;
+import com.dkpm.bus_booking_api.features.statistic.dto.TripStatisticResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,4 +20,9 @@ public class StatisticController {
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
+    @GetMapping("/routes/tracking")
+    public ResponseEntity<ApiResponse<TripStatisticResponse>> getTripStatistics(){
+        TripStatisticResponse response = statisticService.getStatisticsByTrip();
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
 }

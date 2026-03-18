@@ -186,25 +186,5 @@ public interface TripRepository extends JpaRepository<Trip, UUID> {
                         """)
         Page<Trip> findUpcomingTrips(@Param("now") LocalDateTime now, Pageable pageable);
 
-        @Query("""
-        SELECT new com.dkpm.bus_booking_api.features.trip.dto.PopularTripResponse(
-            t.id,
-            r.code,
-            ds.name,
-            ars.name,
-            COUNT(ticket.id)
-        )
-        FROM Trip t
-          JOIN t.route r
-          JOIN t.departureStation ds
-          JOIN t.destinationStation ars
-          JOIN t.tickets ticket
-          WHERE t.deleted = false
-          AND ticket.status = 'BOOKED'
-          GROUP BY t.id, r.code, ds.name, ars.name
-          ORDER BY COUNT(ticket.id) DESC
-    """)
-        List<PopularTripResponse> findPopularTrips(Pageable pageable);
-
 
 }

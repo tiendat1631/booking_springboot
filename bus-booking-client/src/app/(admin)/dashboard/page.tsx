@@ -54,6 +54,22 @@ export default async function AdminDashboardPage() {
         description: "doanh thu hôm nay",
         },
         {
+        title: "Doanh thu tháng này",
+        value: `₫${stats.revenueThisMonth.toLocaleString()}`,
+        change: "",
+        changeType: "positive" as const,
+        icon: TrendingUp,
+        description: "doanh thu tháng này",
+        },
+        {
+        title: "Doanh thu năm này",
+        value: `₫${stats.revenueThisYear.toLocaleString()}`,
+        change: "",
+        changeType: "positive" as const,
+        icon: Users,
+        description: "doanh thu năm này",
+        },
+        {
         title: "Tổng chuyến xe",
         value: stats.totalTrips.toString(),
         change: "",
@@ -62,7 +78,7 @@ export default async function AdminDashboardPage() {
         description: "tổng chuyến xe",
         },
         {
-        title: "Vé đã bán",
+        title: "Tổng vé đã bán",
         value: stats.totalTicketsSold.toString(),
         change: "",
         changeType: "positive" as const,

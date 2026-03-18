@@ -5,14 +5,11 @@ import com.dkpm.bus_booking_api.domain.payment.PaymentRepository;
 import com.dkpm.bus_booking_api.domain.trip.TicketRepository;
 import com.dkpm.bus_booking_api.domain.trip.TripRepository;
 import com.dkpm.bus_booking_api.features.statistic.dto.DashboardStatisticResponse;
-import com.dkpm.bus_booking_api.features.trip.dto.PopularTripResponse;
+import com.dkpm.bus_booking_api.features.statistic.dto.TripStatisticResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StatisticService implements IStatisticService{
@@ -24,13 +21,11 @@ public class StatisticService implements IStatisticService{
     public DashboardStatisticResponse getDashboardStats(){
         long totalBookings = bookingRepository.count();
         long totalTrips = tripRepository.count();
-        long totalTicketsSold = ticketRepository.countSoldTickets();
+        long totalTicketsSold = ticketRepository.getTicketsSold();
         BigDecimal revenueToday = paymentRepository.getRevenueToday();
         BigDecimal revenueThisMonth = paymentRepository.getRevenueThisMonth();
         BigDecimal revenueThisYear = paymentRepository.getRevenueThisYear();
         BigDecimal totalRevenueByTrip = paymentRepository.getTotalRevenueByTrip();
-        Pageable pageable = PageRequest.of(0,5);
-        List<PopularTripResponse> popularTrips= tripRepository.findPopularTrips( pageable);
         return new DashboardStatisticResponse(
                 totalBookings,
                 totalTrips,
@@ -38,8 +33,8 @@ public class StatisticService implements IStatisticService{
                 revenueToday,
                 revenueThisMonth,
                 revenueThisYear,
-                totalRevenueByTrip,
-                popularTrips
+                totalRevenueByTrip
+
         );
     }
 
@@ -48,9 +43,16 @@ public class StatisticService implements IStatisticService{
 //
 //    }
 //
-//    @Override
-//    DashboardStatisticResponse getStatisticsByTrip(UUID tripId){
-//
-//    }
+    @Override
+    public TripStatisticResponse getStatisticsByTrip(){
+        long totalTicketsSold = ticketRepository.getTicketsSold();
+        long totalTicketsCancelled = ticketRepository.getTotalTicketsCancelled();
+        BigDecimal revenue = paymentRepository.getTotalRevenueByTrip();
+        return new TripStatisticResponse(
+                totalTicketsSold,
+                totalTicketsCancelled,
+                revenue
+        );
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.dkpm.bus_booking_api.features.statistic;
 
 import com.dkpm.bus_booking_api.features.statistic.dto.DashboardStatisticResponse;
+import com.dkpm.bus_booking_api.features.statistic.dto.TripStatisticResponse;
 
 
 public interface IStatisticService {
@@ -18,7 +19,7 @@ public interface IStatisticService {
     /**
      * Thống kê doanh thu theo một chuyến xe cụ thể
      */
-    //DashboardStatisticResponse getStatisticsByTrip(UUID tripId);
+    TripStatisticResponse getStatisticsByTrip();
 
     /**
      * thống kê bằng chart
