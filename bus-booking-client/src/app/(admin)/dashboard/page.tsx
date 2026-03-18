@@ -11,7 +11,7 @@ import {
 
 import { AdminHeader } from "../_components/admin-header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
     title: "Tổng quan",
 };
