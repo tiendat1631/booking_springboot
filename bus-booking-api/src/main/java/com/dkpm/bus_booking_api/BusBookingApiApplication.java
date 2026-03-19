@@ -13,6 +13,8 @@ import com.dkpm.bus_booking_api.infrastructure.config.RsaKeyProperties;
 import com.dkpm.bus_booking_api.infrastructure.config.JwtProperties;
 import com.dkpm.bus_booking_api.infrastructure.config.VnpayProperties;
 
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableScheduling
@@ -22,7 +24,9 @@ import com.dkpm.bus_booking_api.infrastructure.config.VnpayProperties;
 public class BusBookingApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BusBookingApiApplication.class, args);
+
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        SpringApplication.run(BusBookingApiApplication.class, args);
 	}
 
 }
